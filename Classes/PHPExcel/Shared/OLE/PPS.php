@@ -18,8 +18,6 @@
 // +----------------------------------------------------------------------+
 //
 // $Id: PPS.php,v 1.7 2007/02/13 21:00:42 schmidt Exp $
-
-
 /**
 * Class for creating PPS's for OLE containers
 *
@@ -36,52 +34,44 @@ class PHPExcel_Shared_OLE_PPS
     public $No;
 
     /**
-    * The PPS name (in Unicode)
-    * @var string
-    */
-    public $Name;
+     * The PPS name (in Unicode)
+     */
+    public string $Name;
 
     /**
-    * The PPS type. Dir, Root or File
-    * @var integer
-    */
-    public $Type;
+     * The PPS type. Dir, Root or File
+     */
+    public int $Type;
 
     /**
-    * The index of the previous PPS
-    * @var integer
-    */
-    public $PrevPps;
+     * The index of the previous PPS
+     */
+    public int $PrevPps;
 
     /**
-    * The index of the next PPS
-    * @var integer
-    */
-    public $NextPps;
+     * The index of the next PPS
+     */
+    public int $NextPps;
 
     /**
-    * The index of it's first child if this is a Dir or Root PPS
-    * @var integer
-    */
-    public $DirPps;
+     * The index of it's first child if this is a Dir or Root PPS
+     */
+    public int $DirPps;
 
     /**
-    * A timestamp
-    * @var integer
-    */
-    public $Time1st;
+     * A timestamp
+     */
+    public int $Time1st;
 
     /**
-    * A timestamp
-    * @var integer
-    */
-    public $Time2nd;
+     * A timestamp
+     */
+    public int $Time2nd;
 
     /**
-    * Starting block (small or big) for this PPS's data  inside the container
-    * @var integer
-    */
-    public $_StartBlock;
+     * Starting block (small or big) for this PPS's data  inside the container
+     */
+    public int $_StartBlock;
 
     /**
     * The size of the PPS's data (in bytes)
@@ -90,16 +80,14 @@ class PHPExcel_Shared_OLE_PPS
     public $Size;
 
     /**
-    * The PPS's data (only used if it's not using a temporary file)
-    * @var string
-    */
-    public $_data;
+     * The PPS's data (only used if it's not using a temporary file)
+     */
+    public string $_data;
 
     /**
-    * Array of child PPS's (only used by Root and Dir PPS's)
-    * @var array
-    */
-    public $children = array();
+     * Array of child PPS's (only used by Root and Dir PPS's)
+     */
+    public array $children = array();
 
     /**
     * Pointer to OLE container
@@ -134,11 +122,7 @@ class PHPExcel_Shared_OLE_PPS
         $this->Time2nd = $time_2nd;
         $this->_data      = $data;
         $this->children   = $children;
-        if ($data != '') {
-            $this->Size = strlen($data);
-        } else {
-            $this->Size = 0;
-        }
+        $this->Size = $data != '' ? strlen($data) : 0;
     }
 
     /**
@@ -149,7 +133,7 @@ class PHPExcel_Shared_OLE_PPS
     */
     public function _DataLen()
     {
-        if (!isset($this->_data)) {
+        if ($this->_data === null) {
             return 0;
         }
         //if (isset($this->_PPS_FILE)) {
@@ -169,9 +153,8 @@ class PHPExcel_Shared_OLE_PPS
     */
     public function _getPpsWk()
     {
-        $ret = str_pad($this->Name, 64, "\x00");
-
-        $ret .= pack("v", strlen($this->Name) + 2)  // 66
+        $ret = str_pad($this->Name, 64, "\x00");                        // 128
+        return $ret . (pack("v", strlen($this->Name) + 2)  // 66
               . pack("c", $this->Type)              // 67
               . pack("c", 0x00) //UK                // 68
               . pack("V", $this->PrevPps) //Prev    // 72
@@ -184,11 +167,10 @@ class PHPExcel_Shared_OLE_PPS
               . "\x00\x00\x00\x00"                  // 100
               . PHPExcel_Shared_OLE::LocalDate2OLE($this->Time1st)       // 108
               . PHPExcel_Shared_OLE::LocalDate2OLE($this->Time2nd)       // 116
-              . pack("V", isset($this->_StartBlock)?
+              . pack("V", $this->_StartBlock !== null?
                         $this->_StartBlock:0)        // 120
               . pack("V", $this->Size)               // 124
-              . pack("V", 0);                        // 128
-        return $ret;
+              . pack("V", 0));
     }
 
     /**

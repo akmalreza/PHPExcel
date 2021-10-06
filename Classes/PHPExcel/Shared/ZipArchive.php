@@ -40,17 +40,13 @@ class PHPExcel_Shared_ZipArchive
 
     /**
      * Temporary storage directory
-     *
-     * @var string
      */
-    private $tempDir;
+    private ?string $tempDir = null;
 
     /**
      * Zip Archive Stream Handle
-     *
-     * @var string
      */
-    private $zip;
+    private ?\PclZip $zip = null;
 
 
     /**
@@ -113,8 +109,8 @@ class PHPExcel_Shared_ZipArchive
         $listCount = count($list);
         $index = -1;
         for ($i = 0; $i < $listCount; ++$i) {
-            if (strtolower($list[$i]["filename"]) == $fileName ||
-                strtolower($list[$i]["stored_filename"]) == $fileName) {
+            if (strtolower($list[$i]["filename"]) === $fileName ||
+                strtolower($list[$i]["stored_filename"]) === $fileName) {
                 $index = $i;
                 break;
             }
@@ -132,12 +128,12 @@ class PHPExcel_Shared_ZipArchive
     {
         $index = $this->locateName($fileName);
 
-        if ($index !== false) {
+        if ($index) {
             $extracted = $this->getFromIndex($index);
         } else {
             $fileName = substr($fileName, 1);
             $index = $this->locateName($fileName);
-            if ($index === false) {
+            if (!$index) {
                 return false;
             }
             $extracted = $this->zip->getFromIndex($index);

@@ -29,17 +29,13 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer
 {
     /**
      * Parent Shape Group Container
-     *
-     * @var PHPExcel_Shared_Escher_DgContainer_SpgrContainer
      */
-    private $parent;
+    private ?\PHPExcel_Shared_Escher_DgContainer_SpgrContainer $parent = null;
 
     /**
      * Shape Container collection
-     *
-     * @var array
      */
-    private $children = array();
+    private array $children = array();
 
     /**
      * Set parent Shape Group Container

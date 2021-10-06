@@ -29,17 +29,13 @@ class PHPExcel_Worksheet_Column
 {
     /**
      * PHPExcel_Worksheet
-     *
-     * @var PHPExcel_Worksheet
      */
-    private $parent;
+    private ?\PHPExcel_Worksheet $parent;
 
     /**
      * Column index
-     *
-     * @var string
      */
-    private $columnIndex;
+    private string $columnIndex;
 
     /**
      * Create a new column

@@ -31,17 +31,15 @@ class PHPExcel_CachedObjectStorage_APC extends PHPExcel_CachedObjectStorage_Cach
      * Prefix used to uniquely identify cache data for this worksheet
      *
      * @access    private
-     * @var string
      */
-    private $cachePrefix = null;
+    private ?string $cachePrefix = null;
 
     /**
      * Cache timeout
      *
      * @access    private
-     * @var integer
      */
-    private $cacheTime = 600;
+    private int $cacheTime = 600;
 
     /**
      * Store cell data in cache for the current cell object if it's "dirty",
@@ -104,7 +102,7 @@ class PHPExcel_CachedObjectStorage_APC extends PHPExcel_CachedObjectStorage_Cach
     {
         //    Check if the requested entry is the current object, or exists in the cache
         if (parent::isDataSet($pCoord)) {
-            if ($this->currentObjectID == $pCoord) {
+            if ($this->currentObjectID === $pCoord) {
                 return true;
             }
             //    Check if the requested entry still exists in apc
@@ -203,7 +201,7 @@ class PHPExcel_CachedObjectStorage_APC extends PHPExcel_CachedObjectStorage_Cach
         $newCachePrefix = substr(md5($baseUnique), 0, 8) . '.';
         $cacheList = $this->getCellList();
         foreach ($cacheList as $cellID) {
-            if ($cellID != $this->currentObjectID) {
+            if ($cellID !== $this->currentObjectID) {
                 $obj = apc_fetch($this->cachePrefix . $cellID . '.cache');
                 if ($obj === false) {
                     //    Entry no longer exists in APC, so clear it from the cache array
@@ -281,10 +279,6 @@ class PHPExcel_CachedObjectStorage_APC extends PHPExcel_CachedObjectStorage_Cach
         if (!function_exists('apc_store')) {
             return false;
         }
-        if (apc_sma_info() === false) {
-            return false;
-        }
-
-        return true;
+        return apc_sma_info() !== false;
     }
 }

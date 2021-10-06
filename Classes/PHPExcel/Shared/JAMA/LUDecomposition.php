@@ -25,33 +25,28 @@ class PHPExcel_Shared_JAMA_LUDecomposition
 
     /**
      *    Decomposition storage
-     *    @var array
      */
-    private $LU = array();
+    private array $LU = array();
 
     /**
      *    Row dimension.
-     *    @var int
      */
-    private $m;
+    private ?int $m = null;
 
     /**
      *    Column dimension.
-     *    @var int
      */
-    private $n;
+    private ?int $n = null;
 
     /**
      *    Pivot sign.
-     *    @var int
      */
-    private $pivsign;
+    private ?int $pivsign = null;
 
     /**
      *    Internal storage of pivot vector.
-     *    @var array
      */
-    private $piv = array();
+    private array $piv = array();
 
     /**
      *    LU Decomposition constructor.
@@ -96,7 +91,7 @@ class PHPExcel_Shared_JAMA_LUDecomposition
                         $p = $i;
                     }
                 }
-                if ($p != $j) {
+                if ($p !== $j) {
                     for ($k = 0; $k < $this->n; ++$k) {
                         $t = $this->LU[$p][$k];
                         $this->LU[$p][$k] = $this->LU[$j][$k];
@@ -105,7 +100,7 @@ class PHPExcel_Shared_JAMA_LUDecomposition
                     $k = $this->piv[$p];
                     $this->piv[$p] = $this->piv[$j];
                     $this->piv[$j] = $k;
-                    $this->pivsign = $this->pivsign * -1;
+                    $this->pivsign *= -1;
                 }
                 // Compute multipliers.
                 if (($j < $this->m) && ($this->LU[$j][$j] != 0.0)) {
@@ -130,7 +125,7 @@ class PHPExcel_Shared_JAMA_LUDecomposition
             for ($j = 0; $j < $this->n; ++$j) {
                 if ($i > $j) {
                     $L[$i][$j] = $this->LU[$i][$j];
-                } elseif ($i == $j) {
+                } elseif ($i === $j) {
                     $L[$i][$j] = 1.0;
                 } else {
                     $L[$i][$j] = 0.0;
@@ -149,11 +144,7 @@ class PHPExcel_Shared_JAMA_LUDecomposition
     {
         for ($i = 0; $i < $this->n; ++$i) {
             for ($j = 0; $j < $this->n; ++$j) {
-                if ($i <= $j) {
-                    $U[$i][$j] = $this->LU[$i][$j];
-                } else {
-                    $U[$i][$j] = 0.0;
-                }
+                $U[$i][$j] = $i <= $j ? $this->LU[$i][$j] : 0.0;
             }
         }
         return new PHPExcel_Shared_JAMA_Matrix($U);
@@ -201,7 +192,7 @@ class PHPExcel_Shared_JAMA_LUDecomposition
      */
     public function det()
     {
-        if ($this->m == $this->n) {
+        if ($this->m === $this->n) {
             $d = $this->pivsign;
             for ($j = 0; $j < $this->n; ++$j) {
                 $d *= $this->LU[$j][$j];

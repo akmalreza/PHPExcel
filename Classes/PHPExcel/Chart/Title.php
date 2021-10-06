@@ -37,10 +37,8 @@ class PHPExcel_Chart_Title
 
     /**
      * Title Layout
-     *
-     * @var PHPExcel_Chart_Layout
      */
-    private $layout = null;
+    private ?\PHPExcel_Chart_Layout $layout = null;
 
     /**
      * Create a new PHPExcel_Chart_Title

@@ -29,24 +29,18 @@ class PHPExcel_Worksheet_RowIterator implements Iterator
 {
     /**
      * PHPExcel_Worksheet to iterate
-     *
-     * @var PHPExcel_Worksheet
      */
-    private $subject;
+    private \PHPExcel_Worksheet $subject;
 
     /**
      * Current iterator position
-     *
-     * @var int
      */
-    private $position = 1;
+    private int $position = 1;
 
     /**
      * Start position
-     *
-     * @var int
      */
-    private $startRow = 1;
+    private int $startRow = 1;
 
 
     /**

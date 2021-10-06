@@ -109,9 +109,9 @@ class PHPExcel_Calculation_Logical
                 $returnValue = $returnValue && ($arg != 0);
             } elseif (is_string($arg)) {
                 $arg = strtoupper($arg);
-                if (($arg == 'TRUE') || ($arg == PHPExcel_Calculation::getTRUE())) {
+                if (($arg == 'TRUE') || ($arg === PHPExcel_Calculation::getTRUE())) {
                     $arg = true;
-                } elseif (($arg == 'FALSE') || ($arg == PHPExcel_Calculation::getFALSE())) {
+                } elseif (($arg == 'FALSE') || ($arg === PHPExcel_Calculation::getFALSE())) {
                     $arg = false;
                 } else {
                     return PHPExcel_Calculation_Functions::VALUE();
@@ -165,9 +165,9 @@ class PHPExcel_Calculation_Logical
                 $returnValue = $returnValue || ($arg != 0);
             } elseif (is_string($arg)) {
                 $arg = strtoupper($arg);
-                if (($arg == 'TRUE') || ($arg == PHPExcel_Calculation::getTRUE())) {
+                if (($arg == 'TRUE') || ($arg === PHPExcel_Calculation::getTRUE())) {
                     $arg = true;
-                } elseif (($arg == 'FALSE') || ($arg == PHPExcel_Calculation::getFALSE())) {
+                } elseif (($arg == 'FALSE') || ($arg === PHPExcel_Calculation::getFALSE())) {
                     $arg = false;
                 } else {
                     return PHPExcel_Calculation_Functions::VALUE();
@@ -209,9 +209,9 @@ class PHPExcel_Calculation_Logical
         $logical = PHPExcel_Calculation_Functions::flattenSingleValue($logical);
         if (is_string($logical)) {
             $logical = strtoupper($logical);
-            if (($logical == 'TRUE') || ($logical == PHPExcel_Calculation::getTRUE())) {
+            if (($logical == 'TRUE') || ($logical === PHPExcel_Calculation::getTRUE())) {
                 return false;
-            } elseif (($logical == 'FALSE') || ($logical == PHPExcel_Calculation::getFALSE())) {
+            } elseif (($logical == 'FALSE') || ($logical === PHPExcel_Calculation::getFALSE())) {
                 return true;
             } else {
                 return PHPExcel_Calculation_Functions::VALUE();

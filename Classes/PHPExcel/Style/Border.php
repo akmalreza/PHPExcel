@@ -45,24 +45,18 @@ class PHPExcel_Style_Border extends PHPExcel_Style_Supervisor implements PHPExce
 
     /**
      * Border style
-     *
-     * @var string
      */
-    protected $borderStyle = PHPExcel_Style_Border::BORDER_NONE;
+    protected string $borderStyle = PHPExcel_Style_Border::BORDER_NONE;
 
     /**
      * Border color
-     *
-     * @var PHPExcel_Style_Color
      */
-    protected $color;
+    protected ?\PHPExcel_Style_Color $color = null;
 
     /**
      * Parent property name
-     *
-     * @var string
      */
-    protected $parentPropertyName;
+    protected ?string $parentPropertyName = null;
 
     /**
      * Create a new PHPExcel_Style_Border

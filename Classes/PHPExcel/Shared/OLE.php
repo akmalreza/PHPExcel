@@ -37,6 +37,7 @@ $GLOBALS['_OLE_INSTANCES'] = array();
 */
 class PHPExcel_Shared_OLE
 {
+    public int $bigBlockThreshold;
     const OLE_PPS_TYPE_ROOT   =      5;
     const OLE_PPS_TYPE_DIR    =      1;
     const OLE_PPS_TYPE_FILE   =      2;
@@ -51,28 +52,26 @@ class PHPExcel_Shared_OLE
     public $_file_handle;
 
     /**
-    * Array of PPS's found on the OLE container
-    * @var array
-    */
-    public $_list = array();
+     * Array of PPS's found on the OLE container
+     */
+    public array $_list = array();
 
     /**
      * Root directory of OLE container
-     * @var OLE_PPS_Root
-    */
-    public $root;
+     */
+    public ?\PHPExcel_Shared_OLE_PPS_Root $root = null;
 
     /**
      * Big Block Allocation Table
      * @var array  (blockId => nextBlockId)
     */
-    public $bbat;
+    public ?array $bbat = null;
 
     /**
      * Short Block Allocation Table
      * @var array  (blockId => nextBlockId)
     */
-    public $sbat;
+    public ?array $sbat = null;
 
     /**
      * Size of big blocks. This is usually 512.
@@ -302,7 +301,7 @@ class PHPExcel_Shared_OLE
             $this->_list[] = $pps;
 
             // check if the PPS tree (starting from root) is complete
-            if (isset($this->root) && $this->_ppsTreeComplete($this->root->No)) {
+            if ($this->root !== null && $this->_ppsTreeComplete($this->root->No)) {
                 break;
             }
         }
@@ -443,7 +442,7 @@ class PHPExcel_Shared_OLE
     {
         $rawname = '';
         for ($i = 0; $i < strlen($ascii); ++$i) {
-            $rawname .= $ascii{$i} . "\x00";
+            $rawname .= $ascii[$i] . "\x00";
         }
         return $rawname;
     }

@@ -41,7 +41,7 @@ class PHPExcel_Worksheet_AutoFilter_Column
      *
      * @var string[]
      */
-    private static $filterTypes = array(
+    private static array $filterTypes = array(
         //    Currently we're not handling
         //        colorFilter
         //        extLst
@@ -61,41 +61,33 @@ class PHPExcel_Worksheet_AutoFilter_Column
      *
      * @var string[]
      */
-    private static $ruleJoins = array(
+    private static array $ruleJoins = array(
         self::AUTOFILTER_COLUMN_JOIN_AND,
         self::AUTOFILTER_COLUMN_JOIN_OR,
     );
 
     /**
      * Autofilter
-     *
-     * @var PHPExcel_Worksheet_AutoFilter
      */
-    private $parent;
+    private ?\PHPExcel_Worksheet_AutoFilter $parent;
 
 
     /**
      * Autofilter Column Index
-     *
-     * @var string
      */
-    private $columnIndex = '';
+    private string $columnIndex = '';
 
 
     /**
      * Autofilter Column Filter Type
-     *
-     * @var string
      */
-    private $filterType = self::AUTOFILTER_FILTERTYPE_FILTER;
+    private string $filterType = self::AUTOFILTER_FILTERTYPE_FILTER;
 
 
     /**
      * Autofilter Multiple Rules And/Or
-     *
-     * @var string
      */
-    private $join = self::AUTOFILTER_COLUMN_JOIN_OR;
+    private string $join = self::AUTOFILTER_COLUMN_JOIN_OR;
 
 
     /**
@@ -103,7 +95,7 @@ class PHPExcel_Worksheet_AutoFilter_Column
      *
      * @var array of PHPExcel_Worksheet_AutoFilter_Column_Rule
      */
-    private $ruleset = array();
+    private array $ruleset = array();
 
 
     /**
@@ -111,7 +103,7 @@ class PHPExcel_Worksheet_AutoFilter_Column
      *
      * @var array of mixed
      */
-    private $attributes = array();
+    private array $attributes = array();
 
 
     /**
@@ -383,12 +375,7 @@ class PHPExcel_Worksheet_AutoFilter_Column
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
             if (is_object($value)) {
-                if ($key == 'parent') {
-                    //    Detach from autofilter parent
-                    $this->$key = null;
-                } else {
-                    $this->$key = clone $value;
-                }
+                $this->$key = $key == 'parent' ? null : clone $value;
             } elseif ((is_array($value)) && ($key == 'ruleset')) {
                 //    The columns array of PHPExcel_Worksheet_AutoFilter objects
                 $this->$key = array();

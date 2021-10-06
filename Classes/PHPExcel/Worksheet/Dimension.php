@@ -29,10 +29,8 @@ abstract class PHPExcel_Worksheet_Dimension
 {
     /**
      * Visible?
-     *
-     * @var bool
      */
-    private $visible = true;
+    private bool $visible = true;
 
     /**
      * Outline level
@@ -43,10 +41,8 @@ abstract class PHPExcel_Worksheet_Dimension
 
     /**
      * Collapsed
-     *
-     * @var bool
      */
-    private $collapsed = false;
+    private bool $collapsed = false;
 
     /**
      * Index to cellXf. Null value means row has no explicit cellXf format.
@@ -168,11 +164,7 @@ abstract class PHPExcel_Worksheet_Dimension
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 }

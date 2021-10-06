@@ -36,45 +36,33 @@ class PHPExcel_Chart
 
     /**
      * Worksheet
-     *
-     * @var PHPExcel_Worksheet
      */
-    private $worksheet;
+    private ?\PHPExcel_Worksheet $worksheet = null;
 
     /**
      * Chart Title
-     *
-     * @var PHPExcel_Chart_Title
      */
-    private $title;
+    private ?\PHPExcel_Chart_Title $title;
 
     /**
      * Chart Legend
-     *
-     * @var PHPExcel_Chart_Legend
      */
-    private $legend;
+    private ?\PHPExcel_Chart_Legend $legend;
 
     /**
      * X-Axis Label
-     *
-     * @var PHPExcel_Chart_Title
      */
-    private $xAxisLabel;
+    private ?\PHPExcel_Chart_Title $xAxisLabel;
 
     /**
      * Y-Axis Label
-     *
-     * @var PHPExcel_Chart_Title
      */
-    private $yAxisLabel;
+    private ?\PHPExcel_Chart_Title $yAxisLabel;
 
     /**
      * Chart Plot Area
-     *
-     * @var PHPExcel_Chart_PlotArea
      */
-    private $plotArea;
+    private ?\PHPExcel_Chart_PlotArea $plotArea;
 
     /**
      * Plot Visible Only
@@ -92,38 +80,28 @@ class PHPExcel_Chart
 
     /**
      * Chart Asix Y as
-     *
-     * @var PHPExcel_Chart_Axis
      */
-    private $yAxis;
+    private ?\PHPExcel_Chart_Axis $yAxis;
 
     /**
      * Chart Asix X as
-     *
-     * @var PHPExcel_Chart_Axis
      */
-    private $xAxis;
+    private ?\PHPExcel_Chart_Axis $xAxis;
 
     /**
      * Chart Major Gridlines as
-     *
-     * @var PHPExcel_Chart_GridLines
      */
-    private $majorGridlines;
+    private ?\PHPExcel_Chart_GridLines $majorGridlines;
 
     /**
      * Chart Minor Gridlines as
-     *
-     * @var PHPExcel_Chart_GridLines
      */
-    private $minorGridlines;
+    private ?\PHPExcel_Chart_GridLines $minorGridlines;
 
     /**
      * Top-Left Cell Position
-     *
-     * @var string
      */
-    private $topLeftCellRef = 'A1';
+    private string $topLeftCellRef = 'A1';
 
 
     /**

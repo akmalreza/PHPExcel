@@ -37,7 +37,7 @@ if (isset($_POST['submit'])) {
 		echo 'The equation is not quadratic';
 	} else {
 		/**	So we include PHPExcel to perform the calculations	**/
-		include 'PHPExcel/IOFactory.php';
+		include __DIR__ . '/PHPExcel/IOFactory.php';
 
 		/**	Load the quadratic equation solver worksheet into memory			**/
 		$objPHPExcel = PHPExcel_IOFactory::load('./Quadratic.xlsx');

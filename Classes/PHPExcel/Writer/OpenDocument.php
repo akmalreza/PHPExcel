@@ -32,14 +32,12 @@ class PHPExcel_Writer_OpenDocument extends PHPExcel_Writer_Abstract implements P
      *
      * @var PHPExcel_Writer_OpenDocument_WriterPart[]
      */
-    private $writerParts = array();
+    private array $writerParts = array();
 
     /**
      * Private PHPExcel
-     *
-     * @var PHPExcel
      */
-    private $spreadSheet;
+    private ?\PHPExcel $spreadSheet = null;
 
     /**
      * Create a new PHPExcel_Writer_OpenDocument
@@ -115,13 +113,13 @@ class PHPExcel_Writer_OpenDocument extends PHPExcel_Writer_Abstract implements P
         $objZip->addFromString('styles.xml', $this->getWriterPart('styles')->write());
 
         // Close file
-        if ($objZip->close() === false) {
+        if (!$objZip->close()) {
             throw new PHPExcel_Writer_Exception("Could not close zip file $pFilename.");
         }
 
         // If a temporary file was used, copy it to the correct file stream
         if ($originalFilename != $pFilename) {
-            if (copy($pFilename, $originalFilename) === false) {
+            if (!copy($pFilename, $originalFilename)) {
                 throw new PHPExcel_Writer_Exception("Could not copy temporary zip file $pFilename to $originalFilename.");
             }
             @unlink($pFilename);
@@ -151,10 +149,8 @@ class PHPExcel_Writer_OpenDocument extends PHPExcel_Writer_Abstract implements P
             unlink($pFilename);
         }
         // Try opening the ZIP file
-        if ($objZip->open($pFilename, $zipOverWrite) !== true) {
-            if ($objZip->open($pFilename, $zipCreate) !== true) {
-                throw new PHPExcel_Writer_Exception("Could not open $pFilename for writing.");
-            }
+        if ($objZip->open($pFilename, $zipOverWrite) !== true && $objZip->open($pFilename, $zipCreate) !== true) {
+            throw new PHPExcel_Writer_Exception("Could not open $pFilename for writing.");
         }
 
         return $objZip;

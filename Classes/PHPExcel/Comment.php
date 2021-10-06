@@ -29,66 +29,48 @@ class PHPExcel_Comment implements PHPExcel_IComparable
 {
     /**
      * Author
-     *
-     * @var string
      */
-    private $author;
+    private string $author;
 
     /**
      * Rich text comment
-     *
-     * @var PHPExcel_RichText
      */
-    private $text;
+    private \PHPExcel_RichText $text;
 
     /**
      * Comment width (CSS style, i.e. XXpx or YYpt)
-     *
-     * @var string
      */
-    private $width = '96pt';
+    private string $width = '96pt';
 
     /**
      * Left margin (CSS style, i.e. XXpx or YYpt)
-     *
-     * @var string
      */
-    private $marginLeft = '59.25pt';
+    private string $marginLeft = '59.25pt';
 
     /**
      * Top margin (CSS style, i.e. XXpx or YYpt)
-     *
-     * @var string
      */
-    private $marginTop = '1.5pt';
+    private string $marginTop = '1.5pt';
 
     /**
      * Visible
-     *
-     * @var boolean
      */
-    private $visible = false;
+    private bool $visible = false;
 
     /**
      * Comment height (CSS style, i.e. XXpx or YYpt)
-     *
-     * @var string
      */
-    private $height = '55.5pt';
+    private string $height = '55.5pt';
 
     /**
      * Comment fill color
-     *
-     * @var PHPExcel_Style_Color
      */
-    private $fillColor;
+    private \PHPExcel_Style_Color $fillColor;
 
     /**
      * Alignment
-     *
-     * @var string
      */
-    private $alignment;
+    private string $alignment;
 
     /**
      * Create a new PHPExcel_Comment
@@ -318,11 +300,7 @@ class PHPExcel_Comment implements PHPExcel_IComparable
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 

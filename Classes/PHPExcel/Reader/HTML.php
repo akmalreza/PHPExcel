@@ -39,24 +39,18 @@ class PHPExcel_Reader_HTML extends PHPExcel_Reader_Abstract implements PHPExcel_
 
     /**
      * Input encoding
-     *
-     * @var string
      */
-    protected $inputEncoding = 'ANSI';
+    protected string $inputEncoding = 'ANSI';
 
     /**
      * Sheet index to read
-     *
-     * @var int
      */
-    protected $sheetIndex = 0;
+    protected int $sheetIndex = 0;
 
     /**
      * Formats
-     *
-     * @var array
      */
-    protected $formats = array(
+    protected array $formats = array(
         'h1' => array(
             'font' => array(
                 'bold' => true,
@@ -113,7 +107,7 @@ class PHPExcel_Reader_HTML extends PHPExcel_Reader_Abstract implements PHPExcel_
         ), //    Bottom border
     );
 
-    protected $rowspan = array();
+    protected array $rowspan = array();
 
     /**
      * Create a new PHPExcel_Reader_HTML
@@ -132,12 +126,8 @@ class PHPExcel_Reader_HTML extends PHPExcel_Reader_Abstract implements PHPExcel_
     {
         //    Reading 2048 bytes should be enough to validate that the format is HTML
         $data = fread($this->fileHandle, 2048);
-        if ((strpos($data, '<') !== false) &&
-                (strlen($data) !== strlen(strip_tags($data)))) {
-            return true;
-        }
-
-        return false;
+        return (strpos($data, '<') !== false) &&
+                (strlen($data) !== strlen(strip_tags($data)));
     }
 
     /**
@@ -179,9 +169,9 @@ class PHPExcel_Reader_HTML extends PHPExcel_Reader_Abstract implements PHPExcel_
     }
 
     //    Data Array used for testing only, should write to PHPExcel object on completion of tests
-    protected $dataArray = array();
-    protected $tableLevel = 0;
-    protected $nestedColumn = array('A');
+    protected array $dataArray = array();
+    protected int $tableLevel = 0;
+    protected array $nestedColumn = array('A');
 
     protected function setTableStartColumn($column)
     {
@@ -249,12 +239,8 @@ class PHPExcel_Reader_HTML extends PHPExcel_Reader_Abstract implements PHPExcel_
 
                 switch ($child->nodeName) {
                     case 'meta':
-                        foreach ($attributeArray as $attributeName => $attributeValue) {
-                            switch ($attributeName) {
-                                case 'content':
-                                    //    TODO
-                                    //    Extract character set, so we can convert to UTF-8 if required
-                                    break;
+                        foreach (array_keys($attributeArray) as $attributeName) {
+                            if ($attributeName === 'content') {
                             }
                         }
                         $this->processDomElement($child, $sheet, $row, $column, $cellContent);
@@ -306,14 +292,12 @@ class PHPExcel_Reader_HTML extends PHPExcel_Reader_Abstract implements PHPExcel_
                     case 'a':
 //                        echo 'START OF HYPERLINK: ' , '<br />';
                         foreach ($attributeArray as $attributeName => $attributeValue) {
-                            switch ($attributeName) {
-                                case 'href':
-//                                    echo 'Link to ' , $attributeValue , '<br />';
-                                    $sheet->getCell($column . $row)->getHyperlink()->setUrl($attributeValue);
-                                    if (isset($this->formats[$child->nodeName])) {
-                                        $sheet->getStyle($column . $row)->applyFromArray($this->formats[$child->nodeName]);
-                                    }
-                                    break;
+                            if ($attributeName === 'href') {
+                                //                                    echo 'Link to ' , $attributeValue , '<br />';
+                                $sheet->getCell($column . $row)->getHyperlink()->setUrl($attributeValue);
+                                if (isset($this->formats[$child->nodeName])) {
+                                    $sheet->getStyle($column . $row)->applyFromArray($this->formats[$child->nodeName]);
+                                }
                             }
                         }
                         $cellContent .= ' ';
@@ -493,7 +477,7 @@ class PHPExcel_Reader_HTML extends PHPExcel_Reader_Abstract implements PHPExcel_
         $dom = new domDocument;
         //    Reload the HTML file into the DOM object
         $loaded = $dom->loadHTML(mb_convert_encoding($this->securityScanFile($pFilename), 'HTML-ENTITIES', 'UTF-8'));
-        if ($loaded === false) {
+        if (!$loaded) {
             throw new PHPExcel_Reader_Exception('Failed to load ' . $pFilename . ' as a DOM Document');
         }
 

@@ -45,10 +45,8 @@ class PHPExcel_Worksheet_ColumnDimension extends PHPExcel_Worksheet_Dimension
 
     /**
      * Auto size?
-     *
-     * @var bool
      */
-    private $autoSize = false;
+    private bool $autoSize = false;
 
     /**
      * Create a new PHPExcel_Worksheet_ColumnDimension

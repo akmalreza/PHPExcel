@@ -29,18 +29,14 @@ class PHPExcel_Worksheet_AutoFilter
 {
     /**
      * Autofilter Worksheet
-     *
-     * @var PHPExcel_Worksheet
      */
-    private $workSheet;
+    private ?\PHPExcel_Worksheet $workSheet;
 
 
     /**
      * Autofilter Range
-     *
-     * @var string
      */
-    private $range = '';
+    private string $range = '';
 
 
     /**
@@ -48,7 +44,7 @@ class PHPExcel_Worksheet_AutoFilter
      *
      * @var array of PHPExcel_Worksheet_AutoFilter_Column
      */
-    private $columns = array();
+    private array $columns = array();
 
 
     /**
@@ -125,7 +121,7 @@ class PHPExcel_Worksheet_AutoFilter
         } else {
             //    Discard any column rules that are no longer valid within this range
             list($rangeStart, $rangeEnd) = PHPExcel_Cell::rangeBoundaries($this->range);
-            foreach ($this->columns as $key => $value) {
+            foreach (array_keys($this->columns) as $key) {
                 $colIndex = PHPExcel_Cell::columnIndexFromString($key);
                 if (($rangeStart[0] > $colIndex) || ($rangeEnd[0] < $colIndex)) {
                     unset($this->columns[$key]);
@@ -362,11 +358,9 @@ class PHPExcel_Worksheet_AutoFilter
         $join = $ruleSet['join'];
         $customRuleForBlanks = isset($ruleSet['customRuleForBlanks']) ? $ruleSet['customRuleForBlanks'] : false;
 
-        if (!$customRuleForBlanks) {
-            //    Blank cells are always ignored, so return a FALSE
-            if (($cellValue == '') || ($cellValue === null)) {
-                return false;
-            }
+        //    Blank cells are always ignored, so return a FALSE
+        if (!$customRuleForBlanks && (($cellValue == '') || ($cellValue === null))) {
+            return false;
         }
         $returnVal = ($join == PHPExcel_Worksheet_AutoFilter_Column::AUTOFILTER_COLUMN_JOIN_AND);
         foreach ($dataSet as $rule) {
@@ -453,11 +447,9 @@ class PHPExcel_Worksheet_AutoFilter
 
     /**
      *    Search/Replace arrays to convert Excel wildcard syntax to a regexp syntax for preg_matching
-     *
-     *    @var    array
      */
-    private static $fromReplace = array('\*', '\?', '~~', '~.*', '~.?');
-    private static $toReplace   = array('.*', '.',  '~',  '\*',  '\?');
+    private static array $fromReplace = array('\*', '\?', '~~', '~.*', '~.?');
+    private static array $toReplace   = array('.*', '.',  '~',  '\*',  '\?');
 
 
     /**
@@ -612,7 +604,7 @@ class PHPExcel_Worksheet_AutoFilter
                     //    Test if we want to include blanks in our filter criteria
                     $blanks = false;
                     $ruleDataSet = array_filter($ruleValues);
-                    if (count($ruleValues) != count($ruleDataSet)) {
+                    if (count($ruleValues) !== count($ruleDataSet)) {
                         $blanks = true;
                     }
                     if ($ruleType == PHPExcel_Worksheet_AutoFilter_Column_Rule::AUTOFILTER_RULETYPE_FILTER) {
@@ -715,29 +707,26 @@ class PHPExcel_Worksheet_AutoFilter
                                 'method' => 'filterTestInCustomDataSet',
                                 'arguments' => array('filterRules' => $ruleValues, 'join' => PHPExcel_Worksheet_AutoFilter_Column::AUTOFILTER_COLUMN_JOIN_OR)
                             );
-                        } else {
-                            //    Date based
-                            if ($dynamicRuleType{0} == 'M' || $dynamicRuleType{0} == 'Q') {
-                                //    Month or Quarter
-                                sscanf($dynamicRuleType, '%[A-Z]%d', $periodType, $period);
-                                if ($periodType == 'M') {
-                                    $ruleValues = array($period);
-                                } else {
-                                    --$period;
-                                    $periodEnd = (1+$period)*3;
-                                    $periodStart = 1+$period*3;
-                                    $ruleValues = range($periodStart, $periodEnd);
-                                }
-                                $columnFilterTests[$columnID] = array(
-                                    'method' => 'filterTestInPeriodDateSet',
-                                    'arguments' => $ruleValues
-                                );
-                                $filterColumn->setAttributes(array());
+                        } elseif ($dynamicRuleType[0] == 'M' || $dynamicRuleType[0] == 'Q') {
+                            //    Month or Quarter
+                            sscanf($dynamicRuleType, '%[A-Z]%d', $periodType, $period);
+                            if ($periodType == 'M') {
+                                $ruleValues = array($period);
                             } else {
-                                //    Date Range
-                                $columnFilterTests[$columnID] = $this->dynamicFilterDateRange($dynamicRuleType, $filterColumn);
-                                break;
+                                --$period;
+                                $periodEnd = (1+$period)*3;
+                                $periodStart = 1+$period*3;
+                                $ruleValues = range($periodStart, $periodEnd);
                             }
+                            $columnFilterTests[$columnID] = array(
+                                'method' => 'filterTestInPeriodDateSet',
+                                'arguments' => $ruleValues
+                            );
+                            $filterColumn->setAttributes(array());
+                        } else {
+                            //    Date Range
+                            $columnFilterTests[$columnID] = $this->dynamicFilterDateRange($dynamicRuleType, $filterColumn);
+                            break;
                         }
                     }
                     break;
@@ -815,12 +804,7 @@ class PHPExcel_Worksheet_AutoFilter
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
             if (is_object($value)) {
-                if ($key == 'workSheet') {
-                    //    Detach from worksheet
-                    $this->{$key} = null;
-                } else {
-                    $this->{$key} = clone $value;
-                }
+                $this->{$key} = $key == 'workSheet' ? null : clone $value;
             } elseif ((is_array($value)) && ($key == 'columns')) {
                 //    The columns array of PHPExcel_Worksheet_AutoFilter objects
                 $this->{$key} = array();

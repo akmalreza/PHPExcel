@@ -54,94 +54,68 @@ class PHPExcel_Cell_DataValidation
 
     /**
      * Formula 1
-     *
-     * @var string
      */
-    private $formula1;
+    private string $formula1;
 
     /**
      * Formula 2
-     *
-     * @var string
      */
-    private $formula2;
+    private string $formula2;
 
     /**
      * Type
-     *
-     * @var string
      */
-    private $type = PHPExcel_Cell_DataValidation::TYPE_NONE;
+    private string $type = PHPExcel_Cell_DataValidation::TYPE_NONE;
 
     /**
      * Error style
-     *
-     * @var string
      */
-    private $errorStyle = PHPExcel_Cell_DataValidation::STYLE_STOP;
+    private string $errorStyle = PHPExcel_Cell_DataValidation::STYLE_STOP;
 
     /**
      * Operator
-     *
-     * @var string
      */
-    private $operator;
+    private string $operator;
 
     /**
      * Allow Blank
-     *
-     * @var boolean
      */
-    private $allowBlank;
+    private bool $allowBlank;
 
     /**
      * Show DropDown
-     *
-     * @var boolean
      */
-    private $showDropDown;
+    private bool $showDropDown;
 
     /**
      * Show InputMessage
-     *
-     * @var boolean
      */
-    private $showInputMessage;
+    private bool $showInputMessage;
 
     /**
      * Show ErrorMessage
-     *
-     * @var boolean
      */
-    private $showErrorMessage;
+    private bool $showErrorMessage;
 
     /**
      * Error title
-     *
-     * @var string
      */
-    private $errorTitle;
+    private string $errorTitle;
 
     /**
      * Error
-     *
-     * @var string
      */
-    private $error;
+    private string $error;
 
     /**
      * Prompt title
-     *
-     * @var string
      */
-    private $promptTitle;
+    private string $promptTitle;
 
     /**
      * Prompt
-     *
-     * @var string
      */
-    private $prompt;
+    private string $prompt;
 
     /**
      * Create a new PHPExcel_Cell_DataValidation
@@ -482,11 +456,7 @@ class PHPExcel_Cell_DataValidation
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 }

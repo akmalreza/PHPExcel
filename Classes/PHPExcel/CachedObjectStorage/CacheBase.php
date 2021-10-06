@@ -29,10 +29,8 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
 {
     /**
      * Parent worksheet
-     *
-     * @var PHPExcel_Worksheet
      */
-    protected $parent;
+    protected \PHPExcel_Worksheet $parent;
 
     /**
      * The currently active Cell
@@ -43,17 +41,13 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
 
     /**
      * Coordinate address of the currently active Cell
-     *
-     * @var string
      */
-    protected $currentObjectID = null;
+    protected ?string $currentObjectID = null;
 
     /**
      * Flag indicating whether the currently active Cell requires saving
-     *
-     * @var boolean
      */
-    protected $currentCellIsDirty = true;
+    protected bool $currentCellIsDirty = true;
 
     /**
      * An array of cells or cell pointers for the worksheet cells held in this cache,
@@ -61,7 +55,7 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
      *
      * @var array of mixed
      */
-    protected $cellCache = array();
+    protected array $cellCache = array();
 
     /**
      * Initialise this new cell collection
@@ -298,11 +292,7 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
      */
     protected function getUniqueID()
     {
-        if (function_exists('posix_getpid')) {
-            $baseUnique = posix_getpid();
-        } else {
-            $baseUnique = mt_rand();
-        }
+        $baseUnique = function_exists('posix_getpid') ? posix_getpid() : mt_rand();
         return uniqid($baseUnique, true);
     }
 

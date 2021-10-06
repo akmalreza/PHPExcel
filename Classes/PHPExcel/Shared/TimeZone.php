@@ -42,7 +42,7 @@ class PHPExcel_Shared_TimeZone
      * @private
      * @var    string
      */
-    protected static $timezone    = 'UTC';
+    protected static string $timezone    = 'UTC';
 
     /**
      * Validate a Timezone name
@@ -52,10 +52,7 @@ class PHPExcel_Shared_TimeZone
      */
     public static function _validateTimeZone($timezone)
     {
-        if (in_array($timezone, DateTimeZone::listIdentifiers())) {
-            return true;
-        }
-        return false;
+        return in_array($timezone, DateTimeZone::listIdentifiers());
     }
 
     /**
@@ -139,6 +136,6 @@ class PHPExcel_Shared_TimeZone
             $transitions = self::getTimezoneTransitions($objTimezone, $timestamp);
         }
 
-        return (count($transitions) > 0) ? $transitions[0]['offset'] : 0;
+        return ($transitions !== []) ? $transitions[0]['offset'] : 0;
     }
 }

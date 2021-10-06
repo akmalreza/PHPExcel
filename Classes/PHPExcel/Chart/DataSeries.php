@@ -254,8 +254,7 @@ class PHPExcel_Chart_DataSeries
      */
     public function getPlotLabelByIndex($index)
     {
-        $keys = array_keys($this->plotLabel);
-        if (in_array($index, $keys)) {
+        if (array_key_exists($index, $this->plotLabel)) {
             return $this->plotLabel[$index];
         } elseif (isset($keys[$index])) {
             return $this->plotLabel[$keys[$index]];
@@ -280,8 +279,7 @@ class PHPExcel_Chart_DataSeries
      */
     public function getPlotCategoryByIndex($index)
     {
-        $keys = array_keys($this->plotCategory);
-        if (in_array($index, $keys)) {
+        if (array_key_exists($index, $this->plotCategory)) {
             return $this->plotCategory[$index];
         } elseif (isset($keys[$index])) {
             return $this->plotCategory[$keys[$index]];
@@ -328,8 +326,7 @@ class PHPExcel_Chart_DataSeries
      */
     public function getPlotValuesByIndex($index)
     {
-        $keys = array_keys($this->plotValues);
-        if (in_array($index, $keys)) {
+        if (array_key_exists($index, $this->plotValues)) {
             return $this->plotValues[$index];
         } elseif (isset($keys[$index])) {
             return $this->plotValues[$keys[$index]];

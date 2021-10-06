@@ -29,31 +29,23 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
 {
     /**
      * Parent Shape Group Container
-     *
-     * @var PHPExcel_Shared_Escher_DgContainer_SpgrContainer
      */
-    private $parent;
+    private ?\PHPExcel_Shared_Escher_DgContainer_SpgrContainer $parent = null;
 
     /**
      * Is this a group shape?
-     *
-     * @var boolean
      */
-    private $spgr = false;
+    private bool $spgr = false;
 
     /**
      * Shape type
-     *
-     * @var int
      */
-    private $spType;
+    private ?int $spType = null;
 
     /**
      * Shape flag
-     *
-     * @var int
      */
-    private $spFlag;
+    private ?int $spFlag = null;
 
     /**
      * Shape index (usually group shape has index 0, and the rest: 1,2,3...)
@@ -64,38 +56,28 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
 
     /**
      * Array of options
-     *
-     * @var array
      */
-    private $OPT;
+    private ?array $OPT = null;
 
     /**
      * Cell coordinates of upper-left corner of shape, e.g. 'A1'
-     *
-     * @var string
      */
-    private $startCoordinates;
+    private ?string $startCoordinates = null;
 
     /**
      * Horizontal offset of upper-left corner of shape measured in 1/1024 of column width
-     *
-     * @var int
      */
-    private $startOffsetX;
+    private ?int $startOffsetX = null;
 
     /**
      * Vertical offset of upper-left corner of shape measured in 1/256 of row height
-     *
-     * @var int
      */
-    private $startOffsetY;
+    private ?int $startOffsetY = null;
 
     /**
      * Cell coordinates of bottom-right corner of shape, e.g. 'B2'
-     *
-     * @var string
      */
-    private $endCoordinates;
+    private ?string $endCoordinates = null;
 
     /**
      * Horizontal offset of bottom-right corner of shape measured in 1/1024 of column width
@@ -106,10 +88,8 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
 
     /**
      * Vertical offset of bottom-right corner of shape measured in 1/256 of row height
-     *
-     * @var int
      */
-    private $endOffsetY;
+    private ?int $endOffsetY = null;
 
     /**
      * Set parent Shape Group Container

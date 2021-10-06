@@ -32,14 +32,12 @@ class PHPExcel_Calculation_Token_Stack
      *
      *  @var mixed[]
      */
-    private $stack = array();
+    private array $stack = array();
 
     /**
      *  Count of entries in the parser stack
-     *
-     *  @var integer
      */
-    private $count = 0;
+    private int $count = 0;
 
     /**
      * Return the number of entries on the stack

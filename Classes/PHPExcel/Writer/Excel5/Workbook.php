@@ -80,106 +80,84 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
      * XF Writers
      * @var PHPExcel_Writer_Excel5_Xf[]
      */
-    private $xfWriters = array();
+    private array $xfWriters = array();
 
     /**
      * Array containing the colour palette
-     * @var array
      */
-    private $palette;
+    private array $palette;
 
     /**
      * The codepage indicates the text encoding used for strings
-     * @var integer
      */
-    private $codepage;
+    private int $codepage;
 
     /**
      * The country code used for localization
-     * @var integer
      */
-    private $countryCode;
+    private int $countryCode;
 
     /**
      * Workbook
-     * @var PHPExcel
      */
-    private $phpExcel;
+    private ?\PHPExcel $phpExcel;
 
     /**
      * Fonts writers
      *
      * @var PHPExcel_Writer_Excel5_Font[]
      */
-    private $fontWriters = array();
+    private array $fontWriters = array();
 
     /**
      * Added fonts. Maps from font's hash => index in workbook
-     *
-     * @var array
      */
-    private $addedFonts = array();
+    private array $addedFonts = array();
 
     /**
      * Shared number formats
-     *
-     * @var array
      */
-    private $numberFormats = array();
+    private array $numberFormats = array();
 
     /**
      * Added number formats. Maps from numberFormat's hash => index in workbook
-     *
-     * @var array
      */
-    private $addedNumberFormats = array();
+    private array $addedNumberFormats = array();
 
     /**
      * Sizes of the binary worksheet streams
-     *
-     * @var array
      */
-    private $worksheetSizes = array();
+    private ?array $worksheetSizes = array();
 
     /**
      * Offsets of the binary worksheet streams relative to the start of the global workbook stream
-     *
-     * @var array
      */
-    private $worksheetOffsets = array();
+    private array $worksheetOffsets = array();
 
     /**
      * Total number of shared strings in workbook
-     *
-     * @var int
      */
-    private $stringTotal;
+    private int $stringTotal;
 
     /**
      * Number of unique shared strings in workbook
-     *
-     * @var int
      */
-    private $stringUnique;
+    private int $stringUnique;
 
     /**
      * Array of unique shared strings in workbook
-     *
-     * @var array
      */
-    private $stringTable;
+    private array $stringTable;
 
     /**
      * Color cache
      */
-    private $colors;
+    private ?array $colors = null;
 
     /**
      * Escher object corresponding to MSODRAWINGGROUP
-     *
-     * @var PHPExcel_Shared_Escher
      */
-    private $escher;
+    private ?\PHPExcel_Shared_Escher $escher = null;
 
 
     /**
@@ -279,9 +257,7 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
         $xfWriter->setNumberFormatIndex($numberFormatIndex);
 
         $this->xfWriters[] = $xfWriter;
-
-        $xfIndex = count($this->xfWriters) - 1;
-        return $xfIndex;
+        return count($this->xfWriters) - 1;
     }
 
     /**
@@ -644,16 +620,16 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
         $chunk = '';
 
         // Named ranges
-        if (count($this->phpExcel->getNamedRanges()) > 0) {
+        if ($this->phpExcel->getNamedRanges() !== []) {
             // Loop named ranges
             $namedRanges = $this->phpExcel->getNamedRanges();
             foreach ($namedRanges as $namedRange) {
                 // Create absolute coordinate
                 $range = PHPExcel_Cell::splitRange($namedRange->getRange());
-                for ($i = 0; $i < count($range); $i++) {
-                    $range[$i][0] = '\'' . str_replace("'", "''", $namedRange->getWorksheet()->getTitle()) . '\'!' . PHPExcel_Cell::absoluteCoordinate($range[$i][0]);
-                    if (isset($range[$i][1])) {
-                        $range[$i][1] = PHPExcel_Cell::absoluteCoordinate($range[$i][1]);
+                foreach ($range as $i => $singleRange) {
+                    $range[$i][0] = '\'' . str_replace("'", "''", $namedRange->getWorksheet()->getTitle()) . '\'!' . PHPExcel_Cell::absoluteCoordinate($singleRange[0]);
+                    if (isset($singleRange[1])) {
+                        $range[$i][1] = PHPExcel_Cell::absoluteCoordinate($singleRange[1]);
                     }
                 }
                 $range = PHPExcel_Cell::buildRange($range); // e.g. Sheet1!$A$1:$B$2
@@ -664,17 +640,11 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
                     $formulaData = $this->parser->toReversePolish();
 
                     // make sure tRef3d is of type tRef3dR (0x3A)
-                    if (isset($formulaData{0}) and ($formulaData{0} == "\x7A" or $formulaData{0} == "\x5A")) {
+                    if (isset($formulaData[0]) && ($formulaData[0] == "\x7A" || $formulaData[0] == "\x5A")) {
                         $formulaData = "\x3A" . substr($formulaData, 1);
                     }
 
-                    if ($namedRange->getLocalOnly()) {
-                        // local scope
-                        $scope = $this->phpExcel->getIndex($namedRange->getScope()) + 1;
-                    } else {
-                        // global scope
-                        $scope = 0;
-                    }
+                    $scope = $namedRange->getLocalOnly() ? $this->phpExcel->getIndex($namedRange->getScope()) + 1 : 0;
                     $chunk .= $this->writeData($this->writeDefinedNameBiff8($namedRange->getName(), $formulaData, $scope, false));
 
                 } catch (PHPExcel_Exception $e) {
@@ -1315,7 +1285,7 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
             // initialize finished writing current $string
             $finished = false;
 
-            while ($finished === false) {
+            while (!$finished) {
                 // normally, there will be only one cycle, but if string cannot immediately be written as is
                 // there will be need for more than one cylcle, if string longer than one record data block, there
                 // may be need for even more cycles
@@ -1408,7 +1378,7 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
     private function writeMsoDrawingGroup()
     {
         // write the Escher stream if necessary
-        if (isset($this->escher)) {
+        if ($this->escher !== null) {
             $writer = new PHPExcel_Writer_Excel5_Escher($this->escher);
             $data = $writer->close();
 

@@ -50,45 +50,33 @@ class PHPExcel_Style_Alignment extends PHPExcel_Style_Supervisor implements PHPE
 
     /**
      * Horizontal alignment
-     *
-     * @var string
      */
-    protected $horizontal = PHPExcel_Style_Alignment::HORIZONTAL_GENERAL;
+    protected ?string $horizontal = PHPExcel_Style_Alignment::HORIZONTAL_GENERAL;
 
     /**
      * Vertical alignment
-     *
-     * @var string
      */
-    protected $vertical = PHPExcel_Style_Alignment::VERTICAL_BOTTOM;
+    protected ?string $vertical = PHPExcel_Style_Alignment::VERTICAL_BOTTOM;
 
     /**
      * Text rotation
-     *
-     * @var integer
      */
-    protected $textRotation = 0;
+    protected ?int $textRotation = 0;
 
     /**
      * Wrap text
-     *
-     * @var boolean
      */
-    protected $wrapText = false;
+    protected bool $wrapText = false;
 
     /**
      * Shrink to fit
-     *
-     * @var boolean
      */
-    protected $shrinkToFit = false;
+    protected bool $shrinkToFit = false;
 
     /**
      * Indent - only possible with horizontal alignment left and right
-     *
-     * @var integer
      */
-    protected $indent = 0;
+    protected int $indent = 0;
 
     /**
      * Read order
@@ -391,12 +379,11 @@ class PHPExcel_Style_Alignment extends PHPExcel_Style_Supervisor implements PHPE
      */
     public function setIndent($pValue = 0)
     {
-        if ($pValue > 0) {
-            if ($this->getHorizontal() != self::HORIZONTAL_GENERAL &&
-                $this->getHorizontal() != self::HORIZONTAL_LEFT &&
-                $this->getHorizontal() != self::HORIZONTAL_RIGHT) {
-                $pValue = 0; // indent not supported
-            }
+        if ($pValue > 0 && ($this->getHorizontal() != self::HORIZONTAL_GENERAL &&
+            $this->getHorizontal() != self::HORIZONTAL_LEFT &&
+            $this->getHorizontal() != self::HORIZONTAL_RIGHT)) {
+            $pValue = 0;
+            // indent not supported
         }
         if ($this->isSupervisor) {
             $styleArray = $this->getStyleArray(array('indent' => $pValue));

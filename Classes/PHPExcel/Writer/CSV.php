@@ -29,60 +29,44 @@ class PHPExcel_Writer_CSV extends PHPExcel_Writer_Abstract implements PHPExcel_W
 {
     /**
      * PHPExcel object
-     *
-     * @var PHPExcel
      */
-    private $phpExcel;
+    private \PHPExcel $phpExcel;
 
     /**
      * Delimiter
-     *
-     * @var string
      */
-    private $delimiter    = ',';
+    private string $delimiter    = ',';
 
     /**
      * Enclosure
-     *
-     * @var string
      */
-    private $enclosure    = '"';
+    private ?string $enclosure    = '"';
 
     /**
      * Line ending
-     *
-     * @var string
      */
-    private $lineEnding    = PHP_EOL;
+    private string $lineEnding    = PHP_EOL;
 
     /**
      * Sheet index to write
-     *
-     * @var int
      */
-    private $sheetIndex    = 0;
+    private int $sheetIndex    = 0;
 
     /**
      * Whether to write a BOM (for UTF8).
-     *
-     * @var boolean
      */
-    private $useBOM = false;
+    private bool $useBOM = false;
 
     /**
      * Whether to write a Separator line as the first line of the file
      *     sep=x
-     *
-     * @var boolean
      */
-    private $includeSeparatorLine = false;
+    private bool $includeSeparatorLine = false;
 
     /**
      * Whether to write a fully Excel compatible CSV file.
-     *
-     * @var boolean
      */
-    private $excelCompatibility = false;
+    private bool $excelCompatibility = false;
 
     /**
      * Create a new PHPExcel_Writer_CSV

@@ -29,10 +29,8 @@ abstract class PHPExcel_Worksheet_CellIterator
 {
     /**
      * PHPExcel_Worksheet to iterate
-     *
-     * @var PHPExcel_Worksheet
      */
-    protected $subject;
+    protected \PHPExcel_Worksheet $subject;
 
     /**
      * Current iterator position
@@ -43,10 +41,8 @@ abstract class PHPExcel_Worksheet_CellIterator
 
     /**
      * Iterate only existing cells
-     *
-     * @var boolean
      */
-    protected $onlyExistingCells = false;
+    protected bool $onlyExistingCells = false;
 
     /**
      * Destructor

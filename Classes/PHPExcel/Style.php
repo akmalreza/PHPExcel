@@ -29,59 +29,45 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
 {
     /**
      * Font
-     *
-     * @var PHPExcel_Style_Font
      */
-    protected $font;
+    protected \PHPExcel_Style_Font $font;
 
     /**
      * Fill
-     *
-     * @var PHPExcel_Style_Fill
      */
-    protected $fill;
+    protected \PHPExcel_Style_Fill $fill;
 
     /**
      * Borders
-     *
-     * @var PHPExcel_Style_Borders
      */
-    protected $borders;
+    protected \PHPExcel_Style_Borders $borders;
 
     /**
      * Alignment
-     *
-     * @var PHPExcel_Style_Alignment
      */
-    protected $alignment;
+    protected \PHPExcel_Style_Alignment $alignment;
 
     /**
      * Number Format
-     *
-     * @var PHPExcel_Style_NumberFormat
      */
-    protected $numberFormat;
+    protected \PHPExcel_Style_NumberFormat $numberFormat;
 
     /**
      * Conditional styles
      *
      * @var PHPExcel_Style_Conditional[]
      */
-    protected $conditionalStyles;
+    protected array $conditionalStyles;
 
     /**
      * Protection
-     *
-     * @var PHPExcel_Style_Protection
      */
-    protected $protection;
+    protected \PHPExcel_Style_Protection $protection;
 
     /**
      * Index of style in collection. Only used for real style.
-     *
-     * @var int
      */
-    protected $index;
+    protected ?int $index = null;
 
     /**
      * Use Quote Prefix when displaying in cell editor. Only used for real style.
@@ -136,11 +122,7 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
         $activeSheet = $this->getActiveSheet();
         $selectedCell = $this->getActiveCell(); // e.g. 'A1'
 
-        if ($activeSheet->cellExists($selectedCell)) {
-            $xfIndex = $activeSheet->getCell($selectedCell)->getXfIndex();
-        } else {
-            $xfIndex = 0;
-        }
+        $xfIndex = $activeSheet->cellExists($selectedCell) ? $activeSheet->getCell($selectedCell)->getXfIndex() : 0;
 
         return $this->parent->getCellXfByIndex($xfIndex);
     }
@@ -358,7 +340,7 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
                 // Selection type, inspect
                 if (preg_match('/^[A-Z]+1:[A-Z]+1048576$/', $pRange)) {
                     $selectionType = 'COLUMN';
-                } elseif (preg_match('/^A[0-9]+:XFD[0-9]+$/', $pRange)) {
+                } elseif (preg_match('/^A\d+:XFD\d+$/', $pRange)) {
                     $selectionType = 'ROW';
                 } else {
                     $selectionType = 'CELL';
@@ -394,7 +376,7 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
 
                 // clone each of the affected styles, apply the style array, and add the new styles to the workbook
                 $workbook = $this->getActiveSheet()->getParent();
-                foreach ($oldXfIndexes as $oldXfIndex => $dummy) {
+                foreach (array_keys($oldXfIndexes) as $oldXfIndex) {
                     $style = $workbook->getCellXfByIndex($oldXfIndex);
                     $newStyle = clone $style;
                     $newStyle->applyFromArray($pStyles);

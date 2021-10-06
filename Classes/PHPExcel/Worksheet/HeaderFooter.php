@@ -97,80 +97,60 @@ class PHPExcel_Worksheet_HeaderFooter
 
     /**
      * OddHeader
-     *
-     * @var string
      */
-    private $oddHeader = '';
+    private string $oddHeader = '';
 
     /**
      * OddFooter
-     *
-     * @var string
      */
-    private $oddFooter = '';
+    private string $oddFooter = '';
 
     /**
      * EvenHeader
-     *
-     * @var string
      */
-    private $evenHeader = '';
+    private string $evenHeader = '';
 
     /**
      * EvenFooter
-     *
-     * @var string
      */
-    private $evenFooter = '';
+    private string $evenFooter = '';
 
     /**
      * FirstHeader
-     *
-     * @var string
      */
-    private $firstHeader = '';
+    private string $firstHeader = '';
 
     /**
      * FirstFooter
-     *
-     * @var string
      */
-    private $firstFooter = '';
+    private string $firstFooter = '';
 
     /**
      * Different header for Odd/Even, defaults to false
-     *
-     * @var boolean
      */
-    private $differentOddEven = false;
+    private bool $differentOddEven = false;
 
     /**
      * Different header for first page, defaults to false
-     *
-     * @var boolean
      */
-    private $differentFirst = false;
+    private bool $differentFirst = false;
 
     /**
      * Scale with document, defaults to true
-     *
-     * @var boolean
      */
-    private $scaleWithDocument = true;
+    private bool $scaleWithDocument = true;
 
     /**
      * Align with margins, defaults to true
-     *
-     * @var boolean
      */
-    private $alignWithMargins = true;
+    private bool $alignWithMargins = true;
 
     /**
      * Header/footer images
      *
      * @var PHPExcel_Worksheet_HeaderFooterDrawing[]
      */
-    private $headerFooterImages = array();
+    private array $headerFooterImages = array();
 
     /**
      * Create a new PHPExcel_Worksheet_HeaderFooter
@@ -484,11 +464,7 @@ class PHPExcel_Worksheet_HeaderFooter
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 }

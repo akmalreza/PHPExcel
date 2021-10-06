@@ -48,24 +48,18 @@ class PHPExcel_Reader_Excel5_Escher
 
     /**
      * Escher stream data (binary)
-     *
-     * @var string
      */
-    private $data;
+    private ?string $data = null;
 
     /**
      * Size in bytes of the Escher stream data
-     *
-     * @var int
      */
-    private $dataSize;
+    private ?int $dataSize = null;
 
     /**
      * Current position of stream pointer in Escher stream data
-     *
-     * @var int
      */
-    private $pos;
+    private ?int $pos = null;
 
     /**
      * The object to be returned by the reader. Modified during load.
@@ -280,16 +274,16 @@ class PHPExcel_Reader_Excel5_Escher
         $foDelay = PHPExcel_Reader_Excel5::getInt4d($recordData, 28);
 
         // offset: 32; size: 1; unused1
-        $unused1 = ord($recordData{32});
+        $unused1 = ord($recordData[32]);
 
         // offset: 33; size: 1; size of nameData in bytes (including null terminator)
-        $cbName = ord($recordData{33});
+        $cbName = ord($recordData[33]);
 
         // offset: 34; size: 1; unused2
-        $unused2 = ord($recordData{34});
+        $unused2 = ord($recordData[34]);
 
         // offset: 35; size: 1; unused3
-        $unused3 = ord($recordData{35});
+        $unused3 = ord($recordData[35]);
 
         // offset: 36; size: $cbName; nameData
         $nameData = substr($recordData, 36, $cbName);
@@ -331,7 +325,7 @@ class PHPExcel_Reader_Excel5_Escher
         }
 
         // offset: var; size: 1; tag
-        $tag = ord($recordData{$pos});
+        $tag = ord($recordData[$pos]);
         $pos += 1;
 
         // offset: var; size: var; the raw image data
@@ -372,7 +366,7 @@ class PHPExcel_Reader_Excel5_Escher
         }
 
         // offset: var; size: 1; tag
-        $tag = ord($recordData{$pos});
+        $tag = ord($recordData[$pos]);
         $pos += 1;
 
         // offset: var; size: var; the raw image data
@@ -652,7 +646,7 @@ class PHPExcel_Reader_Excel5_Escher
             // offset: 2; size: 4; the value for this property
             $op = PHPExcel_Reader_Excel5::getInt4d($fopte, 2);
 
-            if ($opidFComplex) {
+            if ($opidFComplex !== 0) {
                 $complexData = substr($splicedComplexData, 0, $op);
                 $splicedComplexData = substr($splicedComplexData, $op);
 

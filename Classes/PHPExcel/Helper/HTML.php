@@ -2,7 +2,7 @@
 
 class PHPExcel_Helper_HTML
 {
-    protected static $colourMap = array(
+    protected static array $colourMap = array(
         'aliceblue' => 'f0f8ff',
         'antiquewhite' => 'faebd7',
         'antiquewhite1' => 'ffefdb',
@@ -526,14 +526,14 @@ class PHPExcel_Helper_HTML
     protected $size;
     protected $color;
 
-    protected $bold = false;
-    protected $italic = false;
-    protected $underline = false;
-    protected $superscript = false;
-    protected $subscript = false;
-    protected $strikethrough = false;
+    protected bool $bold = false;
+    protected bool $italic = false;
+    protected bool $underline = false;
+    protected bool $superscript = false;
+    protected bool $subscript = false;
+    protected bool $strikethrough = false;
 
-    protected $startTagCallbacks = array(
+    protected array $startTagCallbacks = array(
         'font' => 'startFontTag',
         'b' => 'startBoldTag',
         'strong' => 'startBoldTag',
@@ -546,7 +546,7 @@ class PHPExcel_Helper_HTML
         'sub' => 'startSubscriptTag',
     );
 
-    protected $endTagCallbacks = array(
+    protected array $endTagCallbacks = array(
         'font' => 'endFontTag',
         'b' => 'endBoldTag',
         'strong' => 'endBoldTag',
@@ -567,11 +567,11 @@ class PHPExcel_Helper_HTML
         'h6' => 'breakTag',
     );
 
-    protected $stack = array();
+    protected array $stack = array();
 
-    protected $stringData = '';
+    protected string $stringData = '';
 
-    protected $richTextObject;
+    protected ?\PHPExcel_RichText $richTextObject = null;
 
     protected function initialise()
     {

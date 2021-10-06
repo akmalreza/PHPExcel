@@ -40,24 +40,20 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
 
     /**
      * Office2003 compatibility
-     *
-     * @var boolean
      */
-    private $office2003compatibility = false;
+    private bool $office2003compatibility = false;
 
     /**
      * Private writer parts
      *
      * @var PHPExcel_Writer_Excel2007_WriterPart[]
      */
-    private $writerParts    = array();
+    private array $writerParts    = array();
 
     /**
      * Private PHPExcel
-     *
-     * @var PHPExcel
      */
-    private $spreadSheet;
+    private ?\PHPExcel $spreadSheet = null;
 
     /**
      * Private string table
@@ -68,52 +64,38 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
 
     /**
      * Private unique PHPExcel_Style_Conditional HashTable
-     *
-     * @var PHPExcel_HashTable
      */
-    private $stylesConditionalHashTable;
+    private \PHPExcel_HashTable $stylesConditionalHashTable;
 
     /**
      * Private unique PHPExcel_Style HashTable
-     *
-     * @var PHPExcel_HashTable
      */
-    private $styleHashTable;
+    private \PHPExcel_HashTable $styleHashTable;
 
     /**
      * Private unique PHPExcel_Style_Fill HashTable
-     *
-     * @var PHPExcel_HashTable
      */
-    private $fillHashTable;
+    private \PHPExcel_HashTable $fillHashTable;
 
     /**
      * Private unique PHPExcel_Style_Font HashTable
-     *
-     * @var PHPExcel_HashTable
      */
-    private $fontHashTable;
+    private \PHPExcel_HashTable $fontHashTable;
 
     /**
      * Private unique PHPExcel_Style_Borders HashTable
-     *
-     * @var PHPExcel_HashTable
      */
-    private $bordersHashTable ;
+    private \PHPExcel_HashTable $bordersHashTable ;
 
     /**
      * Private unique PHPExcel_Style_NumberFormat HashTable
-     *
-     * @var PHPExcel_HashTable
      */
-    private $numFmtHashTable;
+    private \PHPExcel_HashTable $numFmtHashTable;
 
     /**
      * Private unique PHPExcel_Worksheet_BaseDrawing HashTable
-     *
-     * @var PHPExcel_HashTable
      */
-    private $drawingHashTable;
+    private \PHPExcel_HashTable $drawingHashTable;
 
     /**
      * Create a new PHPExcel_Writer_Excel2007
@@ -229,10 +211,8 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
                 unlink($pFilename);
             }
             // Try opening the ZIP file
-            if ($objZip->open($pFilename, $zipOverWrite) !== true) {
-                if ($objZip->open($pFilename, $zipCreate) !== true) {
-                    throw new PHPExcel_Writer_Exception("Could not open " . $pFilename . " for writing.");
-                }
+            if ($objZip->open($pFilename, $zipOverWrite) !== true && $objZip->open($pFilename, $zipCreate) !== true) {
+                throw new PHPExcel_Writer_Exception("Could not open " . $pFilename . " for writing.");
             }
 
             // Add [Content_Types].xml to ZIP file
@@ -295,7 +275,7 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
                 $objZip->addFromString('xl/worksheets/sheet' . ($i + 1) . '.xml', $this->getWriterPart('Worksheet')->writeWorksheet($this->spreadSheet->getSheet($i), $this->stringTable, $this->includeCharts));
                 if ($this->includeCharts) {
                     $charts = $this->spreadSheet->getSheet($i)->getChartCollection();
-                    if (count($charts) > 0) {
+                    if ($charts !== []) {
                         foreach ($charts as $chart) {
                             $objZip->addFromString('xl/charts/chart' . ($chartCount + 1) . '.xml', $this->getWriterPart('Chart')->writeChart($chart, $this->preCalculateFormulas));
                             $chartCount++;
@@ -326,7 +306,7 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
                 }
 
                 // Add comment relationship parts
-                if (count($this->spreadSheet->getSheet($i)->getComments()) > 0) {
+                if ($this->spreadSheet->getSheet($i)->getComments() !== []) {
                     // VML Comments
                     $objZip->addFromString('xl/drawings/vmlDrawing' . ($i + 1) . '.vml', $this->getWriterPart('Comments')->writeVMLComments($this->spreadSheet->getSheet($i)));
 
@@ -335,7 +315,7 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
                 }
 
                 // Add header/footer relationship parts
-                if (count($this->spreadSheet->getSheet($i)->getHeaderFooter()->getImages()) > 0) {
+                if ($this->spreadSheet->getSheet($i)->getHeaderFooter()->getImages() !== []) {
                     // VML Drawings
                     $objZip->addFromString('xl/drawings/vmlDrawingHF' . ($i + 1) . '.vml', $this->getWriterPart('Drawing')->writeVMLHeaderFooterImages($this->spreadSheet->getSheet($i)));
 
@@ -391,7 +371,7 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
 
             // If a temporary file was used, copy it to the correct file stream
             if ($originalFilename != $pFilename) {
-                if (copy($pFilename, $originalFilename) === false) {
+                if (!copy($pFilename, $originalFilename)) {
                     throw new PHPExcel_Writer_Exception("Could not copy temporary zip file $pFilename to $originalFilename.");
                 }
                 @unlink($pFilename);

@@ -48,7 +48,7 @@ class PHPExcel_Writer_OpenDocument_Content extends PHPExcel_Writer_OpenDocument_
      */
     public function write(PHPExcel $pPHPExcel = null)
     {
-        if (!$pPHPExcel) {
+        if ($pPHPExcel === null) {
             $pPHPExcel = $this->getParentWriter()->getPHPExcel(); /* @var $pPHPExcel PHPExcel */
         }
 
@@ -152,7 +152,7 @@ class PHPExcel_Writer_OpenDocument_Content extends PHPExcel_Writer_OpenDocument_
             $number_rows_repeated--;
             $row = $rows->current();
             if ($row->getCellIterator()->valid()) {
-                if ($span_row) {
+                if ($span_row !== 0) {
                     $objWriter->startElement('table:table-row');
                     if ($span_row > 1) {
                         $objWriter->writeAttribute('table:number-rows-repeated', $span_row);

@@ -33,7 +33,7 @@ class PHPExcel_Worksheet_AutoFilter_Column_Rule
     const AUTOFILTER_RULETYPE_DYNAMICFILTER = 'dynamicFilter';
     const AUTOFILTER_RULETYPE_TOPTENFILTER  = 'top10Filter';
 
-    private static $ruleTypes = array(
+    private static array $ruleTypes = array(
         //    Currently we're not handling
         //        colorFilter
         //        extLst
@@ -52,7 +52,7 @@ class PHPExcel_Worksheet_AutoFilter_Column_Rule
     const AUTOFILTER_RULETYPE_DATEGROUP_MINUTE = 'minute';
     const AUTOFILTER_RULETYPE_DATEGROUP_SECOND = 'second';
 
-    private static $dateTimeGroups = array(
+    private static array $dateTimeGroups = array(
         self::AUTOFILTER_RULETYPE_DATEGROUP_YEAR,
         self::AUTOFILTER_RULETYPE_DATEGROUP_MONTH,
         self::AUTOFILTER_RULETYPE_DATEGROUP_DAY,
@@ -108,7 +108,7 @@ class PHPExcel_Worksheet_AutoFilter_Column_Rule
     const AUTOFILTER_RULETYPE_DYNAMIC_ABOVEAVERAGE = 'aboveAverage';
     const AUTOFILTER_RULETYPE_DYNAMIC_BELOWAVERAGE = 'belowAverage';
 
-    private static $dynamicTypes = array(
+    private static array $dynamicTypes = array(
         self::AUTOFILTER_RULETYPE_DYNAMIC_YESTERDAY,
         self::AUTOFILTER_RULETYPE_DYNAMIC_TODAY,
         self::AUTOFILTER_RULETYPE_DYNAMIC_TOMORROW,
@@ -161,7 +161,7 @@ class PHPExcel_Worksheet_AutoFilter_Column_Rule
     const AUTOFILTER_COLUMN_RULE_LESSTHAN           = 'lessThan';
     const AUTOFILTER_COLUMN_RULE_LESSTHANOREQUAL    = 'lessThanOrEqual';
 
-    private static $operators = array(
+    private static array $operators = array(
         self::AUTOFILTER_COLUMN_RULE_EQUAL,
         self::AUTOFILTER_COLUMN_RULE_NOTEQUAL,
         self::AUTOFILTER_COLUMN_RULE_GREATERTHAN,
@@ -173,7 +173,7 @@ class PHPExcel_Worksheet_AutoFilter_Column_Rule
     const AUTOFILTER_COLUMN_RULE_TOPTEN_BY_VALUE = 'byValue';
     const AUTOFILTER_COLUMN_RULE_TOPTEN_PERCENT  = 'byPercent';
 
-    private static $topTenValue = array(
+    private static array $topTenValue = array(
         self::AUTOFILTER_COLUMN_RULE_TOPTEN_BY_VALUE,
         self::AUTOFILTER_COLUMN_RULE_TOPTEN_PERCENT,
     );
@@ -181,60 +181,55 @@ class PHPExcel_Worksheet_AutoFilter_Column_Rule
     const AUTOFILTER_COLUMN_RULE_TOPTEN_TOP    = 'top';
     const AUTOFILTER_COLUMN_RULE_TOPTEN_BOTTOM = 'bottom';
 
-    private static $topTenType = array(
+    private static array $topTenType = array(
         self::AUTOFILTER_COLUMN_RULE_TOPTEN_TOP,
         self::AUTOFILTER_COLUMN_RULE_TOPTEN_BOTTOM,
     );
 
 
     /* Rule Operators (Numeric, Boolean etc) */
-//    const AUTOFILTER_COLUMN_RULE_BETWEEN            = 'between';        //    greaterThanOrEqual 1 && lessThanOrEqual 2
+    //    const AUTOFILTER_COLUMN_RULE_BETWEEN            = 'between';        //    greaterThanOrEqual 1 && lessThanOrEqual 2
     /* Rule Operators (Numeric Special) which are translated to standard numeric operators with calculated values */
-//    const AUTOFILTER_COLUMN_RULE_TOPTEN                = 'topTen';            //    greaterThan calculated value
-//    const AUTOFILTER_COLUMN_RULE_TOPTENPERCENT        = 'topTenPercent';    //    greaterThan calculated value
-//    const AUTOFILTER_COLUMN_RULE_ABOVEAVERAGE        = 'aboveAverage';    //    Value is calculated as the average
-//    const AUTOFILTER_COLUMN_RULE_BELOWAVERAGE        = 'belowAverage';    //    Value is calculated as the average
+    //    const AUTOFILTER_COLUMN_RULE_TOPTEN                = 'topTen';            //    greaterThan calculated value
+    //    const AUTOFILTER_COLUMN_RULE_TOPTENPERCENT        = 'topTenPercent';    //    greaterThan calculated value
+    //    const AUTOFILTER_COLUMN_RULE_ABOVEAVERAGE        = 'aboveAverage';    //    Value is calculated as the average
+    //    const AUTOFILTER_COLUMN_RULE_BELOWAVERAGE        = 'belowAverage';    //    Value is calculated as the average
     /* Rule Operators (String) which are set as wild-carded values */
-//    const AUTOFILTER_COLUMN_RULE_BEGINSWITH            = 'beginsWith';            // A*
-//    const AUTOFILTER_COLUMN_RULE_ENDSWITH            = 'endsWith';            // *Z
-//    const AUTOFILTER_COLUMN_RULE_CONTAINS            = 'contains';            // *B*
-//    const AUTOFILTER_COLUMN_RULE_DOESNTCONTAIN        = 'notEqual';            //    notEqual *B*
+    //    const AUTOFILTER_COLUMN_RULE_BEGINSWITH            = 'beginsWith';            // A*
+    //    const AUTOFILTER_COLUMN_RULE_ENDSWITH            = 'endsWith';            // *Z
+    //    const AUTOFILTER_COLUMN_RULE_CONTAINS            = 'contains';            // *B*
+    //    const AUTOFILTER_COLUMN_RULE_DOESNTCONTAIN        = 'notEqual';            //    notEqual *B*
     /* Rule Operators (Date Special) which are translated to standard numeric operators with calculated values */
-//    const AUTOFILTER_COLUMN_RULE_BEFORE                = 'lessThan';
-//    const AUTOFILTER_COLUMN_RULE_AFTER                = 'greaterThan';
-//    const AUTOFILTER_COLUMN_RULE_YESTERDAY            = 'yesterday';
-//    const AUTOFILTER_COLUMN_RULE_TODAY                = 'today';
-//    const AUTOFILTER_COLUMN_RULE_TOMORROW            = 'tomorrow';
-//    const AUTOFILTER_COLUMN_RULE_LASTWEEK            = 'lastWeek';
-//    const AUTOFILTER_COLUMN_RULE_THISWEEK            = 'thisWeek';
-//    const AUTOFILTER_COLUMN_RULE_NEXTWEEK            = 'nextWeek';
-//    const AUTOFILTER_COLUMN_RULE_LASTMONTH            = 'lastMonth';
-//    const AUTOFILTER_COLUMN_RULE_THISMONTH            = 'thisMonth';
-//    const AUTOFILTER_COLUMN_RULE_NEXTMONTH            = 'nextMonth';
-//    const AUTOFILTER_COLUMN_RULE_LASTQUARTER        = 'lastQuarter';
-//    const AUTOFILTER_COLUMN_RULE_THISQUARTER        = 'thisQuarter';
-//    const AUTOFILTER_COLUMN_RULE_NEXTQUARTER        = 'nextQuarter';
-//    const AUTOFILTER_COLUMN_RULE_LASTYEAR            = 'lastYear';
-//    const AUTOFILTER_COLUMN_RULE_THISYEAR            = 'thisYear';
-//    const AUTOFILTER_COLUMN_RULE_NEXTYEAR            = 'nextYear';
-//    const AUTOFILTER_COLUMN_RULE_YEARTODATE            = 'yearToDate';            //    <dynamicFilter val="40909" type="yearToDate" maxVal="41113"/>
-//    const AUTOFILTER_COLUMN_RULE_ALLDATESINMONTH    = 'allDatesInMonth';    //    <dynamicFilter type="M2"/> for Month/February
-//    const AUTOFILTER_COLUMN_RULE_ALLDATESINQUARTER    = 'allDatesInQuarter';    //    <dynamicFilter type="Q2"/> for Quarter 2
-
+    //    const AUTOFILTER_COLUMN_RULE_BEFORE                = 'lessThan';
+    //    const AUTOFILTER_COLUMN_RULE_AFTER                = 'greaterThan';
+    //    const AUTOFILTER_COLUMN_RULE_YESTERDAY            = 'yesterday';
+    //    const AUTOFILTER_COLUMN_RULE_TODAY                = 'today';
+    //    const AUTOFILTER_COLUMN_RULE_TOMORROW            = 'tomorrow';
+    //    const AUTOFILTER_COLUMN_RULE_LASTWEEK            = 'lastWeek';
+    //    const AUTOFILTER_COLUMN_RULE_THISWEEK            = 'thisWeek';
+    //    const AUTOFILTER_COLUMN_RULE_NEXTWEEK            = 'nextWeek';
+    //    const AUTOFILTER_COLUMN_RULE_LASTMONTH            = 'lastMonth';
+    //    const AUTOFILTER_COLUMN_RULE_THISMONTH            = 'thisMonth';
+    //    const AUTOFILTER_COLUMN_RULE_NEXTMONTH            = 'nextMonth';
+    //    const AUTOFILTER_COLUMN_RULE_LASTQUARTER        = 'lastQuarter';
+    //    const AUTOFILTER_COLUMN_RULE_THISQUARTER        = 'thisQuarter';
+    //    const AUTOFILTER_COLUMN_RULE_NEXTQUARTER        = 'nextQuarter';
+    //    const AUTOFILTER_COLUMN_RULE_LASTYEAR            = 'lastYear';
+    //    const AUTOFILTER_COLUMN_RULE_THISYEAR            = 'thisYear';
+    //    const AUTOFILTER_COLUMN_RULE_NEXTYEAR            = 'nextYear';
+    //    const AUTOFILTER_COLUMN_RULE_YEARTODATE            = 'yearToDate';            //    <dynamicFilter val="40909" type="yearToDate" maxVal="41113"/>
+    //    const AUTOFILTER_COLUMN_RULE_ALLDATESINMONTH    = 'allDatesInMonth';    //    <dynamicFilter type="M2"/> for Month/February
+    //    const AUTOFILTER_COLUMN_RULE_ALLDATESINQUARTER    = 'allDatesInQuarter';    //    <dynamicFilter type="Q2"/> for Quarter 2
     /**
      * Autofilter Column
-     *
-     * @var PHPExcel_Worksheet_AutoFilter_Column
      */
-    private $parent = null;
+    private ?\PHPExcel_Worksheet_AutoFilter_Column $parent = null;
 
 
     /**
      * Autofilter Rule Type
-     *
-     * @var string
      */
-    private $ruleType = self::AUTOFILTER_RULETYPE_FILTER;
+    private string $ruleType = self::AUTOFILTER_RULETYPE_FILTER;
 
 
     /**
@@ -246,17 +241,13 @@ class PHPExcel_Worksheet_AutoFilter_Column_Rule
 
     /**
      * Autofilter Rule Operator
-     *
-     * @var string
      */
-    private $operator = self::AUTOFILTER_COLUMN_RULE_EQUAL;
+    private string $operator = self::AUTOFILTER_COLUMN_RULE_EQUAL;
 
     /**
      * DateTimeGrouping Group Value
-     *
-     * @var string
      */
-    private $grouping = '';
+    private ?string $grouping = '';
 
 
     /**
@@ -318,7 +309,7 @@ class PHPExcel_Worksheet_AutoFilter_Column_Rule
     {
         if (is_array($pValue)) {
             $grouping = -1;
-            foreach ($pValue as $key => $value) {
+            foreach (array_keys($pValue) as $key) {
                 //    Validate array entries
                 if (!in_array($key, self::$dateTimeGroups)) {
                     //    Remove any invalid entries from the value array
@@ -454,12 +445,7 @@ class PHPExcel_Worksheet_AutoFilter_Column_Rule
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
             if (is_object($value)) {
-                if ($key == 'parent') {
-                    //    Detach from autofilter column parent
-                    $this->$key = null;
-                } else {
-                    $this->$key = clone $value;
-                }
+                $this->$key = $key == 'parent' ? null : clone $value;
             } else {
                 $this->$key = $value;
             }

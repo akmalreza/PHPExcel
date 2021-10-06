@@ -29,6 +29,7 @@ require_once(PHPEXCEL_ROOT . 'PHPExcel/Shared/trend/bestFitClass.php');
  */
 class PHPExcel_Exponential_Best_Fit extends PHPExcel_Best_Fit
 {
+    public $_slope;
     /**
      * Algorithm type to use for best-fit
      * (Name of this trend class)

@@ -112,9 +112,9 @@ $objConditional3->getStyle()->getFont()->setItalic(true);
 $objConditional3->getStyle()->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_CURRENCY_EUR_SIMPLE);
 
 $conditionalStyles = $objPHPExcel->getActiveSheet()->getStyle('B2')->getConditionalStyles();
-array_push($conditionalStyles, $objConditional1);
-array_push($conditionalStyles, $objConditional2);
-array_push($conditionalStyles, $objConditional3);
+$conditionalStyles[] = $objConditional1;
+$conditionalStyles[] = $objConditional2;
+$conditionalStyles[] = $objConditional3;
 $objPHPExcel->getActiveSheet()->getStyle('B2')->setConditionalStyles($conditionalStyles);
 
 

@@ -31,6 +31,11 @@ require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/JAMA/Matrix.php';
 class PHPExcel_Polynomial_Best_Fit extends PHPExcel_Best_Fit
 {
     /**
+     * @var mixed|mixed[]
+     */
+    public $_slope;
+    public bool $_error;
+    /**
      * Algorithm type to use for best-fit
      * (Name of this trend class)
      *
@@ -42,9 +47,8 @@ class PHPExcel_Polynomial_Best_Fit extends PHPExcel_Best_Fit
      * Polynomial order
      *
      * @protected
-     * @var    int
      **/
-    protected $order = 0;
+    protected int $order = 0;
 
 
     /**

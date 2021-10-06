@@ -44,7 +44,7 @@ class PHPExcel_Calculation_Engineering
      *
      * @var mixed[]
      */
-    private static $conversionUnits = array(
+    private static array $conversionUnits = array(
         'g'     => array('Group' => 'Mass',        'Unit Name' => 'Gram',                     'AllowPrefix' => true),
         'sg'    => array('Group' => 'Mass',        'Unit Name' => 'Slug',                     'AllowPrefix' => false),
         'lbm'   => array('Group' => 'Mass',        'Unit Name' => 'Pound mass (avoirdupois)', 'AllowPrefix' => false),
@@ -115,7 +115,7 @@ class PHPExcel_Calculation_Engineering
      *
      * @var mixed[]
      */
-    private static $conversionMultipliers = array(
+    private static array $conversionMultipliers = array(
         'Y' => array('multiplier' => 1E24,  'name' => 'yotta'),
         'Z' => array('multiplier' => 1E21,  'name' => 'zetta'),
         'E' => array('multiplier' => 1E18,  'name' => 'exa'),
@@ -143,7 +143,7 @@ class PHPExcel_Calculation_Engineering
      *
      * @var mixed[]
      */
-    private static $unitConversions = array(
+    private static array $unitConversions = array(
         'Mass' => array(
             'g' => array(
                 'g'   => 1.0,
@@ -768,7 +768,7 @@ class PHPExcel_Calculation_Engineering
         //    Split the input into its Real and Imaginary components
         $leadingSign = 0;
         if (strlen($workString) > 0) {
-            $leadingSign = (($workString{0} == '+') || ($workString{0} == '-')) ? 1 : 0;
+            $leadingSign = (($workString[0] == '+') || ($workString[0] == '-')) ? 1 : 0;
         }
         $power = '';
         $realNumber = strtok($workString, '+-');
@@ -809,16 +809,16 @@ class PHPExcel_Calculation_Engineering
      */
     private static function cleanComplex($complexNumber)
     {
-        if ($complexNumber{0} == '+') {
+        if ($complexNumber[0] == '+') {
             $complexNumber = substr($complexNumber, 1);
         }
-        if ($complexNumber{0} == '0') {
+        if ($complexNumber[0] == '0') {
             $complexNumber = substr($complexNumber, 1);
         }
-        if ($complexNumber{0} == '.') {
+        if ($complexNumber[0] == '.') {
             $complexNumber = '0'.$complexNumber;
         }
-        if ($complexNumber{0} == '+') {
+        if ($complexNumber[0] == '+') {
             $complexNumber = substr($complexNumber, 1);
         }
         return $complexNumber;
@@ -2172,7 +2172,7 @@ class PHPExcel_Calculation_Engineering
         $parsedComplexDivisor = self::parseComplex($complexDivisor);
 
         if (($parsedComplexDividend['suffix'] != '') && ($parsedComplexDivisor['suffix'] != '') &&
-            ($parsedComplexDividend['suffix'] != $parsedComplexDivisor['suffix'])) {
+            ($parsedComplexDividend['suffix'] !== $parsedComplexDivisor['suffix'])) {
             return PHPExcel_Calculation_Functions::NaN();
         }
         if (($parsedComplexDividend['suffix'] != '') && ($parsedComplexDivisor['suffix'] == '')) {
@@ -2217,7 +2217,7 @@ class PHPExcel_Calculation_Engineering
         $parsedComplex2 = self::parseComplex($complexNumber2);
 
         if ((($parsedComplex1['suffix'] != '') && ($parsedComplex2['suffix'] != '')) &&
-            ($parsedComplex1['suffix'] != $parsedComplex2['suffix'])) {
+            ($parsedComplex1['suffix'] !== $parsedComplex2['suffix'])) {
             return PHPExcel_Calculation_Functions::NaN();
         } elseif (($parsedComplex1['suffix'] == '') && ($parsedComplex2['suffix'] != '')) {
             $parsedComplex1['suffix'] = $parsedComplex2['suffix'];
@@ -2254,7 +2254,7 @@ class PHPExcel_Calculation_Engineering
 
             if ($activeSuffix == '') {
                 $activeSuffix = $parsedComplex['suffix'];
-            } elseif (($parsedComplex['suffix'] != '') && ($activeSuffix != $parsedComplex['suffix'])) {
+            } elseif (($parsedComplex['suffix'] != '') && ($activeSuffix !== $parsedComplex['suffix'])) {
                 return PHPExcel_Calculation_Functions::VALUE();
             }
 
@@ -2294,7 +2294,7 @@ class PHPExcel_Calculation_Engineering
             $workValue = $returnValue;
             if (($parsedComplex['suffix'] != '') && ($activeSuffix == '')) {
                 $activeSuffix = $parsedComplex['suffix'];
-            } elseif (($parsedComplex['suffix'] != '') && ($activeSuffix != $parsedComplex['suffix'])) {
+            } elseif (($parsedComplex['suffix'] != '') && ($activeSuffix !== $parsedComplex['suffix'])) {
                 return PHPExcel_Calculation_Functions::NaN();
             }
             $returnValue['real'] = ($workValue['real'] * $parsedComplex['real']) - ($workValue['imaginary'] * $parsedComplex['imaginary']);
@@ -2359,7 +2359,7 @@ class PHPExcel_Calculation_Engineering
     //
     //    Private method to calculate the erf value
     //
-    private static $twoSqrtPi = 1.128379167095512574;
+    private static float $twoSqrtPi = 1.128379167095512574;
 
     public static function erfVal($x)
     {
@@ -2422,7 +2422,7 @@ class PHPExcel_Calculation_Engineering
     //
     //    Private method to calculate the erfc value
     //
-    private static $oneSqrtPi = 0.564189583547756287;
+    private static float $oneSqrtPi = 0.564189583547756287;
 
     private static function erfcVal($x)
     {

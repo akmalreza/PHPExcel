@@ -50,9 +50,9 @@ class PHPExcel_Calculation_Financial
      * @param    DateTime    $testDate    The date for testing
      * @return    boolean
      */
-    private static function isLastDayOfMonth($testDate)
+    private static function isLastDayOfMonth(\DateTimeInterface $testDate)
     {
-        return ($testDate->format('d') == $testDate->format('t'));
+        return ($testDate->format('d') === $testDate->format('t'));
     }
 
 
@@ -64,7 +64,7 @@ class PHPExcel_Calculation_Financial
      * @param    DateTime    $testDate    The date for testing
      * @return    boolean
      */
-    private static function isFirstDayOfMonth($testDate)
+    private static function isFirstDayOfMonth(\DateTimeInterface $testDate)
     {
         return ($testDate->format('d') == 1);
     }
@@ -97,11 +97,8 @@ class PHPExcel_Calculation_Financial
         if (($frequency == 1) || ($frequency == 2) || ($frequency == 4)) {
             return true;
         }
-        if ((PHPExcel_Calculation_Functions::getCompatibilityMode() == PHPExcel_Calculation_Functions::COMPATIBILITY_GNUMERIC) &&
-            (($frequency == 6) || ($frequency == 12))) {
-            return true;
-        }
-        return false;
+        return (PHPExcel_Calculation_Functions::getCompatibilityMode() == PHPExcel_Calculation_Functions::COMPATIBILITY_GNUMERIC) &&
+            (($frequency == 6) || ($frequency == 12));
     }
 
 
@@ -395,7 +392,7 @@ class PHPExcel_Calculation_Financial
         }
 
         $f0Rate = $yearFrac * $rate * $cost;
-        $nNumOfFullPeriods = intval(($cost - $salvage - $f0Rate) / $fOneRate);
+        $nNumOfFullPeriods = (int) (($cost - $salvage - $f0Rate) / $fOneRate);
 
         if ($period == 0) {
             return $f0Rate;
@@ -1566,7 +1563,8 @@ class PHPExcel_Calculation_Financial
 
         // Calculate
         $rate = array_shift($aArgs);
-        for ($i = 1; $i <= count($aArgs); ++$i) {
+        $aArgsCount = count($aArgs);
+        for ($i = 1; $i <= $aArgsCount; ++$i) {
             // Is it a numeric value?
             if (is_numeric($aArgs[$i - 1])) {
                 $returnValue += $aArgs[$i - 1] / pow(1 + $rate, $i);
@@ -1682,9 +1680,8 @@ class PHPExcel_Calculation_Financial
         for ($k = 0; $k <= $n; ++$k) {
             $result += $rfp / (pow($baseYF, ($k + $de)));
         }
-        $result -= $rfp * ($a / $e);
 
-        return $result;
+        return $result - $rfp * ($a / $e);
     }
 
 
@@ -2149,7 +2146,7 @@ class PHPExcel_Calculation_Financial
         $values = PHPExcel_Calculation_Functions::flattenArray($values);
         $dates  = PHPExcel_Calculation_Functions::flattenArray($dates);
         $guess  = PHPExcel_Calculation_Functions::flattenSingleValue($guess);
-        if (count($values) != count($dates)) {
+        if (count($values) !== count($dates)) {
             return PHPExcel_Calculation_Functions::NaN();
         }
 
@@ -2226,7 +2223,7 @@ class PHPExcel_Calculation_Financial
         $values    = PHPExcel_Calculation_Functions::flattenArray($values);
         $dates    = PHPExcel_Calculation_Functions::flattenArray($dates);
         $valCount = count($values);
-        if ($valCount != count($dates)) {
+        if ($valCount !== count($dates)) {
             return PHPExcel_Calculation_Functions::NaN();
         }
         if ((min($values) > 0) || (max($values) < 0)) {

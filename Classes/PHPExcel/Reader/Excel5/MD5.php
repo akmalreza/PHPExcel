@@ -28,10 +28,10 @@
 class PHPExcel_Reader_Excel5_MD5
 {
     // Context
-    private $a;
-    private $b;
-    private $c;
-    private $d;
+    private ?int $a = null;
+    private ?int $b = null;
+    private ?int $c = null;
+    private ?int $d = null;
 
     /**
      * MD5 stream constructor

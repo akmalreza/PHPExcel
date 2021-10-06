@@ -143,7 +143,7 @@ class PHPExcel_Calculation_MathTrig
         if ((is_numeric($number)) && (is_numeric($significance))) {
             if (($number == 0.0 ) || ($significance == 0.0)) {
                 return 0.0;
-            } elseif (self::SIGN($number) == self::SIGN($significance)) {
+            } elseif (self::SIGN($number) === self::SIGN($significance)) {
                 return ceil($number / $significance) * $significance;
             } else {
                 return PHPExcel_Calculation_Functions::NaN();
@@ -243,10 +243,8 @@ class PHPExcel_Calculation_MathTrig
                 return PHPExcel_Calculation_Functions::NaN();
             }
             $factLoop = floor($factVal);
-            if (PHPExcel_Calculation_Functions::getCompatibilityMode() == PHPExcel_Calculation_Functions::COMPATIBILITY_GNUMERIC) {
-                if ($factVal > $factLoop) {
-                    return PHPExcel_Calculation_Functions::NaN();
-                }
+            if (PHPExcel_Calculation_Functions::getCompatibilityMode() == PHPExcel_Calculation_Functions::COMPATIBILITY_GNUMERIC && $factVal > $factLoop) {
+                return PHPExcel_Calculation_Functions::NaN();
             }
 
             $factorial = 1;
@@ -321,7 +319,7 @@ class PHPExcel_Calculation_MathTrig
                 return PHPExcel_Calculation_Functions::DIV0();
             } elseif ($number == 0.0) {
                 return 0.0;
-            } elseif (self::SIGN($number) == self::SIGN($significance)) {
+            } elseif (self::SIGN($number) === self::SIGN($significance)) {
                 return floor($number / $significance) * $significance;
             } else {
                 return PHPExcel_Calculation_Functions::NaN();
@@ -380,7 +378,7 @@ class PHPExcel_Calculation_MathTrig
             foreach ($mergedArray as $mergedKey => $mergedValue) {
                 foreach ($allValuesFactors as $highestPowerTest) {
                     foreach ($highestPowerTest as $testKey => $testValue) {
-                        if (($testKey == $mergedKey) && ($testValue < $mergedValue)) {
+                        if (($testKey === $mergedKey) && ($testValue < $mergedValue)) {
                             $mergedArray[$mergedKey] = $testValue;
                             $mergedValue = $testValue;
                         }
@@ -399,7 +397,7 @@ class PHPExcel_Calculation_MathTrig
             $value = $mergedArray[$key];
             foreach ($allValuesFactors as $testValue) {
                 foreach ($testValue as $mergedKey => $mergedValue) {
-                    if (($mergedKey == $key) && ($mergedValue < $value)) {
+                    if (($mergedKey === $key) && ($mergedValue < $value)) {
                         $value = $mergedValue;
                     }
                 }
@@ -673,7 +671,7 @@ class PHPExcel_Calculation_MathTrig
             }
             $matrixB = new PHPExcel_Shared_JAMA_Matrix($matrixBData);
 
-            if ($columnA != $rowB) {
+            if ($columnA !== $rowB) {
                 return PHPExcel_Calculation_Functions::VALUE();
             }
 
@@ -727,7 +725,7 @@ class PHPExcel_Calculation_MathTrig
             if ($multiple == 0) {
                 return 0;
             }
-            if ((self::SIGN($number)) == (self::SIGN($multiple))) {
+            if (self::SIGN($number) === self::SIGN($multiple)) {
                 $multiplier = 1 / $multiple;
                 return round($number * $multiplier) / $multiplier;
             }
@@ -894,19 +892,17 @@ class PHPExcel_Calculation_MathTrig
             // Is it a numeric value?
             if ((is_numeric($arg)) && (!is_string($arg))) {
                 if (is_null($returnValue)) {
-                    $returnValue = ($arg == 0) ? 0 : $arg;
-                } else {
-                    if (($returnValue == 0) || ($arg == 0)) {
-                        $returnValue = 0;
-                    } else {
-                        $returnValue /= $arg;
-                    }
+																	$returnValue = ($arg == 0) ? 0 : $arg;
+																} elseif (($returnValue == 0) || ($arg == 0)) {
+																	$returnValue = 0;
+																} else {
+                    $returnValue /= $arg;
                 }
             }
         }
 
         // Return
-        return intval($returnValue);
+        return (int) $returnValue;
     }
 
 
@@ -1234,12 +1230,10 @@ class PHPExcel_Calculation_MathTrig
 	 *	@param	string		$condition		The criteria that defines which cells will be summed.
 	 *	@return	float
 	 */
-	public static function SUMIFS() {
-		$arrayList = func_get_args();
-
+	public static function SUMIFS(...$arrayList) {
 		$sumArgs = PHPExcel_Calculation_Functions::flattenArray(array_shift($arrayList));
 
-        while (count($arrayList) > 0) {
+        while ($arrayList !== []) {
             $aArgsArray[] = PHPExcel_Calculation_Functions::flattenArray(array_shift($arrayList));
             $conditions[] = PHPExcel_Calculation_Functions::ifCondition(array_shift($arrayList));
         }
@@ -1291,10 +1285,8 @@ class PHPExcel_Calculation_MathTrig
      * @param    mixed        $arg,...        Data values
      * @return    float
      */
-    public static function SUMPRODUCT()
+    public static function SUMPRODUCT(...$arrayList)
     {
-        $arrayList = func_get_args();
-
         $wrkArray = PHPExcel_Calculation_Functions::flattenArray(array_shift($arrayList));
         $wrkCellCount = count($wrkArray);
 
@@ -1307,7 +1299,7 @@ class PHPExcel_Calculation_MathTrig
         foreach ($arrayList as $matrixData) {
             $array2 = PHPExcel_Calculation_Functions::flattenArray($matrixData);
             $count = count($array2);
-            if ($wrkCellCount != $count) {
+            if ($wrkCellCount !== $count) {
                 return PHPExcel_Calculation_Functions::VALUE();
             }
 
@@ -1450,10 +1442,10 @@ class PHPExcel_Calculation_MathTrig
         // Truncate
         $adjust = pow(10, $digits);
 
-        if (($digits > 0) && (rtrim(intval((abs($value) - abs(intval($value))) * $adjust), '0') < $adjust/10)) {
+        if (($digits > 0) && (rtrim((int) ((abs($value) - abs((int) $value)) * $adjust), '0') < $adjust/10)) {
             return $value;
         }
 
-        return (intval($value * $adjust)) / $adjust;
+        return ((int) ($value * $adjust)) / $adjust;
     }
 }

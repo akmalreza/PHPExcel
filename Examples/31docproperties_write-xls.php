@@ -109,7 +109,7 @@ foreach($customProperties as $customProperty) {
 	if ($propertyType == PHPExcel_DocumentProperties::PROPERTY_TYPE_DATE) {
 		echo date('d-M-Y H:i:s',$propertyValue) , EOL;
 	} elseif ($propertyType == PHPExcel_DocumentProperties::PROPERTY_TYPE_BOOLEAN) {
-		echo (($propertyValue) ? 'TRUE' : 'FALSE') , EOL;
+		echo (($propertyValue !== '' && $propertyValue !== '0') ? 'TRUE' : 'FALSE') , EOL;
 	} else {
 		echo $propertyValue , EOL;
 	}

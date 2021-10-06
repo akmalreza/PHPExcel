@@ -29,10 +29,8 @@ class PHPExcel_Shared_Escher_DggContainer_BstoreContainer_BSE_Blip
 {
     /**
      * The parent BSE
-     *
-     * @var PHPExcel_Shared_Escher_DggContainer_BstoreContainer_BSE
      */
-    private $parent;
+    private ?\PHPExcel_Shared_Escher_DggContainer_BstoreContainer_BSE $parent = null;
 
     /**
      * Raw image data

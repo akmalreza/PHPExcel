@@ -71,24 +71,20 @@ class PHPExcel_Style_Conditional implements PHPExcel_IComparable
 
     /**
      * Text
-     *
-     * @var string
      */
-    private $text;
+    private ?string $text = null;
 
     /**
      * Condition
      *
      * @var string[]
      */
-    private $condition = array();
+    private array $condition = array();
 
     /**
      * Style
-     *
-     * @var PHPExcel_Style
      */
-    private $style;
+    private ?\PHPExcel_Style $style = null;
 
     /**
      * Create a new PHPExcel_Style_Conditional
@@ -283,11 +279,7 @@ class PHPExcel_Style_Conditional implements PHPExcel_IComparable
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 }

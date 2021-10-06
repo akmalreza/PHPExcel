@@ -87,57 +87,43 @@ class PHPExcel_Chart_Layout
     /**
      * show legend key
      * Specifies that legend keys should be shown in data labels
-     *
-     * @var boolean
      */
-    private $showLegendKey;
+    private ?bool $showLegendKey = null;
 
     /**
      * show value
      * Specifies that the value should be shown in a data label.
-     *
-     * @var boolean
      */
-    private $showVal;
+    private ?bool $showVal = null;
 
     /**
      * show category name
      * Specifies that the category name should be shown in the data label.
-     *
-     * @var boolean
      */
-    private $showCatName;
+    private ?bool $showCatName = null;
 
     /**
      * show data series name
      * Specifies that the series name should be shown in the data label.
-     *
-     * @var boolean
      */
-    private $showSerName;
+    private ?bool $showSerName = null;
 
     /**
      * show percentage
      * Specifies that the percentage should be shown in the data label.
-     *
-     * @var boolean
      */
-    private $showPercent;
+    private ?bool $showPercent = null;
 
     /**
      * show bubble size
-     *
-     * @var boolean
      */
-    private $showBubbleSize;
+    private ?bool $showBubbleSize = null;
 
     /**
      * show leader lines
      * Specifies that leader lines should be shown for the data label.
-     *
-     * @var boolean
      */
-    private $showLeaderLines;
+    private ?bool $showLeaderLines = null;
 
 
     /**

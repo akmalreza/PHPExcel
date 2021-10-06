@@ -38,7 +38,7 @@ class PHPExcel_Shared_Date
      * @public
      * @var    string[]
      */
-    public static $monthNames = array(
+    public static array $monthNames = array(
         'Jan' => 'January',
         'Feb' => 'February',
         'Mar' => 'March',
@@ -60,7 +60,7 @@ class PHPExcel_Shared_Date
      * @public
      * @var    string[]
      */
-    public static $numberSuffixes = array(
+    public static array $numberSuffixes = array(
         'st',
         'nd',
         'rd',
@@ -73,7 +73,7 @@ class PHPExcel_Shared_Date
      * @private
      * @var    int
      */
-    protected static $excelBaseDate = self::CALENDAR_WINDOWS_1900;
+    protected static int $excelBaseDate = self::CALENDAR_WINDOWS_1900;
 
     /**
      * Set the Excel calendar (Windows 1900 or Mac 1904)
@@ -278,7 +278,7 @@ class PHPExcel_Shared_Date
     }
 
 
-    private static $possibleDateFormatCharacters = 'eymdHs';
+    private static string $possibleDateFormatCharacters = 'eymdHs';
 
     /**
      * Is a given number format code a date/time?

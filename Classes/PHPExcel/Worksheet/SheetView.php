@@ -33,7 +33,7 @@ class PHPExcel_Worksheet_SheetView
     const SHEETVIEW_PAGE_LAYOUT        = 'pageLayout';
     const SHEETVIEW_PAGE_BREAK_PREVIEW = 'pageBreakPreview';
 
-    private static $sheetViewTypes = array(
+    private static array $sheetViewTypes = array(
         self::SHEETVIEW_NORMAL,
         self::SHEETVIEW_PAGE_LAYOUT,
         self::SHEETVIEW_PAGE_BREAK_PREVIEW,
@@ -43,28 +43,22 @@ class PHPExcel_Worksheet_SheetView
      * ZoomScale
      *
      * Valid values range from 10 to 400.
-     *
-     * @var int
      */
-    private $zoomScale = 100;
+    private int $zoomScale = 100;
 
     /**
      * ZoomScaleNormal
      *
      * Valid values range from 10 to 400.
-     *
-     * @var int
      */
-    private $zoomScaleNormal = 100;
+    private int $zoomScaleNormal = 100;
 
     /**
      * View
      *
      * Valid values range from 10 to 400.
-     *
-     * @var string
      */
-    private $sheetviewType = self::SHEETVIEW_NORMAL;
+    private string $sheetviewType = self::SHEETVIEW_NORMAL;
 
     /**
      * Create a new PHPExcel_Worksheet_SheetView
@@ -177,11 +171,7 @@ class PHPExcel_Worksheet_SheetView
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 }

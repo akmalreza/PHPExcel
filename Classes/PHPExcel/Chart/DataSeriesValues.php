@@ -31,17 +31,15 @@ class PHPExcel_Chart_DataSeriesValues
     const DATASERIES_TYPE_STRING    = 'String';
     const DATASERIES_TYPE_NUMBER    = 'Number';
 
-    private static $dataTypeValues = array(
+    private static array $dataTypeValues = array(
         self::DATASERIES_TYPE_STRING,
         self::DATASERIES_TYPE_NUMBER,
     );
 
     /**
      * Series Data Type
-     *
-     * @var    string
      */
-    private $dataType;
+    private ?string $dataType = null;
 
     /**
      * Series Data Source
@@ -212,7 +210,7 @@ class PHPExcel_Chart_DataSeriesValues
      */
     public function isMultiLevelSeries()
     {
-        if (count($this->dataValues) > 0) {
+        if ($this->dataValues !== []) {
             return is_array($this->dataValues[0]);
         }
         return null;

@@ -36,7 +36,7 @@ class PHPExcel_Writer_OpenDocument_Settings extends PHPExcel_Writer_OpenDocument
      */
     public function write(PHPExcel $pPHPExcel = null)
     {
-        if (!$pPHPExcel) {
+        if ($pPHPExcel === null) {
             $pPHPExcel = $this->getParentWriter()->getPHPExcel();
         }
 

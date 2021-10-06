@@ -9,12 +9,13 @@
 
 class PHPExcel_Chart_Axis extends PHPExcel_Chart_Properties
 {
+    public string $orientation;
     /**
      * Axis Number
      *
      * @var  array of mixed
      */
-    private $axisNumber = array(
+    private array $axisNumber = array(
         'format' => self::FORMAT_CODE_GENERAL,
         'source_linked' => 1
     );
@@ -24,7 +25,7 @@ class PHPExcel_Chart_Axis extends PHPExcel_Chart_Properties
      *
      * @var  array of mixed
      */
-    private $axisOptions = array(
+    private array $axisOptions = array(
         'minimum' => null,
         'maximum' => null,
         'major_unit' => null,
@@ -42,7 +43,7 @@ class PHPExcel_Chart_Axis extends PHPExcel_Chart_Properties
      *
      * @var  array of mixed
      */
-    private $fillProperties = array(
+    private array $fillProperties = array(
         'type' => self::EXCEL_COLOR_TYPE_ARGB,
         'value' => null,
         'alpha' => 0
@@ -53,7 +54,7 @@ class PHPExcel_Chart_Axis extends PHPExcel_Chart_Properties
      *
      * @var  array of mixed
      */
-    private $lineProperties = array(
+    private array $lineProperties = array(
         'type' => self::EXCEL_COLOR_TYPE_ARGB,
         'value' => null,
         'alpha' => 0
@@ -64,7 +65,7 @@ class PHPExcel_Chart_Axis extends PHPExcel_Chart_Properties
      *
      * @var  array of mixed
      */
-    private $lineStyleProperties = array(
+    private array $lineStyleProperties = array(
         'width' => '9525',
         'compound' => self::LINE_STYLE_COMPOUND_SIMPLE,
         'dash' => self::LINE_STYLE_DASH_SOLID,
@@ -87,7 +88,7 @@ class PHPExcel_Chart_Axis extends PHPExcel_Chart_Properties
      *
      * @var  array of mixed
      */
-    private $shadowProperties = array(
+    private array $shadowProperties = array(
         'presets' => self::SHADOW_PRESETS_NOSHADOW,
         'effect' => null,
         'color' => array(
@@ -112,7 +113,7 @@ class PHPExcel_Chart_Axis extends PHPExcel_Chart_Properties
      *
      * @var  array of mixed
      */
-    private $glowProperties = array(
+    private array $glowProperties = array(
         'size' => null,
         'color' => array(
             'type' => self::EXCEL_COLOR_TYPE_STANDARD,
@@ -126,7 +127,7 @@ class PHPExcel_Chart_Axis extends PHPExcel_Chart_Properties
      *
      * @var  array of mixed
      */
-    private $softEdges = array(
+    private array $softEdges = array(
         'size' => null
     );
 
@@ -280,15 +281,15 @@ class PHPExcel_Chart_Axis extends PHPExcel_Chart_Properties
      */
     public function setLineStyleProperties($line_width = null, $compound_type = null, $dash_type = null, $cap_type = null, $join_type = null, $head_arrow_type = null, $head_arrow_size = null, $end_arrow_type = null, $end_arrow_size = null)
     {
-        (!is_null($line_width)) ? $this->lineStyleProperties['width'] = $this->getExcelPointsWidth((float) $line_width) : null;
-        (!is_null($compound_type)) ? $this->lineStyleProperties['compound'] = (string) $compound_type : null;
-        (!is_null($dash_type)) ? $this->lineStyleProperties['dash'] = (string) $dash_type : null;
-        (!is_null($cap_type)) ? $this->lineStyleProperties['cap'] = (string) $cap_type : null;
-        (!is_null($join_type)) ? $this->lineStyleProperties['join'] = (string) $join_type : null;
-        (!is_null($head_arrow_type)) ? $this->lineStyleProperties['arrow']['head']['type'] = (string) $head_arrow_type : null;
-        (!is_null($head_arrow_size)) ? $this->lineStyleProperties['arrow']['head']['size'] = (string) $head_arrow_size : null;
-        (!is_null($end_arrow_type)) ? $this->lineStyleProperties['arrow']['end']['type'] = (string) $end_arrow_type : null;
-        (!is_null($end_arrow_size)) ? $this->lineStyleProperties['arrow']['end']['size'] = (string) $end_arrow_size : null;
+        (is_null($line_width)) ? null : ($this->lineStyleProperties['width'] = $this->getExcelPointsWidth((float) $line_width));
+        (is_null($compound_type)) ? null : ($this->lineStyleProperties['compound'] = (string) $compound_type);
+        (is_null($dash_type)) ? null : ($this->lineStyleProperties['dash'] = (string) $dash_type);
+        (is_null($cap_type)) ? null : ($this->lineStyleProperties['cap'] = (string) $cap_type);
+        (is_null($join_type)) ? null : ($this->lineStyleProperties['join'] = (string) $join_type);
+        (is_null($head_arrow_type)) ? null : ($this->lineStyleProperties['arrow']['head']['type'] = (string) $head_arrow_type);
+        (is_null($head_arrow_size)) ? null : ($this->lineStyleProperties['arrow']['head']['size'] = (string) $head_arrow_size);
+        (is_null($end_arrow_type)) ? null : ($this->lineStyleProperties['arrow']['end']['type'] = (string) $end_arrow_type);
+        (is_null($end_arrow_size)) ? null : ($this->lineStyleProperties['arrow']['end']['size'] = (string) $end_arrow_size);
     }
 
     /**
@@ -386,12 +387,10 @@ class PHPExcel_Chart_Axis extends PHPExcel_Chart_Properties
                     $reference = & $reference[$property_key];
                 }
                 $this->setShadowProperiesMapValues($property_val, $reference);
+            } elseif ($base_reference === null) {
+                $this->shadowProperties[$property_key] = $property_val;
             } else {
-                if ($base_reference === null) {
-                    $this->shadowProperties[$property_key] = $property_val;
-                } else {
-                    $reference[$property_key] = $property_val;
-                }
+                $reference[$property_key] = $property_val;
             }
         }
 

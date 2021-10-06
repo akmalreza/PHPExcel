@@ -29,17 +29,13 @@ class PHPExcel_Writer_Excel5_Font
 {
     /**
      * Color index
-     *
-     * @var int
      */
-    private $colorIndex;
+    private int $colorIndex;
 
     /**
      * Font
-     *
-     * @var PHPExcel_Style_Font
      */
-    private $font;
+    private ?\PHPExcel_Style_Font $font;
 
     /**
      * Constructor
@@ -142,7 +138,7 @@ class PHPExcel_Writer_Excel5_Font
      * @static    array of int
      *
      */
-    private static $mapUnderline = array(
+    private static array $mapUnderline = array(
         PHPExcel_Style_Font::UNDERLINE_NONE              => 0x00,
         PHPExcel_Style_Font::UNDERLINE_SINGLE            => 0x01,
         PHPExcel_Style_Font::UNDERLINE_DOUBLE            => 0x02,

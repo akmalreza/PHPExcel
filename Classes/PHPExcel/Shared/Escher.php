@@ -29,17 +29,13 @@ class PHPExcel_Shared_Escher
 {
     /**
      * Drawing Group Container
-     *
-     * @var PHPExcel_Shared_Escher_DggContainer
      */
-    private $dggContainer;
+    private ?\PHPExcel_Shared_Escher_DggContainer $dggContainer = null;
 
     /**
      * Drawing Container
-     *
-     * @var PHPExcel_Shared_Escher_DgContainer
      */
-    private $dgContainer;
+    private ?\PHPExcel_Shared_Escher_DgContainer $dgContainer = null;
 
     /**
      * Get Drawing Group Container

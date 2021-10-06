@@ -44,7 +44,7 @@ class PHPExcel_Shared_Excel5
         $columnDimensions = $sheet->getColumnDimensions();
 
         // first find the true column width in pixels (uncollapsed and unhidden)
-        if (isset($columnDimensions[$col]) and $columnDimensions[$col]->getWidth() != -1) {
+        if (isset($columnDimensions[$col]) && $columnDimensions[$col]->getWidth() != -1) {
             // then we have column dimension with explicit width
             $columnDimension = $columnDimensions[$col];
             $width = $columnDimension->getWidth();
@@ -60,11 +60,7 @@ class PHPExcel_Shared_Excel5
         }
 
         // now find the effective column width in pixels
-        if (isset($columnDimensions[$col]) and !$columnDimensions[$col]->getVisible()) {
-            $effectivePixelWidth = 0;
-        } else {
-            $effectivePixelWidth = $pixelWidth;
-        }
+        $effectivePixelWidth = isset($columnDimensions[$col]) && !$columnDimensions[$col]->getVisible() ? 0 : $pixelWidth;
 
         return $effectivePixelWidth;
     }
@@ -86,7 +82,7 @@ class PHPExcel_Shared_Excel5
         $rowDimensions = $sheet->getRowDimensions();
 
         // first find the true row height in pixels (uncollapsed and unhidden)
-        if (isset($rowDimensions[$row]) and $rowDimensions[$row]->getRowHeight() != -1) {
+        if (isset($rowDimensions[$row]) && $rowDimensions[$row]->getRowHeight() != -1) {
             // then we have a row dimension
             $rowDimension = $rowDimensions[$row];
             $rowHeight = $rowDimension->getRowHeight();
@@ -103,11 +99,7 @@ class PHPExcel_Shared_Excel5
         }
 
         // now find the effective row height in pixels
-        if (isset($rowDimensions[$row]) and !$rowDimensions[$row]->getVisible()) {
-            $effectivePixelRowHeight = 0;
-        } else {
-            $effectivePixelRowHeight = $pixelRowHeight;
-        }
+        $effectivePixelRowHeight = isset($rowDimensions[$row]) && !$rowDimensions[$row]->getVisible() ? 0 : $pixelRowHeight;
 
         return $effectivePixelRowHeight;
     }
@@ -284,7 +276,7 @@ class PHPExcel_Shared_Excel5
         $startCoordinates = PHPExcel_Cell::stringFromColumnIndex($col_start) . ($row_start + 1);
         $endCoordinates = PHPExcel_Cell::stringFromColumnIndex($col_end) . ($row_end + 1);
 
-        $twoAnchor = array(
+        return  array(
             'startCoordinates' => $startCoordinates,
             'startOffsetX' => $x1,
             'startOffsetY' => $y1,
@@ -292,7 +284,5 @@ class PHPExcel_Shared_Excel5
             'endOffsetX' => $x2,
             'endOffsetY' => $y2,
         );
-
-        return  $twoAnchor;
     }
 }

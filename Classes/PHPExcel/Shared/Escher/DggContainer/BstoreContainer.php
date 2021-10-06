@@ -29,10 +29,8 @@ class PHPExcel_Shared_Escher_DggContainer_BstoreContainer
 {
     /**
      * BLIP Store Entries. Each of them holds one BLIP (Big Large Image or Picture)
-     *
-     * @var array
      */
-    private $BSECollection = array();
+    private array $BSECollection = array();
 
     /**
      * Add a BLIP Store Entry

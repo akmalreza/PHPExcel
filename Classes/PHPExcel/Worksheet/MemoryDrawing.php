@@ -48,24 +48,18 @@ class PHPExcel_Worksheet_MemoryDrawing extends PHPExcel_Worksheet_BaseDrawing im
 
     /**
      * Rendering function
-     *
-     * @var string
      */
-    private $renderingFunction;
+    private string $renderingFunction;
 
     /**
      * Mime type
-     *
-     * @var string
      */
-    private $mimeType;
+    private string $mimeType;
 
     /**
      * Unique name
-     *
-     * @var string
      */
-    private $uniqueName;
+    private string $uniqueName;
 
     /**
      * Create a new PHPExcel_Worksheet_MemoryDrawing
@@ -191,11 +185,7 @@ class PHPExcel_Worksheet_MemoryDrawing extends PHPExcel_Worksheet_BaseDrawing im
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 }

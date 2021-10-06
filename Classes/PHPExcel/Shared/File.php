@@ -33,7 +33,7 @@ class PHPExcel_Shared_File
      * @protected
      * @var    boolean
      */
-    protected static $useUploadTempDirectory = false;
+    protected static bool $useUploadTempDirectory = false;
 
 
     /**
@@ -108,7 +108,8 @@ class PHPExcel_Shared_File
         if ($returnValue == '' || ($returnValue === null)) {
             $pathArray = explode('/', $pFilename);
             while (in_array('..', $pathArray) && $pathArray[0] != '..') {
-                for ($i = 0; $i < count($pathArray); ++$i) {
+                $pathArrayCount = count($pathArray);
+                for ($i = 0; $i < $pathArrayCount; ++$i) {
                     if ($pathArray[$i] == '..' && $i > 0) {
                         unset($pathArray[$i]);
                         unset($pathArray[$i - 1]);
@@ -130,35 +131,23 @@ class PHPExcel_Shared_File
      */
     public static function sys_get_temp_dir()
     {
-        if (self::$useUploadTempDirectory) {
-            //  use upload-directory when defined to allow running on environments having very restricted
-            //      open_basedir configs
-            if (ini_get('upload_tmp_dir') !== false) {
-                if ($temp = ini_get('upload_tmp_dir')) {
-                    if (file_exists($temp)) {
-                        return realpath($temp);
-                    }
-                }
-            }
+        //  use upload-directory when defined to allow running on environments having very restricted
+        //      open_basedir configs
+        if (self::$useUploadTempDirectory && ini_get('upload_tmp_dir') !== false && (($temp = ini_get('upload_tmp_dir')) !== '' && ($temp = ini_get('upload_tmp_dir')) !== '0' && file_exists($temp))) {
+            return realpath($temp);
         }
 
         // sys_get_temp_dir is only available since PHP 5.2.1
         // http://php.net/manual/en/function.sys-get-temp-dir.php#94119
         if (!function_exists('sys_get_temp_dir')) {
-            if ($temp = getenv('TMP')) {
-                if ((!empty($temp)) && (file_exists($temp))) {
-                    return realpath($temp);
-                }
+            if (($temp = getenv('TMP')) && ((!empty($temp)) && (file_exists($temp)))) {
+                return realpath($temp);
             }
-            if ($temp = getenv('TEMP')) {
-                if ((!empty($temp)) && (file_exists($temp))) {
-                    return realpath($temp);
-                }
+            if (($temp = getenv('TEMP')) && ((!empty($temp)) && (file_exists($temp)))) {
+                return realpath($temp);
             }
-            if ($temp = getenv('TMPDIR')) {
-                if ((!empty($temp)) && (file_exists($temp))) {
-                    return realpath($temp);
-                }
+            if (($temp = getenv('TMPDIR')) && ((!empty($temp)) && (file_exists($temp)))) {
+                return realpath($temp);
             }
 
             // trick for creating a file in system's temporary dir

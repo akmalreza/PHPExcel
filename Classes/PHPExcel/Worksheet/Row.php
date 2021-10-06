@@ -29,17 +29,13 @@ class PHPExcel_Worksheet_Row
 {
     /**
      * PHPExcel_Worksheet
-     *
-     * @var PHPExcel_Worksheet
      */
-    private $parent;
+    private ?\PHPExcel_Worksheet $parent;
 
     /**
      * Row index
-     *
-     * @var int
      */
-    private $rowIndex = 0;
+    private int $rowIndex = 0;
 
     /**
      * Create a new row

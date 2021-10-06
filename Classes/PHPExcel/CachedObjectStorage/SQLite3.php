@@ -29,17 +29,13 @@ class PHPExcel_CachedObjectStorage_SQLite3 extends PHPExcel_CachedObjectStorage_
 {
     /**
      * Database table name
-     *
-     * @var string
      */
-    private $TableName = null;
+    private ?string $TableName = null;
 
     /**
      * Database handle
-     *
-     * @var resource
      */
-    private $DBHandle = null;
+    private ?\SQLite3 $DBHandle = null;
 
     /**
      * Prepared statement for a SQLite3 select query
@@ -169,7 +165,7 @@ class PHPExcel_CachedObjectStorage_SQLite3 extends PHPExcel_CachedObjectStorage_
         }
         $cellData = $cellResult->fetchArray(SQLITE3_ASSOC);
 
-        return ($cellData === false) ? false : true;
+        return $cellData !== false;
     }
 
     /**
@@ -337,10 +333,6 @@ class PHPExcel_CachedObjectStorage_SQLite3 extends PHPExcel_CachedObjectStorage_
      */
     public static function cacheMethodIsAvailable()
     {
-        if (!class_exists('SQLite3', false)) {
-            return false;
-        }
-
-        return true;
+        return class_exists('SQLite3', false);
     }
 }

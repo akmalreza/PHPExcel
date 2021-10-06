@@ -36,10 +36,8 @@ class PHPExcel_Cell
 
     /**
      *    Value binder to use
-     *
-     *    @var    PHPExcel_Cell_IValueBinder
      */
-    private static $valueBinder;
+    private static ?\PHPExcel_Cell_IValueBinder $valueBinder = null;
 
     /**
      *    Value of the cell
@@ -62,10 +60,8 @@ class PHPExcel_Cell
 
     /**
      *    Type of the cell data
-     *
-     *    @var    string
      */
-    private $dataType;
+    private ?string $dataType;
 
     /**
      *    Parent worksheet
@@ -76,10 +72,8 @@ class PHPExcel_Cell
 
     /**
      *    Index to cellXf
-     *
-     *    @var    int
      */
-    private $xfIndex = 0;
+    private int $xfIndex = 0;
 
     /**
      *    Attributes of the formula
@@ -288,9 +282,7 @@ class PHPExcel_Cell
                 }
 //echo 'Calculation Exception: '.$ex->getMessage().PHP_EOL;
                 $result = '#N/A';
-                throw new PHPExcel_Calculation_Exception(
-                    $this->getWorksheet()->getTitle().'!'.$this->getCoordinate().' -> '.$ex->getMessage()
-                );
+                throw new PHPExcel_Calculation_Exception($this->getWorksheet()->getTitle().'!'.$this->getCoordinate().' -> '.$ex->getMessage(), $ex->getCode(), $ex);
             }
 
             if ($result === '#Not Yet Implemented') {
@@ -381,7 +373,7 @@ class PHPExcel_Cell
      */
     public function hasDataValidation()
     {
-        if (!isset($this->parent)) {
+        if ($this->parent === null) {
             throw new PHPExcel_Exception('Cannot check for data validation when cell is not bound to a worksheet');
         }
 
@@ -396,7 +388,7 @@ class PHPExcel_Cell
      */
     public function getDataValidation()
     {
-        if (!isset($this->parent)) {
+        if ($this->parent === null) {
             throw new PHPExcel_Exception('Cannot get data validation for cell that is not bound to a worksheet');
         }
 
@@ -412,7 +404,7 @@ class PHPExcel_Cell
      */
     public function setDataValidation(PHPExcel_Cell_DataValidation $pDataValidation = null)
     {
-        if (!isset($this->parent)) {
+        if ($this->parent === null) {
             throw new PHPExcel_Exception('Cannot set data validation for cell that is not bound to a worksheet');
         }
 
@@ -429,7 +421,7 @@ class PHPExcel_Cell
      */
     public function hasHyperlink()
     {
-        if (!isset($this->parent)) {
+        if ($this->parent === null) {
             throw new PHPExcel_Exception('Cannot check for hyperlink when cell is not bound to a worksheet');
         }
 
@@ -444,7 +436,7 @@ class PHPExcel_Cell
      */
     public function getHyperlink()
     {
-        if (!isset($this->parent)) {
+        if ($this->parent === null) {
             throw new PHPExcel_Exception('Cannot get hyperlink for cell that is not bound to a worksheet');
         }
 
@@ -460,7 +452,7 @@ class PHPExcel_Cell
      */
     public function setHyperlink(PHPExcel_Cell_Hyperlink $pHyperlink = null)
     {
-        if (!isset($this->parent)) {
+        if ($this->parent === null) {
             throw new PHPExcel_Exception('Cannot set hyperlink for cell that is not bound to a worksheet');
         }
 
@@ -506,7 +498,7 @@ class PHPExcel_Cell
      */
     public function isMergeRangeValueCell()
     {
-        if ($mergeRange = $this->getMergeRange()) {
+        if (($mergeRange = $this->getMergeRange()) !== '' && ($mergeRange = $this->getMergeRange()) !== '0') {
             $mergeRange = PHPExcel_Cell::splitRange($mergeRange);
             list($startCell) = $mergeRange[0];
             if ($this->getCoordinate() === $startCell) {
@@ -700,9 +692,8 @@ class PHPExcel_Cell
         for ($i = 0; $i < $counter; ++$i) {
             $pRange[$i] = implode(':', $pRange[$i]);
         }
-        $imploded = implode(',', $pRange);
 
-        return $imploded;
+        return implode(',', $pRange);
     }
 
     /**
@@ -809,19 +800,19 @@ class PHPExcel_Cell
 
         //    We also use the language construct isset() rather than the more costly strlen() function to match the length of $pString
         //        for improved performance
-        if (isset($pString{0})) {
-            if (!isset($pString{1})) {
+        if (isset($pString[0])) {
+            if (!isset($pString[1])) {
                 $_indexCache[$pString] = $_columnLookup[$pString];
                 return $_indexCache[$pString];
-            } elseif (!isset($pString{2})) {
-                $_indexCache[$pString] = $_columnLookup[$pString{0}] * 26 + $_columnLookup[$pString{1}];
+            } elseif (!isset($pString[2])) {
+                $_indexCache[$pString] = $_columnLookup[$pString[0]] * 26 + $_columnLookup[$pString[1]];
                 return $_indexCache[$pString];
-            } elseif (!isset($pString{3})) {
-                $_indexCache[$pString] = $_columnLookup[$pString{0}] * 676 + $_columnLookup[$pString{1}] * 26 + $_columnLookup[$pString{2}];
+            } elseif (!isset($pString[3])) {
+                $_indexCache[$pString] = $_columnLookup[$pString[0]] * 676 + $_columnLookup[$pString[1]] * 26 + $_columnLookup[$pString[2]];
                 return $_indexCache[$pString];
             }
         }
-        throw new PHPExcel_Exception("Column string index can not be " . ((isset($pString{0})) ? "longer than 3 characters" : "empty"));
+        throw new PHPExcel_Exception("Column string index can not be " . ((isset($pString[0])) ? "longer than 3 characters" : "empty"));
     }
 
     /**
@@ -972,11 +963,7 @@ class PHPExcel_Cell
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if ((is_object($value)) && ($key != 'parent')) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = (is_object($value)) && ($key != 'parent') ? clone $value : $value;
         }
     }
 

@@ -29,17 +29,13 @@ class PHPExcel_CachedObjectStorage_Wincache extends PHPExcel_CachedObjectStorage
 {
     /**
      * Prefix used to uniquely identify cache data for this worksheet
-     *
-     * @var string
      */
-    private $cachePrefix = null;
+    private ?string $cachePrefix = null;
 
     /**
      * Cache timeout
-     *
-     * @var integer
      */
-    private $cacheTime = 600;
+    private int $cacheTime = 600;
 
 
     /**
@@ -60,11 +56,9 @@ class PHPExcel_CachedObjectStorage_Wincache extends PHPExcel_CachedObjectStorage
                     $this->__destruct();
                     throw new PHPExcel_Exception('Failed to store cell '.$this->currentObjectID.' in WinCache');
                 }
-            } else {
-                if (!wincache_ucache_add($this->cachePrefix.$this->currentObjectID.'.cache', $obj, $this->cacheTime)) {
-                    $this->__destruct();
-                    throw new PHPExcel_Exception('Failed to store cell '.$this->currentObjectID.' in WinCache');
-                }
+            } elseif (!wincache_ucache_add($this->cachePrefix.$this->currentObjectID.'.cache', $obj, $this->cacheTime)) {
+                $this->__destruct();
+                throw new PHPExcel_Exception('Failed to store cell '.$this->currentObjectID.' in WinCache');
             }
             $this->currentCellIsDirty = false;
         }
@@ -104,12 +98,12 @@ class PHPExcel_CachedObjectStorage_Wincache extends PHPExcel_CachedObjectStorage
     {
         //    Check if the requested entry is the current object, or exists in the cache
         if (parent::isDataSet($pCoord)) {
-            if ($this->currentObjectID == $pCoord) {
+            if ($this->currentObjectID === $pCoord) {
                 return true;
             }
             //    Check if the requested entry still exists in cache
             $success = wincache_ucache_exists($this->cachePrefix.$pCoord.'.cache');
-            if ($success === false) {
+            if (!$success) {
                 //    Entry no longer exists in Wincache, so clear it from the cache array
                 parent::deleteCacheData($pCoord);
                 throw new PHPExcel_Exception('Cell entry '.$pCoord.' no longer exists in WinCache');
@@ -203,7 +197,7 @@ class PHPExcel_CachedObjectStorage_Wincache extends PHPExcel_CachedObjectStorage
         $newCachePrefix = substr(md5($baseUnique), 0, 8) . '.';
         $cacheList = $this->getCellList();
         foreach ($cacheList as $cellID) {
-            if ($cellID != $this->currentObjectID) {
+            if ($cellID !== $this->currentObjectID) {
                 $success = false;
                 $obj = wincache_ucache_get($this->cachePrefix.$cellID.'.cache', $success);
                 if ($success === false) {
@@ -280,10 +274,6 @@ class PHPExcel_CachedObjectStorage_Wincache extends PHPExcel_CachedObjectStorage
      */
     public static function cacheMethodIsAvailable()
     {
-        if (!function_exists('wincache_ucache_add')) {
-            return false;
-        }
-
-        return true;
+        return function_exists('wincache_ucache_add');
     }
 }

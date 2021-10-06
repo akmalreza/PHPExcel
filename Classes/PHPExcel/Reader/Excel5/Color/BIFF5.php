@@ -2,7 +2,7 @@
 
 class PHPExcel_Reader_Excel5_Color_BIFF5
 {
-    protected static $map = array(
+    protected static array $map = array(
         0x08 => '000000',
         0x09 => 'FFFFFF',
         0x0A => 'FF0000',

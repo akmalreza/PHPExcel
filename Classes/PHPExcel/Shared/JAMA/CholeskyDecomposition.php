@@ -19,10 +19,10 @@ class CholeskyDecomposition
 {
     /**
      *    Decomposition storage
-     *    @var array
+     * 
      *    @access private
      */
-    private $L = array();
+    private array $L = array();
 
     /**
      *    Matrix row and column dimension
@@ -33,10 +33,10 @@ class CholeskyDecomposition
 
     /**
      *    Symmetric positive definite flag
-     *    @var boolean
+     * 
      *    @access private
      */
-    private $isspd = true;
+    private bool $isspd = true;
 
     /**
      *    CholeskyDecomposition
@@ -55,16 +55,14 @@ class CholeskyDecomposition
                     for ($sum = $this->L[$i][$j], $k = $i - 1; $k >= 0; --$k) {
                         $sum -= $this->L[$i][$k] * $this->L[$j][$k];
                     }
-                    if ($i == $j) {
+                    if ($i === $j) {
                         if ($sum >= 0) {
                             $this->L[$i][$i] = sqrt($sum);
                         } else {
                             $this->isspd = false;
                         }
-                    } else {
-                        if ($this->L[$i][$i] != 0) {
-                            $this->L[$j][$i] = $sum / $this->L[$i][$i];
-                        }
+                    } elseif ($this->L[$i][$i] != 0) {
+                        $this->L[$j][$i] = $sum / $this->L[$i][$i];
                     }
                 }
 

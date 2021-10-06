@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PHPExcel
  *
@@ -24,14 +25,11 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
  * @version    ##VERSION##, ##DATE##
  */
-
 /** Error reporting */
 error_reporting(E_ALL);
-
 if (PHP_SAPI != 'cli') {
 	die ('This script executes all tests, and should only be run from the command line');
 }
-
 // List of tests
 $aTests = array(
 	  '01simple.php'
@@ -111,7 +109,6 @@ $aTests = array(
 	, 'XMLReader.php'
 	, 'GnumericReader.php'
 );
-
 // First, clear all previous run results
 foreach ($aTests as $sTest) {
 	@unlink( str_replace('.php', '.xls', 	$sTest) );
@@ -120,10 +117,10 @@ foreach ($aTests as $sTest) {
 	@unlink( str_replace('.php', '.htm',	$sTest) );
 	@unlink( str_replace('.php', '.pdf',	$sTest) );
 }
-
 // Run all tests
 foreach ($aTests as $sTest) {
-	echo '============== TEST ==============' . "\r\n";
+	echo '============== TEST ==============
+';
 	echo 'Test name: ' . $sTest . "\r\n";
 	echo "\r\n";
 	echo shell_exec('php ' . $sTest);

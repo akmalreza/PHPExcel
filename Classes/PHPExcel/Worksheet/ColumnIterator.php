@@ -29,32 +29,24 @@ class PHPExcel_Worksheet_ColumnIterator implements Iterator
 {
     /**
      * PHPExcel_Worksheet to iterate
-     *
-     * @var PHPExcel_Worksheet
      */
-    private $subject;
+    private ?\PHPExcel_Worksheet $subject;
 
     /**
      * Current iterator position
-     *
-     * @var int
      */
-    private $position = 0;
+    private int $position = 0;
 
     /**
      * Start position
-     *
-     * @var int
      */
-    private $startColumn = 0;
+    private int $startColumn = 0;
 
 
     /**
      * End position
-     *
-     * @var int
      */
-    private $endColumn = 0;
+    private int $endColumn = 0;
 
 
     /**

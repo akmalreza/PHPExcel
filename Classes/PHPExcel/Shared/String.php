@@ -38,14 +38,14 @@ class PHPExcel_Shared_String
      *
      * @var string[]
      */
-    private static $controlCharacters = array();
+    private static array $controlCharacters = array();
 
     /**
      * SYLK Characters array
      *
      * $var array
      */
-    private static $SYLKCharacters = array();
+    private static array $SYLKCharacters = array();
 
     /**
      * Decimal separator
@@ -70,17 +70,13 @@ class PHPExcel_Shared_String
 
     /**
      * Is mbstring extension avalable?
-     *
-     * @var boolean
      */
-    private static $isMbstringEnabled;
+    private static ?bool $isMbstringEnabled = null;
 
     /**
      * Is iconv extension avalable?
-     *
-     * @var boolean
      */
-    private static $isIconvEnabled;
+    private static ?bool $isIconvEnabled = null;
 
     /**
      * Build control characters array
@@ -272,8 +268,7 @@ class PHPExcel_Shared_String
             return self::$isMbstringEnabled;
         }
 
-        self::$isMbstringEnabled = function_exists('mb_convert_encoding') ?
-            true : false;
+        self::$isMbstringEnabled = function_exists('mb_convert_encoding');
 
         return self::$isMbstringEnabled;
     }
@@ -376,13 +371,11 @@ class PHPExcel_Shared_String
     public static function SanitizeUTF8($value)
     {
         if (self::getIsIconvEnabled()) {
-            $value = @iconv('UTF-8', 'UTF-8', $value);
-            return $value;
+            return @iconv('UTF-8', 'UTF-8', $value);
         }
 
         if (self::getIsMbstringEnabled()) {
-            $value = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
-            return $value;
+            return mb_convert_encoding($value, 'UTF-8', 'UTF-8');
         }
 
         // else, no conversion
@@ -471,9 +464,7 @@ class PHPExcel_Shared_String
 
         // characters
         $chars = self::ConvertEncoding($value, 'UTF-16LE', 'UTF-8');
-
-        $data = pack('vC', $ln, $opt) . $chars;
-        return $data;
+        return pack('vC', $ln, $opt) . $chars;
     }
 
     /**
@@ -656,11 +647,7 @@ class PHPExcel_Shared_String
         if (self::getIsMbstringEnabled()) {
             $characters = self::mb_str_split($pValue);
             foreach ($characters as &$character) {
-                if (self::mb_is_upper($character)) {
-                    $character = mb_strtolower($character, 'UTF-8');
-                } else {
-                    $character = mb_strtoupper($character, 'UTF-8');
-                }
+                $character = self::mb_is_upper($character) ? mb_strtolower($character, 'UTF-8') : mb_strtoupper($character, 'UTF-8');
             }
             return implode('', $characters);
         }

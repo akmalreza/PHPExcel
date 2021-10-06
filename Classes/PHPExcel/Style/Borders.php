@@ -35,80 +35,58 @@ class PHPExcel_Style_Borders extends PHPExcel_Style_Supervisor implements PHPExc
 
     /**
      * Left
-     *
-     * @var PHPExcel_Style_Border
      */
-    protected $left;
+    protected \PHPExcel_Style_Border $left;
 
     /**
      * Right
-     *
-     * @var PHPExcel_Style_Border
      */
-    protected $right;
+    protected \PHPExcel_Style_Border $right;
 
     /**
      * Top
-     *
-     * @var PHPExcel_Style_Border
      */
-    protected $top;
+    protected \PHPExcel_Style_Border $top;
 
     /**
      * Bottom
-     *
-     * @var PHPExcel_Style_Border
      */
-    protected $bottom;
+    protected \PHPExcel_Style_Border $bottom;
 
     /**
      * Diagonal
-     *
-     * @var PHPExcel_Style_Border
      */
-    protected $diagonal;
+    protected \PHPExcel_Style_Border $diagonal;
 
     /**
      * DiagonalDirection
-     *
-     * @var int
      */
-    protected $diagonalDirection;
+    protected int $diagonalDirection;
 
     /**
      * All borders psedo-border. Only applies to supervisor.
-     *
-     * @var PHPExcel_Style_Border
      */
-    protected $allBorders;
+    protected ?\PHPExcel_Style_Border $allBorders = null;
 
     /**
      * Outline psedo-border. Only applies to supervisor.
-     *
-     * @var PHPExcel_Style_Border
      */
-    protected $outline;
+    protected ?\PHPExcel_Style_Border $outline = null;
 
     /**
      * Inside psedo-border. Only applies to supervisor.
-     *
-     * @var PHPExcel_Style_Border
      */
-    protected $inside;
+    protected ?\PHPExcel_Style_Border $inside = null;
 
     /**
      * Vertical pseudo-border. Only applies to supervisor.
-     *
-     * @var PHPExcel_Style_Border
      */
-    protected $vertical;
+    protected ?\PHPExcel_Style_Border $vertical = null;
 
     /**
      * Horizontal pseudo-border. Only applies to supervisor.
-     *
-     * @var PHPExcel_Style_Border
      */
-    protected $horizontal;
+    protected ?\PHPExcel_Style_Border $horizontal = null;
 
     /**
      * Create a new PHPExcel_Style_Borders

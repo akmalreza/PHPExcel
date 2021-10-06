@@ -42,24 +42,18 @@ class PHPExcel_Calculation_Function
 
     /**
      * Category (represented by CATEGORY_*)
-     *
-     * @var string
      */
-    private $category;
+    private ?string $category;
 
     /**
      * Excel name
-     *
-     * @var string
      */
-    private $excelName;
+    private ?string $excelName;
 
     /**
      * PHPExcel name
-     *
-     * @var string
      */
-    private $phpExcelName;
+    private ?string $phpExcelName;
 
     /**
      * Create a new PHPExcel_Calculation_Function

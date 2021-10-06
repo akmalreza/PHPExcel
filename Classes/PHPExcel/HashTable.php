@@ -29,17 +29,13 @@ class PHPExcel_HashTable
 {
     /**
      * HashTable elements
-     *
-     * @var array
      */
-    protected $items = array();
+    protected array $items = array();
 
     /**
      * HashTable key map
-     *
-     * @var array
      */
-    protected $keyMap = array();
+    protected array $keyMap = array();
 
     /**
      * Create a new PHPExcel_HashTable

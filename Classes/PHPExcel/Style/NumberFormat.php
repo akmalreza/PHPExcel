@@ -69,24 +69,18 @@ class PHPExcel_Style_NumberFormat extends PHPExcel_Style_Supervisor implements P
 
     /**
      * Excel built-in number formats
-     *
-     * @var array
      */
-    protected static $builtInFormats;
+    protected static ?array $builtInFormats = null;
 
     /**
      * Excel built-in number formats (flipped, for faster lookups)
-     *
-     * @var array
      */
-    protected static $flippedBuiltInFormats;
+    protected static ?array $flippedBuiltInFormats = null;
 
     /**
      * Format Code
-     *
-     * @var string
      */
-    protected $formatCode = PHPExcel_Style_NumberFormat::FORMAT_GENERAL;
+    protected ?string $formatCode = PHPExcel_Style_NumberFormat::FORMAT_GENERAL;
 
     /**
      * Built-in format Code
@@ -158,10 +152,8 @@ class PHPExcel_Style_NumberFormat extends PHPExcel_Style_Supervisor implements P
         if (is_array($pStyles)) {
             if ($this->isSupervisor) {
                 $this->getActiveSheet()->getStyle($this->getSelectedCells())->applyFromArray($this->getStyleArray($pStyles));
-            } else {
-                if (array_key_exists('code', $pStyles)) {
-                    $this->setFormatCode($pStyles['code']);
-                }
+            } elseif (array_key_exists('code', $pStyles)) {
+                $this->setFormatCode($pStyles['code']);
             }
         } else {
             throw new PHPExcel_Exception("Invalid style array passed.");
@@ -334,7 +326,7 @@ class PHPExcel_Style_NumberFormat extends PHPExcel_Style_Supervisor implements P
     public static function builtInFormatCode($pIndex)
     {
         // Clean parameter
-        $pIndex = intval($pIndex);
+        $pIndex = (int) $pIndex;
 
         // Ensure built-in format codes are available
         self::fillBuiltInFormatCodes();
@@ -384,10 +376,8 @@ class PHPExcel_Style_NumberFormat extends PHPExcel_Style_Supervisor implements P
 
     /**
      * Search/replace values to convert Excel date/time format masks to PHP format masks
-     *
-     * @var array
      */
-    private static $dateFormatReplacements = array(
+    private static array $dateFormatReplacements = array(
             // first remove escapes related to non-format characters
             '\\'    => '',
             //    12-hour suffix
@@ -427,19 +417,15 @@ class PHPExcel_Style_NumberFormat extends PHPExcel_Style_Supervisor implements P
         );
     /**
      * Search/replace values to convert Excel date/time format masks hours to PHP format masks (24 hr clock)
-     *
-     * @var array
      */
-    private static $dateFormatReplacements24 = array(
+    private static array $dateFormatReplacements24 = array(
             'hh' => 'H',
             'h'  => 'G'
         );
     /**
      * Search/replace values to convert Excel date/time format masks hours to PHP format masks (12 hr clock)
-     *
-     * @var array
      */
-    private static $dateFormatReplacements12 = array(
+    private static array $dateFormatReplacements12 = array(
             'hh' => 'h',
             'h'  => 'g'
         );
@@ -648,92 +634,88 @@ class PHPExcel_Style_NumberFormat extends PHPExcel_Style_Supervisor implements P
         } elseif (preg_match('/%$/', $format)) {
             // % number format
             self::formatAsPercentage($value, $format);
+        } elseif ($format === self::FORMAT_CURRENCY_EUR_SIMPLE) {
+            $value = 'EUR ' . sprintf('%1.2f', $value);
         } else {
-            if ($format === self::FORMAT_CURRENCY_EUR_SIMPLE) {
-                $value = 'EUR ' . sprintf('%1.2f', $value);
+            // Some non-number strings are quoted, so we'll get rid of the quotes, likewise any positional * symbols
+            $format = str_replace(array('"', '*'), '', $format);
+
+            // Find out if we need thousands separator
+            // This is indicated by a comma enclosed by a digit placeholder:
+            //        #,#   or   0,0
+            $useThousands = preg_match('/(#,#|0,0)/', $format);
+            if ($useThousands) {
+                $format = preg_replace('/0,0/', '00', $format);
+                $format = preg_replace('/#,#/', '##', $format);
+            }
+
+            // Scale thousands, millions,...
+            // This is indicated by a number of commas after a digit placeholder:
+            //        #,   or    0.0,,
+            $scale = 1; // same as no scale
+            $matches = array();
+            if (preg_match('/(#|0)(,+)/', $format, $matches)) {
+                $scale = pow(1000, strlen($matches[2]));
+
+                // strip the commas
+                $format = preg_replace('/0,+/', '0', $format);
+                $format = preg_replace('/#,+/', '#', $format);
+            }
+
+            if (preg_match('/#?.*\?\/\?/', $format, $m)) {
+                //echo 'Format mask is fractional '.$format.' <br />';
+                if ($value != (int)$value) {
+                    self::formatAsFraction($value, $format);
+                }
+
             } else {
-                // Some non-number strings are quoted, so we'll get rid of the quotes, likewise any positional * symbols
-                $format = str_replace(array('"', '*'), '', $format);
+                // Handle the number itself
 
-                // Find out if we need thousands separator
-                // This is indicated by a comma enclosed by a digit placeholder:
-                //        #,#   or   0,0
-                $useThousands = preg_match('/(#,#|0,0)/', $format);
-                if ($useThousands) {
-                    $format = preg_replace('/0,0/', '00', $format);
-                    $format = preg_replace('/#,#/', '##', $format);
-                }
+                // scale number
+                $value /= $scale;
 
-                // Scale thousands, millions,...
-                // This is indicated by a number of commas after a digit placeholder:
-                //        #,   or    0.0,,
-                $scale = 1; // same as no scale
-                $matches = array();
-                if (preg_match('/(#|0)(,+)/', $format, $matches)) {
-                    $scale = pow(1000, strlen($matches[2]));
+                // Strip #
+                $format = preg_replace('/\\#/', '0', $format);
 
-                    // strip the commas
-                    $format = preg_replace('/0,+/', '0', $format);
-                    $format = preg_replace('/#,+/', '#', $format);
-                }
+                $n = "/\[[^\]]+\]/";
+                $m = preg_replace($n, '', $format);
+                $number_regex = "/(0+)(\.?)(0*)/";
+                if (preg_match($number_regex, $m, $matches)) {
+                    $left = $matches[1];
+                    $dec = $matches[2];
+                    $right = $matches[3];
 
-                if (preg_match('/#?.*\?\/\?/', $format, $m)) {
-                    //echo 'Format mask is fractional '.$format.' <br />';
-                    if ($value != (int)$value) {
-                        self::formatAsFraction($value, $format);
-                    }
-
-                } else {
-                    // Handle the number itself
-
-                    // scale number
-                    $value = $value / $scale;
-
-                    // Strip #
-                    $format = preg_replace('/\\#/', '0', $format);
-
-                    $n = "/\[[^\]]+\]/";
-                    $m = preg_replace($n, '', $format);
-                    $number_regex = "/(0+)(\.?)(0*)/";
-                    if (preg_match($number_regex, $m, $matches)) {
-                        $left = $matches[1];
-                        $dec = $matches[2];
-                        $right = $matches[3];
-
-                        // minimun width of formatted number (including dot)
-                        $minWidth = strlen($left) + strlen($dec) + strlen($right);
-                        if ($useThousands) {
-                            $value = number_format(
-                                $value,
-                                strlen($right),
-                                PHPExcel_Shared_String::getDecimalSeparator(),
-                                PHPExcel_Shared_String::getThousandsSeparator()
-                            );
-                            $value = preg_replace($number_regex, $value, $format);
-                        } else {
-                            if (preg_match('/[0#]E[+-]0/i', $format)) {
-                                //    Scientific format
-                                $value = sprintf('%5.2E', $value);
-                            } elseif (preg_match('/0([^\d\.]+)0/', $format)) {
-                                $value = self::complexNumberFormatMask($value, $format);
-                            } else {
-                                $sprintf_pattern = "%0$minWidth." . strlen($right) . "f";
-                                $value = sprintf($sprintf_pattern, $value);
-                                $value = preg_replace($number_regex, $value, $format);
-                            }
-                        }
+                    // minimun width of formatted number (including dot)
+                    $minWidth = strlen($left) + strlen($dec) + strlen($right);
+                    if ($useThousands) {
+                        $value = number_format(
+                            $value,
+                            strlen($right),
+                            PHPExcel_Shared_String::getDecimalSeparator(),
+                            PHPExcel_Shared_String::getThousandsSeparator()
+                        );
+                        $value = preg_replace($number_regex, $value, $format);
+                    } elseif (preg_match('/[0#]E[+-]0/i', $format)) {
+                        //    Scientific format
+                        $value = sprintf('%5.2E', $value);
+                    } elseif (preg_match('/0([^\d\.]+)0/', $format)) {
+                        $value = self::complexNumberFormatMask($value, $format);
+                    } else {
+                        $sprintf_pattern = "%0$minWidth." . strlen($right) . "f";
+                        $value = sprintf($sprintf_pattern, $value);
+                        $value = preg_replace($number_regex, $value, $format);
                     }
                 }
-                if (preg_match('/\[\$(.*)\]/u', $format, $m)) {
-                    //  Currency or Accounting
-                    $currencyFormat = $m[0];
-                    $currencyCode = $m[1];
-                    list($currencyCode) = explode('-', $currencyCode);
-                    if ($currencyCode == '') {
-                        $currencyCode = PHPExcel_Shared_String::getCurrencyCode();
-                    }
-                    $value = preg_replace('/\[\$([^\]]*)\]/u', $currencyCode, $value);
+            }
+            if (preg_match('/\[\$(.*)\]/u', $format, $m)) {
+                //  Currency or Accounting
+                $currencyFormat = $m[0];
+                $currencyCode = $m[1];
+                list($currencyCode) = explode('-', $currencyCode);
+                if ($currencyCode == '') {
+                    $currencyCode = PHPExcel_Shared_String::getCurrencyCode();
                 }
+                $value = preg_replace('/\[\$([^\]]*)\]/u', $currencyCode, $value);
             }
         }
 

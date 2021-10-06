@@ -237,21 +237,17 @@ class PHPExcel_Writer_Excel2007_Style extends PHPExcel_Writer_Excel2007_WriterPa
         $objWriter->startElement('patternFill');
         $objWriter->writeAttribute('patternType', $pFill->getFillType());
 
-        if ($pFill->getFillType() !== PHPExcel_Style_Fill::FILL_NONE) {
-            // fgColor
-            if ($pFill->getStartColor()->getARGB()) {
-                $objWriter->startElement('fgColor');
-                $objWriter->writeAttribute('rgb', $pFill->getStartColor()->getARGB());
-                $objWriter->endElement();
-            }
+        // fgColor
+        if ($pFill->getFillType() !== PHPExcel_Style_Fill::FILL_NONE && $pFill->getStartColor()->getARGB()) {
+            $objWriter->startElement('fgColor');
+            $objWriter->writeAttribute('rgb', $pFill->getStartColor()->getARGB());
+            $objWriter->endElement();
         }
-        if ($pFill->getFillType() !== PHPExcel_Style_Fill::FILL_NONE) {
-            // bgColor
-            if ($pFill->getEndColor()->getARGB()) {
-                $objWriter->startElement('bgColor');
-                $objWriter->writeAttribute('rgb', $pFill->getEndColor()->getARGB());
-                $objWriter->endElement();
-            }
+        // bgColor
+        if ($pFill->getFillType() !== PHPExcel_Style_Fill::FILL_NONE && $pFill->getEndColor()->getARGB()) {
+            $objWriter->startElement('bgColor');
+            $objWriter->writeAttribute('rgb', $pFill->getEndColor()->getARGB());
+            $objWriter->endElement();
         }
 
         $objWriter->endElement();
@@ -305,11 +301,11 @@ class PHPExcel_Writer_Excel2007_Style extends PHPExcel_Writer_Excel2007_WriterPa
         }
 
         // Superscript / subscript
-        if ($pFont->getSuperScript() === true || $pFont->getSubScript() === true) {
+        if ($pFont->getSuperScript() || $pFont->getSubScript()) {
             $objWriter->startElement('vertAlign');
-            if ($pFont->getSuperScript() === true) {
+            if ($pFont->getSuperScript()) {
                 $objWriter->writeAttribute('val', 'superscript');
-            } elseif ($pFont->getSubScript() === true) {
+            } elseif ($pFont->getSubScript()) {
                 $objWriter->writeAttribute('val', 'subscript');
             }
             $objWriter->endElement();
@@ -403,11 +399,11 @@ class PHPExcel_Writer_Excel2007_Style extends PHPExcel_Writer_Excel2007_WriterPa
         $objWriter->writeAttribute('borderId', (int)$this->getParentWriter()->getBordersHashTable()->getIndexForHashCode($pStyle->getBorders()->getHashCode()));
 
         // Apply styles?
-        $objWriter->writeAttribute('applyFont', ($pPHPExcel->getDefaultStyle()->getFont()->getHashCode() != $pStyle->getFont()->getHashCode()) ? '1' : '0');
-        $objWriter->writeAttribute('applyNumberFormat', ($pPHPExcel->getDefaultStyle()->getNumberFormat()->getHashCode() != $pStyle->getNumberFormat()->getHashCode()) ? '1' : '0');
-        $objWriter->writeAttribute('applyFill', ($pPHPExcel->getDefaultStyle()->getFill()->getHashCode() != $pStyle->getFill()->getHashCode()) ? '1' : '0');
-        $objWriter->writeAttribute('applyBorder', ($pPHPExcel->getDefaultStyle()->getBorders()->getHashCode() != $pStyle->getBorders()->getHashCode()) ? '1' : '0');
-        $objWriter->writeAttribute('applyAlignment', ($pPHPExcel->getDefaultStyle()->getAlignment()->getHashCode() != $pStyle->getAlignment()->getHashCode()) ? '1' : '0');
+        $objWriter->writeAttribute('applyFont', ($pPHPExcel->getDefaultStyle()->getFont()->getHashCode() !== $pStyle->getFont()->getHashCode()) ? '1' : '0');
+        $objWriter->writeAttribute('applyNumberFormat', ($pPHPExcel->getDefaultStyle()->getNumberFormat()->getHashCode() !== $pStyle->getNumberFormat()->getHashCode()) ? '1' : '0');
+        $objWriter->writeAttribute('applyFill', ($pPHPExcel->getDefaultStyle()->getFill()->getHashCode() !== $pStyle->getFill()->getHashCode()) ? '1' : '0');
+        $objWriter->writeAttribute('applyBorder', ($pPHPExcel->getDefaultStyle()->getBorders()->getHashCode() !== $pStyle->getBorders()->getHashCode()) ? '1' : '0');
+        $objWriter->writeAttribute('applyAlignment', ($pPHPExcel->getDefaultStyle()->getAlignment()->getHashCode() !== $pStyle->getAlignment()->getHashCode()) ? '1' : '0');
         if ($pStyle->getProtection()->getLocked() != PHPExcel_Style_Protection::PROTECTION_INHERIT || $pStyle->getProtection()->getHidden() != PHPExcel_Style_Protection::PROTECTION_INHERIT) {
             $objWriter->writeAttribute('applyProtection', 'true');
         }
@@ -496,20 +492,18 @@ class PHPExcel_Writer_Excel2007_Style extends PHPExcel_Writer_Excel2007_WriterPa
         $this->writeBorder($objWriter, $pStyle->getBorders());
 
         // protection
-        if (($pStyle->getProtection()->getLocked() !== null) || ($pStyle->getProtection()->getHidden() !== null)) {
-            if ($pStyle->getProtection()->getLocked() !== PHPExcel_Style_Protection::PROTECTION_INHERIT ||
-                $pStyle->getProtection()->getHidden() !== PHPExcel_Style_Protection::PROTECTION_INHERIT) {
-                $objWriter->startElement('protection');
-                if (($pStyle->getProtection()->getLocked() !== null) &&
-                    ($pStyle->getProtection()->getLocked() !== PHPExcel_Style_Protection::PROTECTION_INHERIT)) {
-                    $objWriter->writeAttribute('locked', ($pStyle->getProtection()->getLocked() == PHPExcel_Style_Protection::PROTECTION_PROTECTED ? 'true' : 'false'));
-                }
-                if (($pStyle->getProtection()->getHidden() !== null) &&
-                    ($pStyle->getProtection()->getHidden() !== PHPExcel_Style_Protection::PROTECTION_INHERIT)) {
-                    $objWriter->writeAttribute('hidden', ($pStyle->getProtection()->getHidden() == PHPExcel_Style_Protection::PROTECTION_PROTECTED ? 'true' : 'false'));
-                }
-                $objWriter->endElement();
+        if ((($pStyle->getProtection()->getLocked() !== null) || ($pStyle->getProtection()->getHidden() !== null)) && ($pStyle->getProtection()->getLocked() !== PHPExcel_Style_Protection::PROTECTION_INHERIT ||
+            $pStyle->getProtection()->getHidden() !== PHPExcel_Style_Protection::PROTECTION_INHERIT)) {
+            $objWriter->startElement('protection');
+            if (($pStyle->getProtection()->getLocked() !== null) &&
+                ($pStyle->getProtection()->getLocked() !== PHPExcel_Style_Protection::PROTECTION_INHERIT)) {
+                $objWriter->writeAttribute('locked', ($pStyle->getProtection()->getLocked() == PHPExcel_Style_Protection::PROTECTION_PROTECTED ? 'true' : 'false'));
             }
+            if (($pStyle->getProtection()->getHidden() !== null) &&
+                ($pStyle->getProtection()->getHidden() !== PHPExcel_Style_Protection::PROTECTION_INHERIT)) {
+                $objWriter->writeAttribute('hidden', ($pStyle->getProtection()->getHidden() == PHPExcel_Style_Protection::PROTECTION_PROTECTED ? 'true' : 'false'));
+            }
+            $objWriter->endElement();
         }
 
         $objWriter->endElement();

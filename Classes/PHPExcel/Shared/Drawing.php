@@ -180,7 +180,7 @@ class PHPExcel_Shared_Drawing
         //    Load the image into a string
         $file = fopen($p_sFile, "rb");
         $read = fread($file, 10);
-        while (!feof($file) && ($read<>"")) {
+        while (!feof($file) && ($read != "")) {
             $read .= fread($file, 1024);
         }
 

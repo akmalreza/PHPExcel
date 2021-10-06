@@ -39,10 +39,8 @@ class PHPExcel_Cell_DataType
 
     /**
      * List of error codes
-     *
-     * @var array
      */
-    private static $errorCodes = array(
+    private static array $errorCodes = array(
         '#NULL!'  => 0,
         '#DIV/0!' => 1,
         '#VALUE!' => 2,

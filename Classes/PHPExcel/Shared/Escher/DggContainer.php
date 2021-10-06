@@ -50,24 +50,18 @@ class PHPExcel_Shared_Escher_DggContainer
 
     /**
      * BLIP Store Container
-     *
-     * @var PHPExcel_Shared_Escher_DggContainer_BstoreContainer
      */
-    private $bstoreContainer;
+    private ?\PHPExcel_Shared_Escher_DggContainer_BstoreContainer $bstoreContainer = null;
 
     /**
      * Array of options for the drawing group
-     *
-     * @var array
      */
-    private $OPT = array();
+    private array $OPT = array();
 
     /**
      * Array of identifier clusters containg information about the maximum shape identifiers
-     *
-     * @var array
      */
-    private $IDCLs = array();
+    private array $IDCLs = array();
 
     /**
      * Get maximum shape index of all shapes in all drawings (plus one)

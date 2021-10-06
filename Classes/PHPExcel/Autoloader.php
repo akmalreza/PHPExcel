@@ -71,7 +71,7 @@ class PHPExcel_Autoloader
             str_replace('_', DIRECTORY_SEPARATOR, $pClassName) .
             '.php';
 
-        if ((file_exists($pClassFilePath) === false) || (is_readable($pClassFilePath) === false)) {
+        if ((!file_exists($pClassFilePath)) || (!is_readable($pClassFilePath))) {
             // Can't load
             return false;
         }

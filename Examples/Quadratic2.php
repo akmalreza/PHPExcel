@@ -37,7 +37,7 @@ if (isset($_POST['submit'])) {
 		echo 'The equation is not quadratic';
 	} else {
 		/**	So we include PHPExcel to perform the calculations	**/
-		include 'PHPExcel/Calculation.php';
+		include __DIR__ . '/PHPExcel/Calculation.php';
 
 		/**	Calculate and Display the results			**/
 		echo '<hr /><b>Roots:</b><br />';

@@ -44,13 +44,10 @@ if (!file_exists("06largescale.xlsx")) {
 
 class MyReadFilter implements PHPExcel_Reader_IReadFilter
 {
-	public function readCell($column, $row, $worksheetName = '') {
+	public function readCell($column, $row, $worksheetName = '')
+	{
 		// Read title row and rows 20 - 30
-		if ($row == 1 || ($row >= 20 && $row <= 30)) {
-			return true;
-		}
-
-		return false;
+		return $row == 1 || ($row >= 20 && $row <= 30);
 	}
 }
 

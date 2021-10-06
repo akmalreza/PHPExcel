@@ -22,27 +22,23 @@ class PHPExcel_Shared_JAMA_QRDecomposition
 
     /**
      *    Array for internal storage of decomposition.
-     *    @var array
      */
-    private $QR = array();
+    private array $QR = array();
 
     /**
      *    Row dimension.
-     *    @var integer
      */
-    private $m;
+    private ?int $m = null;
 
     /**
-    *    Column dimension.
-    *    @var integer
-    */
-    private $n;
+     *    Column dimension.
+     */
+    private ?int $n = null;
 
     /**
      *    Array for internal storage of diagonal of R.
-     *    @var  array
      */
-    private $Rdiag = array();
+    private array $Rdiag = array();
 
 
     /**
@@ -118,11 +114,7 @@ class PHPExcel_Shared_JAMA_QRDecomposition
     {
         for ($i = 0; $i < $this->m; ++$i) {
             for ($j = 0; $j < $this->n; ++$j) {
-                if ($i >= $j) {
-                    $H[$i][$j] = $this->QR[$i][$j];
-                } else {
-                    $H[$i][$j] = 0.0;
-                }
+                $H[$i][$j] = $i >= $j ? $this->QR[$i][$j] : 0.0;
             }
         }
         return new PHPExcel_Shared_JAMA_Matrix($H);
@@ -139,7 +131,7 @@ class PHPExcel_Shared_JAMA_QRDecomposition
             for ($j = 0; $j < $this->n; ++$j) {
                 if ($i < $j) {
                     $R[$i][$j] = $this->QR[$i][$j];
-                } elseif ($i == $j) {
+                } elseif ($i === $j) {
                     $R[$i][$j] = $this->Rdiag[$i];
                 } else {
                     $R[$i][$j] = 0.0;

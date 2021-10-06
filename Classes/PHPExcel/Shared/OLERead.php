@@ -30,6 +30,40 @@ defined('IDENTIFIER_OLE') ||
 
 class PHPExcel_Shared_OLERead
 {
+    /**
+     * @var int|mixed
+     */
+    public $numBigBlockDepotBlocks;
+    public int $rootStartBlock;
+    public int $sbdStartBlock;
+    /**
+     * @var int|mixed
+     */
+    public $extensionBlock;
+    /**
+     * @var int|mixed
+     */
+    public $numExtensionBlocks;
+    /**
+     * @var string|mixed
+     */
+    public $bigBlockChain;
+    /**
+     * @var string|mixed
+     */
+    public $smallBlockChain;
+    /**
+     * @var string|mixed
+     */
+    public $entry;
+    /**
+     * @var mixed[]|array<mixed, array<string, int|string>>|mixed
+     */
+    public $props;
+    /**
+     * @var mixed[]|int
+     */
+    public $rootentry;
     private $data = '';
 
     // OLE identifier
@@ -63,9 +97,9 @@ class PHPExcel_Shared_OLERead
 
 
 
-    public $wrkbook                         = null;
-    public $summaryInformation              = null;
-    public $documentSummaryInformation      = null;
+    public ?int $wrkbook                         = null;
+    public ?int $summaryInformation              = null;
+    public ?int $documentSummaryInformation      = null;
 
 
     /**
@@ -279,13 +313,13 @@ class PHPExcel_Shared_OLERead
             }
 
             // Summary information
-            if ($name == chr(5) . 'SummaryInformation') {
+            if ($name === chr(5) . 'SummaryInformation') {
 //                echo 'Summary Information<br />';
                 $this->summaryInformation = count($this->props) - 1;
             }
 
             // Additional Document Summary information
-            if ($name == chr(5) . 'DocumentSummaryInformation') {
+            if ($name === chr(5) . 'DocumentSummaryInformation') {
 //                echo 'Document Summary Information<br />';
                 $this->documentSummaryInformation = count($this->props) - 1;
             }
@@ -307,12 +341,7 @@ class PHPExcel_Shared_OLERead
         // http://sourceforge.net/tracker/index.php?func=detail&aid=1487372&group_id=99160&atid=623334
         // Hacked by Andreas Rehm 2006 to ensure correct result of the <<24 block on 32 and 64bit systems
         $_or_24 = ord($data[$pos + 3]);
-        if ($_or_24 >= 128) {
-            // negative number
-            $_ord_24 = -abs((256 - $_or_24) << 24);
-        } else {
-            $_ord_24 = ($_or_24 & 127) << 24;
-        }
+        $_ord_24 = $_or_24 >= 128 ? -abs((256 - $_or_24) << 24) : ($_or_24 & 127) << 24;
         return ord($data[$pos]) | (ord($data[$pos + 1]) << 8) | (ord($data[$pos + 2]) << 16) | $_ord_24;
     }
 }

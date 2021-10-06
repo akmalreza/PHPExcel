@@ -29,17 +29,13 @@ abstract class PHPExcel_Style_Supervisor
 {
     /**
      * Supervisor?
-     *
-     * @var boolean
      */
-    protected $isSupervisor;
+    protected bool $isSupervisor;
 
     /**
      * Parent. Only used for supervisor
-     *
-     * @var PHPExcel_Style
      */
-    protected $parent;
+    protected ?\PHPExcel $parent = null;
 
     /**
      * Create a new PHPExcel_Style_Alignment
@@ -115,11 +111,7 @@ abstract class PHPExcel_Style_Supervisor
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if ((is_object($value)) && ($key != 'parent')) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = (is_object($value)) && ($key != 'parent') ? clone $value : $value;
         }
     }
 }

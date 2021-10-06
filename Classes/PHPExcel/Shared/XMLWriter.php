@@ -65,7 +65,7 @@ class PHPExcel_Shared_XMLWriter extends XMLWriter
             $this->tempFileName = @tempnam($pTemporaryStorageFolder, 'xml');
 
             // Open storage
-            if ($this->openUri($this->tempFileName) === false) {
+            if (!$this->openUri($this->tempFileName)) {
                 // Fallback to memory...
                 $this->openMemory();
             }

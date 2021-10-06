@@ -62,66 +62,64 @@
 // */
 class PHPExcel_Writer_Excel5_Xf
 {
+    public int $_diag;
+    /**
+     * @var int|mixed
+     */
+    public $_diag_color;
+    /**
+     * @var \PHPExcel_Style|null|mixed
+     */
+    public $_style;
     /**
      * Style XF or a cell XF ?
-     *
-     * @var boolean
      */
-    private $isStyleXf;
+    private bool $isStyleXf;
 
     /**
      * Index to the FONT record. Index 4 does not exist
-     * @var integer
      */
-    private $fontIndex;
+    private int $fontIndex;
 
     /**
      * An index (2 bytes) to a FORMAT record (number format).
-     * @var integer
      */
-    private $numberFormatIndex;
+    private int $numberFormatIndex;
 
     /**
      * 1 bit, apparently not used.
-     * @var integer
      */
-    private $textJustLast;
+    private int $textJustLast;
 
     /**
      * The cell's foreground color.
-     * @var integer
      */
-    private $foregroundColor;
+    private int $foregroundColor;
 
     /**
      * The cell's background color.
-     * @var integer
      */
-    private $backgroundColor;
+    private int $backgroundColor;
 
     /**
      * Color of the bottom border of the cell.
-     * @var integer
      */
-    private $bottomBorderColor;
+    private int $bottomBorderColor;
 
     /**
      * Color of the top border of the cell.
-     * @var integer
      */
-    private $topBorderColor;
+    private int $topBorderColor;
 
     /**
-    * Color of the left border of the cell.
-    * @var integer
-    */
-    private $leftBorderColor;
+     * Color of the left border of the cell.
+     */
+    private int $leftBorderColor;
 
     /**
      * Color of the right border of the cell.
-     * @var integer
      */
-    private $rightBorderColor;
+    private int $rightBorderColor;
 
     /**
      * Constructor
@@ -171,7 +169,7 @@ class PHPExcel_Writer_Excel5_Xf
         // Flags to indicate if attributes have been set.
         $atr_num     = ($this->numberFormatIndex != 0)?1:0;
         $atr_fnt     = ($this->fontIndex != 0)?1:0;
-        $atr_alc     = ((int) $this->_style->getAlignment()->getWrapText()) ? 1 : 0;
+        $atr_alc     = ((int) $this->_style->getAlignment()->getWrapText() !== 0) ? 1 : 0;
         $atr_bdr     = (self::mapBorderStyle($this->_style->getBorders()->getBottom()->getBorderStyle())   ||
                         self::mapBorderStyle($this->_style->getBorders()->getTop()->getBorderStyle())      ||
                         self::mapBorderStyle($this->_style->getBorders()->getLeft()->getBorderStyle())     ||
@@ -369,7 +367,7 @@ class PHPExcel_Writer_Excel5_Xf
      * @static    array of int
      *
      */
-    private static $mapBorderStyles = array(
+    private static array $mapBorderStyles = array(
         PHPExcel_Style_Border::BORDER_NONE             => 0x00,
         PHPExcel_Style_Border::BORDER_THIN             => 0x01,
         PHPExcel_Style_Border::BORDER_MEDIUM           => 0x02,
@@ -405,7 +403,7 @@ class PHPExcel_Writer_Excel5_Xf
      * @static    array of int
      *
      */
-    private static $mapFillTypes = array(
+    private static array $mapFillTypes = array(
         PHPExcel_Style_Fill::FILL_NONE                    => 0x00,
         PHPExcel_Style_Fill::FILL_SOLID                   => 0x01,
         PHPExcel_Style_Fill::FILL_PATTERN_MEDIUMGRAY      => 0x02,
@@ -448,7 +446,7 @@ class PHPExcel_Writer_Excel5_Xf
      * @static    array of int
      *
      */
-    private static $mapHAlignments = array(
+    private static array $mapHAlignments = array(
         PHPExcel_Style_Alignment::HORIZONTAL_GENERAL           => 0,
         PHPExcel_Style_Alignment::HORIZONTAL_LEFT              => 1,
         PHPExcel_Style_Alignment::HORIZONTAL_CENTER            => 2,
@@ -477,7 +475,7 @@ class PHPExcel_Writer_Excel5_Xf
      * @static    array of int
      *
      */
-    private static $mapVAlignments = array(
+    private static array $mapVAlignments = array(
         PHPExcel_Style_Alignment::VERTICAL_TOP     => 0,
         PHPExcel_Style_Alignment::VERTICAL_CENTER  => 1,
         PHPExcel_Style_Alignment::VERTICAL_BOTTOM  => 2,

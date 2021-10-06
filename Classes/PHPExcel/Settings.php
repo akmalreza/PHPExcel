@@ -50,11 +50,11 @@ class PHPExcel_Settings
     const PDF_RENDERER_MPDF   = 'mPDF';
 
 
-    private static $chartRenderers = array(
+    private static array $chartRenderers = array(
         self::CHART_RENDERER_JPGRAPH,
     );
 
-    private static $pdfRenderers = array(
+    private static array $pdfRenderers = array(
         self::PDF_RENDERER_TCPDF,
         self::PDF_RENDERER_DOMPDF,
         self::PDF_RENDERER_MPDF,
@@ -65,44 +65,34 @@ class PHPExcel_Settings
      * Name of the class used for Zip file management
      *    e.g.
      *        ZipArchive
-     *
-     * @var string
      */
-    private static $zipClass = self::ZIPARCHIVE;
+    private static string $zipClass = self::ZIPARCHIVE;
 
 
     /**
      * Name of the external Library used for rendering charts
      *    e.g.
      *        jpgraph
-     *
-     * @var string
      */
-    private static $chartRendererName;
+    private static ?string $chartRendererName = null;
 
     /**
      * Directory Path to the external Library used for rendering charts
-     *
-     * @var string
      */
-    private static $chartRendererPath;
+    private static ?string $chartRendererPath = null;
 
 
     /**
      * Name of the external Library used for rendering PDF files
      *    e.g.
      *         mPDF
-     *
-     * @var string
      */
-    private static $pdfRendererName;
+    private static ?string $pdfRendererName = null;
 
     /**
      * Directory Path to the external Library used for rendering PDF files
-     *
-     * @var string
      */
-    private static $pdfRendererPath;
+    private static ?string $pdfRendererPath = null;
 
     /**
      * Default options for libxml loader
@@ -235,7 +225,7 @@ class PHPExcel_Settings
      */
     public static function setChartRendererPath($libraryBaseDir)
     {
-        if ((file_exists($libraryBaseDir) === false) || (is_readable($libraryBaseDir) === false)) {
+        if ((!file_exists($libraryBaseDir)) || (!is_readable($libraryBaseDir))) {
             return false;
         }
         self::$chartRendererPath = $libraryBaseDir;
@@ -318,7 +308,7 @@ class PHPExcel_Settings
      */
     public static function setPdfRendererPath($libraryBaseDir)
     {
-        if ((file_exists($libraryBaseDir) === false) || (is_readable($libraryBaseDir) === false)) {
+        if ((!file_exists($libraryBaseDir)) || (!is_readable($libraryBaseDir))) {
             return false;
         }
         self::$pdfRendererPath = $libraryBaseDir;

@@ -29,17 +29,13 @@ class PHPExcel_Worksheet_ColumnCellIterator extends PHPExcel_Worksheet_CellItera
 {
     /**
      * Column index
-     *
-     * @var string
      */
-    protected $columnIndex;
+    protected int $columnIndex;
 
     /**
      * Start position
-     *
-     * @var int
      */
-    protected $startRow = 1;
+    protected int $startRow = 1;
 
     /**
      * End position

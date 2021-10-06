@@ -2,7 +2,7 @@
 
 class PHPExcel_Reader_Excel5_Style_FillPattern
 {
-    protected static $map = array(
+    protected static array $map = array(
         0x00 => PHPExcel_Style_Fill::FILL_NONE,
         0x01 => PHPExcel_Style_Fill::FILL_SOLID,
         0x02 => PHPExcel_Style_Fill::FILL_PATTERN_MEDIUMGRAY,

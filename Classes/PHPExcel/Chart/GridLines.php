@@ -20,9 +20,9 @@ class PHPExcel_Chart_GridLines extends PHPExcel_Chart_Properties
    *
    */
 
-    private $objectState = false;
+    private bool $objectState = false;
 
-    private $lineProperties = array(
+    private array $lineProperties = array(
         'color' => array(
             'type' => self::EXCEL_COLOR_TYPE_STANDARD,
             'value' => null,
@@ -47,7 +47,7 @@ class PHPExcel_Chart_GridLines extends PHPExcel_Chart_Properties
         )
     );
 
-    private $shadowProperties = array(
+    private array $shadowProperties = array(
         'presets' => self::SHADOW_PRESETS_NOSHADOW,
         'effect' => null,
         'color' => array(
@@ -67,7 +67,7 @@ class PHPExcel_Chart_GridLines extends PHPExcel_Chart_Properties
         'rotWithShape' => null
     );
 
-    private $glowProperties = array(
+    private array $glowProperties = array(
         'size' => null,
         'color' => array(
             'type' => self::EXCEL_COLOR_TYPE_STANDARD,
@@ -76,7 +76,7 @@ class PHPExcel_Chart_GridLines extends PHPExcel_Chart_Properties
         )
     );
 
-    private $softEdges = array(
+    private array $softEdges = array(
         'size' => null
      );
 
@@ -139,33 +139,33 @@ class PHPExcel_Chart_GridLines extends PHPExcel_Chart_Properties
     public function setLineStyleProperties($line_width = null, $compound_type = null, $dash_type = null, $cap_type = null, $join_type = null, $head_arrow_type = null, $head_arrow_size = null, $end_arrow_type = null, $end_arrow_size = null)
     {
         $this->activateObject();
-        (!is_null($line_width))
-                ? $this->lineProperties['style']['width'] = $this->getExcelPointsWidth((float) $line_width)
-                : null;
-        (!is_null($compound_type))
-                ? $this->lineProperties['style']['compound'] = (string) $compound_type
-                : null;
-        (!is_null($dash_type))
-                ? $this->lineProperties['style']['dash'] = (string) $dash_type
-                : null;
-        (!is_null($cap_type))
-                ? $this->lineProperties['style']['cap'] = (string) $cap_type
-                : null;
-        (!is_null($join_type))
-                ? $this->lineProperties['style']['join'] = (string) $join_type
-                : null;
-        (!is_null($head_arrow_type))
-                ? $this->lineProperties['style']['arrow']['head']['type'] = (string) $head_arrow_type
-                : null;
-        (!is_null($head_arrow_size))
-                ? $this->lineProperties['style']['arrow']['head']['size'] = (string) $head_arrow_size
-                : null;
-        (!is_null($end_arrow_type))
-                ? $this->lineProperties['style']['arrow']['end']['type'] = (string) $end_arrow_type
-                : null;
-        (!is_null($end_arrow_size))
-                ? $this->lineProperties['style']['arrow']['end']['size'] = (string) $end_arrow_size
-                : null;
+        (is_null($line_width))
+                ? null
+                : ($this->lineProperties['style']['width'] = $this->getExcelPointsWidth((float) $line_width));
+        (is_null($compound_type))
+                ? null
+                : ($this->lineProperties['style']['compound'] = (string) $compound_type);
+        (is_null($dash_type))
+                ? null
+                : ($this->lineProperties['style']['dash'] = (string) $dash_type);
+        (is_null($cap_type))
+                ? null
+                : ($this->lineProperties['style']['cap'] = (string) $cap_type);
+        (is_null($join_type))
+                ? null
+                : ($this->lineProperties['style']['join'] = (string) $join_type);
+        (is_null($head_arrow_type))
+                ? null
+                : ($this->lineProperties['style']['arrow']['head']['type'] = (string) $head_arrow_type);
+        (is_null($head_arrow_size))
+                ? null
+                : ($this->lineProperties['style']['arrow']['head']['size'] = (string) $head_arrow_size);
+        (is_null($end_arrow_type))
+                ? null
+                : ($this->lineProperties['style']['arrow']['end']['type'] = (string) $end_arrow_type);
+        (is_null($end_arrow_size))
+                ? null
+                : ($this->lineProperties['style']['arrow']['end']['size'] = (string) $end_arrow_size);
     }
 
     /**
@@ -353,12 +353,10 @@ class PHPExcel_Chart_GridLines extends PHPExcel_Chart_Properties
                     $reference = & $reference[$property_key];
                 }
                 $this->setShadowProperiesMapValues($property_val, $reference);
+            } elseif ($base_reference === null) {
+                $this->shadowProperties[$property_key] = $property_val;
             } else {
-                if ($base_reference === null) {
-                    $this->shadowProperties[$property_key] = $property_val;
-                } else {
-                    $reference[$property_key] = $property_val;
-                }
+                $reference[$property_key] = $property_val;
             }
         }
 

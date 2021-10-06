@@ -2,7 +2,7 @@
 
 class PHPExcel_Reader_Excel5_Color_BuiltIn
 {
-    protected static $map = array(
+    protected static array $map = array(
         0x00 => '000000',
         0x01 => 'FFFFFF',
         0x02 => 'FF0000',

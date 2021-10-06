@@ -35,15 +35,13 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
 
     /**
      * Parameters specified by fopen().
-     * @var array
      */
-    public $params;
+    public array $params;
 
     /**
      * The binary data of the file.
-     * @var  string
      */
-    public $data;
+    public ?string $data = null;
 
     /**
      * The file pointer.
@@ -65,7 +63,7 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
     public function stream_open($path, $mode, $options, &$openedPath)
     {
         if ($mode != 'r') {
-            if ($options & STREAM_REPORT_ERRORS) {
+            if (($options & STREAM_REPORT_ERRORS) !== 0) {
                 trigger_error('Only reading is supported', E_USER_WARNING);
             }
             return false;
@@ -74,7 +72,7 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
         // 25 is length of "ole-chainedblockstream://"
         parse_str(substr($path, 25), $this->params);
         if (!isset($this->params['oleInstanceId'], $this->params['blockId'], $GLOBALS['_OLE_INSTANCES'][$this->params['oleInstanceId']])) {
-            if ($options & STREAM_REPORT_ERRORS) {
+            if (($options & STREAM_REPORT_ERRORS) !== 0) {
                 trigger_error('OLE stream not found', E_USER_WARNING);
             }
             return false;
@@ -105,7 +103,7 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
             $this->data = substr($this->data, 0, $this->params['size']);
         }
 
-        if ($options & STREAM_USE_PATH) {
+        if (($options & STREAM_USE_PATH) !== 0) {
             $openedPath = $path;
         }
 
@@ -172,7 +170,7 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
             $this->pos = $offset;
         } elseif ($whence == SEEK_CUR && -$offset <= $this->pos) {
             $this->pos += $offset;
-        } elseif ($whence == SEEK_END && -$offset <= sizeof($this->data)) {
+        } elseif ($whence == SEEK_END && -$offset <= count($this->data)) {
             $this->pos = strlen($this->data) + $offset;
         } else {
             return false;

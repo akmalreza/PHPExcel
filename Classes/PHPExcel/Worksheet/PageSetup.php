@@ -24,8 +24,6 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-
-
 /**
  * PHPExcel_Worksheet_PageSetup
  *
@@ -186,17 +184,13 @@ class PHPExcel_Worksheet_PageSetup
 
     /**
      * Paper size
-     *
-     * @var int
      */
-    private $paperSize = PHPExcel_Worksheet_PageSetup::PAPERSIZE_LETTER;
+    private int $paperSize = PHPExcel_Worksheet_PageSetup::PAPERSIZE_LETTER;
 
     /**
      * Orientation
-     *
-     * @var string
      */
-    private $orientation = PHPExcel_Worksheet_PageSetup::ORIENTATION_DEFAULT;
+    private string $orientation = PHPExcel_Worksheet_PageSetup::ORIENTATION_DEFAULT;
 
     /**
      * Scale (Print Scale)
@@ -209,12 +203,10 @@ class PHPExcel_Worksheet_PageSetup
     private $scale = 100;
 
     /**
-      * Fit To Page
-      * Whether scale or fitToWith / fitToHeight applies
-      *
-      * @var boolean
-      */
-    private $fitToPage = false;
+     * Fit To Page
+     * Whether scale or fitToWith / fitToHeight applies
+     */
+    private bool $fitToPage = false;
 
     /**
       * Fit To Height
@@ -237,42 +229,34 @@ class PHPExcel_Worksheet_PageSetup
      *
      * @var array Containing start column and end column, empty array if option unset
      */
-    private $columnsToRepeatAtLeft = array('', '');
+    private array $columnsToRepeatAtLeft = array('', '');
 
     /**
      * Rows to repeat at top
      *
      * @var array Containing start row number and end row number, empty array if option unset
      */
-    private $rowsToRepeatAtTop = array(0, 0);
+    private array $rowsToRepeatAtTop = array(0, 0);
 
     /**
      * Center page horizontally
-     *
-     * @var boolean
      */
-    private $horizontalCentered = false;
+    private bool $horizontalCentered = false;
 
     /**
      * Center page vertically
-     *
-     * @var boolean
      */
-    private $verticalCentered = false;
+    private bool $verticalCentered = false;
 
     /**
      * Print area
-     *
-     * @var string
      */
-    private $printArea = null;
+    private ?string $printArea = null;
 
     /**
      * First page number
-     *
-     * @var int
      */
-    private $firstPageNumber = null;
+    private ?int $firstPageNumber = null;
 
     /**
      * Create a new PHPExcel_Worksheet_PageSetup
@@ -442,13 +426,7 @@ class PHPExcel_Worksheet_PageSetup
      */
     public function isColumnsToRepeatAtLeftSet()
     {
-        if (is_array($this->columnsToRepeatAtLeft)) {
-            if ($this->columnsToRepeatAtLeft[0] != '' && $this->columnsToRepeatAtLeft[1] != '') {
-                return true;
-            }
-        }
-
-        return false;
+        return is_array($this->columnsToRepeatAtLeft) && ($this->columnsToRepeatAtLeft[0] != '' && $this->columnsToRepeatAtLeft[1] != '');
     }
 
     /**
@@ -495,13 +473,7 @@ class PHPExcel_Worksheet_PageSetup
      */
     public function isRowsToRepeatAtTopSet()
     {
-        if (is_array($this->rowsToRepeatAtTop)) {
-            if ($this->rowsToRepeatAtTop[0] != 0 && $this->rowsToRepeatAtTop[1] != 0) {
-                return true;
-            }
-        }
-
-        return false;
+        return is_array($this->rowsToRepeatAtTop) && ($this->rowsToRepeatAtTop[0] != 0 && $this->rowsToRepeatAtTop[1] != 0);
     }
 
     /**
@@ -829,11 +801,7 @@ class PHPExcel_Worksheet_PageSetup
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 }

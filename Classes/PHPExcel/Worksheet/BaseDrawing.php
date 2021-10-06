@@ -29,17 +29,13 @@ class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
 {
     /**
      * Image counter
-     *
-     * @var int
      */
-    private static $imageCounter = 0;
+    private static int $imageCounter = 0;
 
     /**
      * Image index
-     *
-     * @var int
      */
-    private $imageIndex = 0;
+    private int $imageIndex = 0;
 
     /**
      * Name
@@ -50,24 +46,18 @@ class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
 
     /**
      * Description
-     *
-     * @var string
      */
-    protected $description;
+    protected string $description;
 
     /**
      * Worksheet
-     *
-     * @var PHPExcel_Worksheet
      */
-    protected $worksheet;
+    protected ?\PHPExcel_Worksheet $worksheet = null;
 
     /**
      * Coordinates
-     *
-     * @var string
      */
-    protected $coordinates;
+    protected string $coordinates;
 
     /**
      * Offset X
@@ -106,17 +96,13 @@ class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
 
     /**
      * Rotation
-     *
-     * @var int
      */
-    protected $rotation;
+    protected int $rotation;
 
     /**
      * Shadow
-     *
-     * @var PHPExcel_Worksheet_Drawing_Shadow
      */
-    protected $shadow;
+    protected ?\PHPExcel_Worksheet_Drawing_Shadow $shadow = null;
 
     /**
      * Create a new PHPExcel_Worksheet_BaseDrawing
@@ -220,24 +206,20 @@ class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
             $this->worksheet = $pValue;
             $this->worksheet->getCell($this->coordinates);
             $this->worksheet->getDrawingCollection()->append($this);
-        } else {
-            if ($pOverrideOld) {
-                // Remove drawing from old PHPExcel_Worksheet
-                $iterator = $this->worksheet->getDrawingCollection()->getIterator();
-
-                while ($iterator->valid()) {
-                    if ($iterator->current()->getHashCode() == $this->getHashCode()) {
-                        $this->worksheet->getDrawingCollection()->offsetUnset($iterator->key());
-                        $this->worksheet = null;
-                        break;
-                    }
+        } elseif ($pOverrideOld) {
+            // Remove drawing from old PHPExcel_Worksheet
+            $iterator = $this->worksheet->getDrawingCollection()->getIterator();
+            while ($iterator->valid()) {
+                if ($iterator->current()->getHashCode() == $this->getHashCode()) {
+                    $this->worksheet->getDrawingCollection()->offsetUnset($iterator->key());
+                    $this->worksheet = null;
+                    break;
                 }
-
-                // Set new PHPExcel_Worksheet
-                $this->setWorksheet($pValue);
-            } else {
-                throw new PHPExcel_Exception("A PHPExcel_Worksheet has already been assigned. Drawings can only exist on one PHPExcel_Worksheet.");
             }
+            // Set new PHPExcel_Worksheet
+            $this->setWorksheet($pValue);
+        } else {
+            throw new PHPExcel_Exception("A PHPExcel_Worksheet has already been assigned. Drawings can only exist on one PHPExcel_Worksheet.");
         }
         return $this;
     }
@@ -385,7 +367,7 @@ class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
     {
         $xratio = $width / ($this->width != 0 ? $this->width : 1);
         $yratio = $height / ($this->height != 0 ? $this->height : 1);
-        if ($this->resizeProportional && !($width == 0 || $height == 0)) {
+        if ($this->resizeProportional && ($width != 0 && $height != 0)) {
             if (($xratio * $this->height) < $height) {
                 $this->height = ceil($xratio * $this->height);
                 $this->width  = $width;
@@ -497,11 +479,7 @@ class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 }

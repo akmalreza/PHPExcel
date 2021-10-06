@@ -29,38 +29,28 @@ class PHPExcel_NamedRange
 {
     /**
      * Range name
-     *
-     * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * Worksheet on which the named range can be resolved
-     *
-     * @var PHPExcel_Worksheet
      */
-    private $worksheet;
+    private \PHPExcel_Worksheet $worksheet;
 
     /**
      * Range of the referenced cells
-     *
-     * @var string
      */
-    private $range;
+    private string $range;
 
     /**
      * Is the named range local? (i.e. can only be used on $this->worksheet)
-     *
-     * @var bool
      */
-    private $localOnly;
+    private bool $localOnly;
 
     /**
      * Scope
-     *
-     * @var PHPExcel_Worksheet
      */
-    private $scope;
+    private ?\PHPExcel_Worksheet $scope = null;
 
     /**
      * Create a new NamedRange
@@ -216,7 +206,7 @@ class PHPExcel_NamedRange
     public function setScope(PHPExcel_Worksheet $value = null)
     {
         $this->scope = $value;
-        $this->localOnly = ($value == null) ? false : true;
+        $this->localOnly = $value != null;
         return $this;
     }
 
@@ -239,11 +229,7 @@ class PHPExcel_NamedRange
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 }

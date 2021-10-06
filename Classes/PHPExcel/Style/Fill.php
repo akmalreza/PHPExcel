@@ -52,10 +52,8 @@ class PHPExcel_Style_Fill extends PHPExcel_Style_Supervisor implements PHPExcel_
 
     /**
      * Fill type
-     *
-     * @var string
      */
-    protected $fillType = PHPExcel_Style_Fill::FILL_NONE;
+    protected ?string $fillType = PHPExcel_Style_Fill::FILL_NONE;
 
     /**
      * Rotation
@@ -66,17 +64,13 @@ class PHPExcel_Style_Fill extends PHPExcel_Style_Supervisor implements PHPExcel_
 
     /**
      * Start color
-     *
-     * @var PHPExcel_Style_Color
      */
-    protected $startColor;
+    protected ?\PHPExcel_Style_Color $startColor = null;
 
     /**
      * End color
-     *
-     * @var PHPExcel_Style_Color
      */
-    protected $endColor;
+    protected ?\PHPExcel_Style_Color $endColor = null;
 
     /**
      * Create a new PHPExcel_Style_Fill

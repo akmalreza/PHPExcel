@@ -36,10 +36,8 @@ class PHPExcel_ReferenceHelper
 
     /**
      * Instance of this class
-     *
-     * @var PHPExcel_ReferenceHelper
      */
-    private static $instance;
+    private static ?\PHPExcel_ReferenceHelper $instance = null;
 
     /**
      * Get an instance of this class
@@ -276,7 +274,7 @@ class PHPExcel_ReferenceHelper
     {
         $aMergeCells = $pSheet->getMergeCells();
         $aNewMergeCells = array(); // the new array of all merge cells
-        foreach ($aMergeCells as $key => &$value) {
+        foreach (array_keys($aMergeCells) as &$key) {
             $newReference = $this->updateCellReference($key, $pBefore, $pNumCols, $pNumRows);
             $aNewMergeCells[$newReference] = $newReference;
         }
@@ -439,7 +437,6 @@ class PHPExcel_ReferenceHelper
             if (($cellIndex >= $beforeColumnIndex) && ($cell->getRow() >= $beforeRow)) {
                 // Update cell styles
                 $pSheet->getCell($newCoordinates)->setXfIndex($cell->getXfIndex());
-
                 // Insert this cell at its new location
                 if ($cell->getDataType() == PHPExcel_Cell_DataType::TYPE_FORMULA) {
                     // Formula should be adjusted
@@ -449,17 +446,11 @@ class PHPExcel_ReferenceHelper
                     // Formula should not be adjusted
                     $pSheet->getCell($newCoordinates)->setValue($cell->getValue());
                 }
-
                 // Clear the original cell
                 $pSheet->getCellCacheController()->deleteCacheData($cellID);
-            } else {
-                /*    We don't need to update styles for rows/columns before our insertion position,
-                        but we do still need to adjust any formulae    in those cells                    */
-                if ($cell->getDataType() == PHPExcel_Cell_DataType::TYPE_FORMULA) {
-                    // Formula should be adjusted
-                    $cell->setValue($this->updateFormulaReferences($cell->getValue(), $pBefore, $pNumCols, $pNumRows, $pSheet->getTitle()));
-                }
-
+            } elseif ($cell->getDataType() == PHPExcel_Cell_DataType::TYPE_FORMULA) {
+                // Formula should be adjusted
+                $cell->setValue($this->updateFormulaReferences($cell->getValue(), $pBefore, $pNumCols, $pNumRows, $pSheet->getTitle()));
             }
         }
 
@@ -542,7 +533,7 @@ class PHPExcel_ReferenceHelper
         if (!empty($autoFilterRange)) {
             if ($pNumCols != 0) {
                 $autoFilterColumns = array_keys($autoFilter->getColumns());
-                if (count($autoFilterColumns) > 0) {
+                if ($autoFilterColumns !== []) {
                     sscanf($pBefore, '%[A-Z]%d', $column, $row);
                     $columnIndex = PHPExcel_Cell::columnIndexFromString($column);
                     list($rangeStart, $rangeEnd) = PHPExcel_Cell::rangeBoundaries($autoFilterRange);
@@ -586,7 +577,7 @@ class PHPExcel_ReferenceHelper
                                 $autoFilter->shiftColumn($startColID, $toColID);
                                 ++$startColID;
                                 ++$toColID;
-                            } while ($startColID != $endColID);
+                            } while ($startColID !== $endColID);
                         }
                     }
                 }
@@ -608,15 +599,15 @@ class PHPExcel_ReferenceHelper
         $aDrawings = $pSheet->getDrawingCollection();
         foreach ($aDrawings as $objDrawing) {
             $newReference = $this->updateCellReference($objDrawing->getCoordinates(), $pBefore, $pNumCols, $pNumRows);
-            if ($objDrawing->getCoordinates() != $newReference) {
+            if ($objDrawing->getCoordinates() !== $newReference) {
                 $objDrawing->setCoordinates($newReference);
             }
         }
 
         // Update workbook: named ranges
-        if (count($pSheet->getParent()->getNamedRanges()) > 0) {
+        if ($pSheet->getParent()->getNamedRanges() !== []) {
             foreach ($pSheet->getParent()->getNamedRanges() as $namedRange) {
-                if ($namedRange->getWorksheet()->getHashCode() == $pSheet->getHashCode()) {
+                if ($namedRange->getWorksheet()->getHashCode() === $pSheet->getHashCode()) {
                     $namedRange->setRange($this->updateCellReference($namedRange->getRange(), $pBefore, $pNumCols, $pNumRows));
                 }
             }
@@ -656,19 +647,16 @@ class PHPExcel_ReferenceHelper
                         $modified3 = substr($this->updateCellReference('$A'.$match[3], $pBefore, $pNumCols, $pNumRows), 2);
                         $modified4 = substr($this->updateCellReference('$A'.$match[4], $pBefore, $pNumCols, $pNumRows), 2);
 
-                        if ($match[3].':'.$match[4] !== $modified3.':'.$modified4) {
-                            if (($match[2] == '') || (trim($match[2], "'") == $sheetName)) {
-                                $toString = ($match[2] > '') ? $match[2].'!' : '';
-                                $toString .= $modified3.':'.$modified4;
-                                //    Max worksheet size is 1,048,576 rows by 16,384 columns in Excel 2007, so our adjustments need to be at least one digit more
-                                $column = 100000;
-                                $row = 10000000 + trim($match[3], '$');
-                                $cellIndex = $column.$row;
-
-                                $newCellTokens[$cellIndex] = preg_quote($toString);
-                                $cellTokens[$cellIndex] = '/(?<!\d\$\!)'.preg_quote($fromString).'(?!\d)/i';
-                                ++$adjustCount;
-                            }
+                        if ($match[3].':'.$match[4] !== $modified3.':'.$modified4 && (($match[2] == '') || (trim($match[2], "'") === $sheetName))) {
+                            $toString = ($match[2] > '') ? $match[2].'!' : '';
+                            $toString .= $modified3.':'.$modified4;
+                            //    Max worksheet size is 1,048,576 rows by 16,384 columns in Excel 2007, so our adjustments need to be at least one digit more
+                            $column = 100000;
+                            $row = 10000000 + trim($match[3], '$');
+                            $cellIndex = $column.$row;
+                            $newCellTokens[$cellIndex] = preg_quote($toString);
+                            $cellTokens[$cellIndex] = '/(?<!\d\$\!)'.preg_quote($fromString, '/').'(?!\d)/i';
+                            ++$adjustCount;
                         }
                     }
                 }
@@ -681,19 +669,16 @@ class PHPExcel_ReferenceHelper
                         $modified3 = substr($this->updateCellReference($match[3].'$1', $pBefore, $pNumCols, $pNumRows), 0, -2);
                         $modified4 = substr($this->updateCellReference($match[4].'$1', $pBefore, $pNumCols, $pNumRows), 0, -2);
 
-                        if ($match[3].':'.$match[4] !== $modified3.':'.$modified4) {
-                            if (($match[2] == '') || (trim($match[2], "'") == $sheetName)) {
-                                $toString = ($match[2] > '') ? $match[2].'!' : '';
-                                $toString .= $modified3.':'.$modified4;
-                                //    Max worksheet size is 1,048,576 rows by 16,384 columns in Excel 2007, so our adjustments need to be at least one digit more
-                                $column = PHPExcel_Cell::columnIndexFromString(trim($match[3], '$')) + 100000;
-                                $row = 10000000;
-                                $cellIndex = $column.$row;
-
-                                $newCellTokens[$cellIndex] = preg_quote($toString);
-                                $cellTokens[$cellIndex] = '/(?<![A-Z\$\!])'.preg_quote($fromString).'(?![A-Z])/i';
-                                ++$adjustCount;
-                            }
+                        if ($match[3].':'.$match[4] !== $modified3.':'.$modified4 && (($match[2] == '') || (trim($match[2], "'") === $sheetName))) {
+                            $toString = ($match[2] > '') ? $match[2].'!' : '';
+                            $toString .= $modified3.':'.$modified4;
+                            //    Max worksheet size is 1,048,576 rows by 16,384 columns in Excel 2007, so our adjustments need to be at least one digit more
+                            $column = PHPExcel_Cell::columnIndexFromString(trim($match[3], '$')) + 100000;
+                            $row = 10000000;
+                            $cellIndex = $column.$row;
+                            $newCellTokens[$cellIndex] = preg_quote($toString);
+                            $cellTokens[$cellIndex] = '/(?<![A-Z\$\!])'.preg_quote($fromString, '/').'(?![A-Z])/i';
+                            ++$adjustCount;
                         }
                     }
                 }
@@ -706,20 +691,17 @@ class PHPExcel_ReferenceHelper
                         $modified3 = $this->updateCellReference($match[3], $pBefore, $pNumCols, $pNumRows);
                         $modified4 = $this->updateCellReference($match[4], $pBefore, $pNumCols, $pNumRows);
 
-                        if ($match[3].$match[4] !== $modified3.$modified4) {
-                            if (($match[2] == '') || (trim($match[2], "'") == $sheetName)) {
-                                $toString = ($match[2] > '') ? $match[2].'!' : '';
-                                $toString .= $modified3.':'.$modified4;
-                                list($column, $row) = PHPExcel_Cell::coordinateFromString($match[3]);
-                                //    Max worksheet size is 1,048,576 rows by 16,384 columns in Excel 2007, so our adjustments need to be at least one digit more
-                                $column = PHPExcel_Cell::columnIndexFromString(trim($column, '$')) + 100000;
-                                $row = trim($row, '$') + 10000000;
-                                $cellIndex = $column.$row;
-
-                                $newCellTokens[$cellIndex] = preg_quote($toString);
-                                $cellTokens[$cellIndex] = '/(?<![A-Z]\$\!)'.preg_quote($fromString).'(?!\d)/i';
-                                ++$adjustCount;
-                            }
+                        if ($match[3].$match[4] !== $modified3.$modified4 && (($match[2] == '') || (trim($match[2], "'") === $sheetName))) {
+                            $toString = ($match[2] > '') ? $match[2].'!' : '';
+                            $toString .= $modified3.':'.$modified4;
+                            list($column, $row) = PHPExcel_Cell::coordinateFromString($match[3]);
+                            //    Max worksheet size is 1,048,576 rows by 16,384 columns in Excel 2007, so our adjustments need to be at least one digit more
+                            $column = PHPExcel_Cell::columnIndexFromString(trim($column, '$')) + 100000;
+                            $row = trim($row, '$') + 10000000;
+                            $cellIndex = $column.$row;
+                            $newCellTokens[$cellIndex] = preg_quote($toString);
+                            $cellTokens[$cellIndex] = '/(?<![A-Z]\$\!)'.preg_quote($fromString, '/').'(?!\d)/i';
+                            ++$adjustCount;
                         }
                     }
                 }
@@ -732,20 +714,17 @@ class PHPExcel_ReferenceHelper
                         $fromString .= $match[3];
 
                         $modified3 = $this->updateCellReference($match[3], $pBefore, $pNumCols, $pNumRows);
-                        if ($match[3] !== $modified3) {
-                            if (($match[2] == '') || (trim($match[2], "'") == $sheetName)) {
-                                $toString = ($match[2] > '') ? $match[2].'!' : '';
-                                $toString .= $modified3;
-                                list($column, $row) = PHPExcel_Cell::coordinateFromString($match[3]);
-                                //    Max worksheet size is 1,048,576 rows by 16,384 columns in Excel 2007, so our adjustments need to be at least one digit more
-                                $column = PHPExcel_Cell::columnIndexFromString(trim($column, '$')) + 100000;
-                                $row = trim($row, '$') + 10000000;
-                                $cellIndex = $row . $column;
-
-                                $newCellTokens[$cellIndex] = preg_quote($toString);
-                                $cellTokens[$cellIndex] = '/(?<![A-Z\$\!])'.preg_quote($fromString).'(?!\d)/i';
-                                ++$adjustCount;
-                            }
+                        if ($match[3] !== $modified3 && (($match[2] == '') || (trim($match[2], "'") === $sheetName))) {
+                            $toString = ($match[2] > '') ? $match[2].'!' : '';
+                            $toString .= $modified3;
+                            list($column, $row) = PHPExcel_Cell::coordinateFromString($match[3]);
+                            //    Max worksheet size is 1,048,576 rows by 16,384 columns in Excel 2007, so our adjustments need to be at least one digit more
+                            $column = PHPExcel_Cell::columnIndexFromString(trim($column, '$')) + 100000;
+                            $row = trim($row, '$') + 10000000;
+                            $cellIndex = $row . $column;
+                            $newCellTokens[$cellIndex] = preg_quote($toString);
+                            $cellTokens[$cellIndex] = '/(?<![A-Z\$\!])'.preg_quote($fromString, '/').'(?!\d)/i';
+                            ++$adjustCount;
                         }
                     }
                 }
@@ -881,8 +860,8 @@ class PHPExcel_ReferenceHelper
             list($newColumn, $newRow) = PHPExcel_Cell::coordinateFromString($pCellReference);
 
             // Verify which parts should be updated
-            $updateColumn = (($newColumn{0} != '$') && ($beforeColumn{0} != '$') && (PHPExcel_Cell::columnIndexFromString($newColumn) >= PHPExcel_Cell::columnIndexFromString($beforeColumn)));
-            $updateRow = (($newRow{0} != '$') && ($beforeRow{0} != '$') && $newRow >= $beforeRow);
+            $updateColumn = (($newColumn[0] != '$') && ($beforeColumn[0] != '$') && (PHPExcel_Cell::columnIndexFromString($newColumn) >= PHPExcel_Cell::columnIndexFromString($beforeColumn)));
+            $updateRow = (($newRow[0] != '$') && ($beforeRow[0] != '$') && $newRow >= $beforeRow);
 
             // Create new column reference
             if ($updateColumn) {
@@ -891,7 +870,7 @@ class PHPExcel_ReferenceHelper
 
             // Create new row reference
             if ($updateRow) {
-                $newRow    = $newRow + $pNumRows;
+                $newRow += $pNumRows;
             }
 
             // Return new reference

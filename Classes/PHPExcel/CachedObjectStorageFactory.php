@@ -41,24 +41,20 @@ class PHPExcel_CachedObjectStorageFactory
 
     /**
      * Name of the method used for cell cacheing
-     *
-     * @var string
      */
-    private static $cacheStorageMethod = null;
+    private static ?string $cacheStorageMethod = null;
 
     /**
      * Name of the class used for cell cacheing
-     *
-     * @var string
      */
-    private static $cacheStorageClass = null;
+    private static ?string $cacheStorageClass = null;
 
     /**
      * List of all possible cache storage methods
      *
      * @var string[]
      */
-    private static $storageMethods = array(
+    private static array $storageMethods = array(
         self::cache_in_memory,
         self::cache_in_memory_gzip,
         self::cache_in_memory_serialized,
@@ -77,7 +73,7 @@ class PHPExcel_CachedObjectStorageFactory
      *
      * @var array of mixed array
      */
-    private static $storageMethodDefaultParameters = array(
+    private static array $storageMethodDefaultParameters = array(
         self::cache_in_memory               => array(
                                                     ),
         self::cache_in_memory_gzip          => array(
@@ -109,7 +105,7 @@ class PHPExcel_CachedObjectStorageFactory
      *
      * @var array of mixed array
      */
-    private static $storageMethodParameters = array();
+    private static array $storageMethodParameters = array();
 
     /**
      * Return the current cache storage method

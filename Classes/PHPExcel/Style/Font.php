@@ -36,10 +36,8 @@ class PHPExcel_Style_Font extends PHPExcel_Style_Supervisor implements PHPExcel_
 
     /**
      * Font Name
-     *
-     * @var string
      */
-    protected $name = 'Calibri';
+    protected ?string $name = 'Calibri';
 
     /**
      * Font Size
@@ -50,52 +48,38 @@ class PHPExcel_Style_Font extends PHPExcel_Style_Supervisor implements PHPExcel_
 
     /**
      * Bold
-     *
-     * @var boolean
      */
-    protected $bold = false;
+    protected ?bool $bold = false;
 
     /**
      * Italic
-     *
-     * @var boolean
      */
-    protected $italic = false;
+    protected ?bool $italic = false;
 
     /**
      * Superscript
-     *
-     * @var boolean
      */
-    protected $superScript = false;
+    protected ?bool $superScript = false;
 
     /**
      * Subscript
-     *
-     * @var boolean
      */
-    protected $subScript = false;
+    protected ?bool $subScript = false;
 
     /**
      * Underline
-     *
-     * @var string
      */
-    protected $underline = self::UNDERLINE_NONE;
+    protected ?string $underline = self::UNDERLINE_NONE;
 
     /**
      * Strikethrough
-     *
-     * @var boolean
      */
-    protected $strikethrough = false;
+    protected ?bool $strikethrough = false;
 
     /**
      * Foreground color
-     *
-     * @var PHPExcel_Style_Color
      */
-    protected $color;
+    protected ?\PHPExcel_Style_Color $color = null;
 
     /**
      * Create a new PHPExcel_Style_Font

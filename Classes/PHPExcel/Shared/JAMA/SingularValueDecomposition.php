@@ -21,21 +21,18 @@ class SingularValueDecomposition
 {
     /**
      *    Internal storage of U.
-     *    @var array
      */
-    private $U = array();
+    private array $U = array();
 
     /**
      *    Internal storage of V.
-     *    @var array
      */
-    private $V = array();
+    private array $V = array();
 
     /**
      *    Internal storage of singular values.
-     *    @var array
      */
-    private $s = array();
+    private array $s = array();
 
     /**
      *    Row dimension.
@@ -95,7 +92,7 @@ class SingularValueDecomposition
             }
 
             for ($j = $k + 1; $j < $this->n; ++$j) {
-                if (($k < $nct) & ($this->s[$k] != 0.0)) {
+                if ((($k < $nct) & ($this->s[$k] != 0.0)) !== 0) {
                     // Apply the transformation.
                     $t = 0;
                     for ($i = $k; $i < $this->m; ++$i) {
@@ -111,7 +108,7 @@ class SingularValueDecomposition
                 }
             }
 
-            if ($wantu and ($k < $nct)) {
+            if ($wantu && $k < $nct) {
                 // Place the transformation in U for subsequent back
                 // multiplication.
                 for ($i = $k; $i < $this->m; ++$i) {
@@ -137,7 +134,7 @@ class SingularValueDecomposition
                     $e[$k+1] += 1.0;
                 }
                 $e[$k] = -$e[$k];
-                if (($k+1 < $this->m) and ($e[$k] != 0.0)) {
+                if ($k+1 < $this->m && $e[$k] != 0.0) {
                     // Apply the transformation.
                     for ($i = $k+1; $i < $this->m; ++$i) {
                         $work[$i] = 0.0;
@@ -215,7 +212,7 @@ class SingularValueDecomposition
         // If required, generate V.
         if ($wantv) {
             for ($k = $this->n - 1; $k >= 0; --$k) {
-                if (($k < $nrt) and ($e[$k] != 0.0)) {
+                if ($k < $nrt && $e[$k] != 0.0) {
                     for ($j = $k + 1; $j < $nu; ++$j) {
                         $t = 0;
                         for ($i = $k + 1; $i < $this->n; ++$i) {
@@ -258,22 +255,22 @@ class SingularValueDecomposition
                     break;
                 }
             }
-            if ($k == $p - 2) {
+            if ($k === $p - 2) {
                 $kase = 4;
             } else {
                 for ($ks = $p - 1; $ks >= $k; --$ks) {
-                    if ($ks == $k) {
+                    if ($ks === $k) {
                         break;
                     }
-                    $t = ($ks != $p ? abs($e[$ks]) : 0.) + ($ks != $k + 1 ? abs($e[$ks-1]) : 0.);
+                    $t = ($ks != $p ? abs($e[$ks]) : 0.) + ($ks !== $k + 1 ? abs($e[$ks-1]) : 0.);
                     if (abs($this->s[$ks]) <= $eps * $t) {
                         $this->s[$ks] = 0.0;
                         break;
                     }
                 }
-                if ($ks == $k) {
+                if ($ks === $k) {
                     $kase = 3;
-                } elseif ($ks == $p-1) {
+                } elseif ($ks === $p-1) {
                     $kase = 1;
                 } else {
                     $kase = 2;
@@ -293,7 +290,7 @@ class SingularValueDecomposition
                         $cs = $this->s[$j] / $t;
                         $sn = $f / $t;
                         $this->s[$j] = $t;
-                        if ($j != $k) {
+                        if ($j !== $k) {
                             $f = -$sn * $e[$j-1];
                             $e[$j-1] = $cs * $e[$j-1];
                         }
@@ -352,7 +349,7 @@ class SingularValueDecomposition
                         $t  = hypo($f, $g);
                         $cs = $f/$t;
                         $sn = $g/$t;
-                        if ($j != $k) {
+                        if ($j !== $k) {
                             $e[$j-1] = $t;
                         }
                         $f = $cs * $this->s[$j] + $sn * $e[$j];
@@ -383,7 +380,7 @@ class SingularValueDecomposition
                         }
                     }
                     $e[$p-2] = $f;
-                    $iter = $iter + 1;
+                    $iter += 1;
                     break;
                 // Convergence.
                 case 4:
@@ -404,14 +401,14 @@ class SingularValueDecomposition
                         $t = $this->s[$k];
                         $this->s[$k] = $this->s[$k+1];
                         $this->s[$k+1] = $t;
-                        if ($wantv and ($k < $this->n - 1)) {
+                        if ($wantv && $k < $this->n - 1) {
                             for ($i = 0; $i < $this->n; ++$i) {
                                 $t = $this->V[$i][$k+1];
                                 $this->V[$i][$k+1] = $this->V[$i][$k];
                                 $this->V[$i][$k] = $t;
                             }
                         }
-                        if ($wantu and ($k < $this->m-1)) {
+                        if ($wantu && $k < $this->m-1) {
                             for ($i = 0; $i < $this->m; ++$i) {
                                 $t = $this->U[$i][$k+1];
                                 $this->U[$i][$k+1] = $this->U[$i][$k];
@@ -518,8 +515,8 @@ class SingularValueDecomposition
         $eps = pow(2.0, -52.0);
         $tol = max($this->m, $this->n) * $this->s[0] * $eps;
         $r = 0;
-        for ($i = 0; $i < count($this->s); ++$i) {
-            if ($this->s[$i] > $tol) {
+        foreach (array_keys($this->s) as $i) {
+            if ($ > $tol) {
                 ++$r;
             }
         }

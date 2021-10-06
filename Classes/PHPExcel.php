@@ -35,80 +35,66 @@ class PHPExcel
 {
     /**
      * Unique ID
-     *
-     * @var string
      */
-    private $uniqueID;
+    private string $uniqueID;
 
     /**
      * Document properties
-     *
-     * @var PHPExcel_DocumentProperties
      */
-    private $properties;
+    private \PHPExcel_DocumentProperties $properties;
 
     /**
      * Document security
-     *
-     * @var PHPExcel_DocumentSecurity
      */
-    private $security;
+    private \PHPExcel_DocumentSecurity $security;
 
     /**
      * Collection of Worksheet objects
      *
      * @var PHPExcel_Worksheet[]
      */
-    private $workSheetCollection = array();
+    private array $workSheetCollection = array();
 
     /**
      * Calculation Engine
-     *
-     * @var PHPExcel_Calculation
      */
-    private $calculationEngine;
+    private ?\PHPExcel_Calculation $calculationEngine = null;
 
     /**
      * Active sheet index
-     *
-     * @var integer
      */
-    private $activeSheetIndex = 0;
+    private int $activeSheetIndex = 0;
 
     /**
      * Named ranges
      *
      * @var PHPExcel_NamedRange[]
      */
-    private $namedRanges = array();
+    private array $namedRanges = array();
 
     /**
      * CellXf supervisor
-     *
-     * @var PHPExcel_Style
      */
-    private $cellXfSupervisor;
+    private \PHPExcel_Style $cellXfSupervisor;
 
     /**
      * CellXf collection
      *
      * @var PHPExcel_Style[]
      */
-    private $cellXfCollection = array();
+    private array $cellXfCollection = array();
 
     /**
      * CellStyleXf collection
      *
      * @var PHPExcel_Style[]
      */
-    private $cellStyleXfCollection = array();
+    private array $cellStyleXfCollection = array();
 
     /**
-    * hasMacros : this workbook have macros ?
-    *
-    * @var bool
-    */
-    private $hasMacros = false;
+     * hasMacros : this workbook have macros ?
+     */
+    private bool $hasMacros = false;
 
     /**
     * macrosCode : all macros code (the vbaProject.bin file, this include form, code,  etc.), null if no macro
@@ -124,19 +110,15 @@ class PHPExcel
     private $macrosCertificate;
 
     /**
-    * ribbonXMLData : null if workbook is'nt Excel 2007 or not contain a customized UI
-    *
-    * @var null|string
-    */
-    private $ribbonXMLData;
+     * ribbonXMLData : null if workbook is'nt Excel 2007 or not contain a customized UI
+     */
+    private ?array $ribbonXMLData = null;
 
     /**
-    * ribbonBinObjects : null if workbook is'nt Excel 2007 or not contain embedded objects (picture(s)) for Ribbon Elements
-    * ignored if $ribbonXMLData is null
-    *
-    * @var null|array
-    */
-    private $ribbonBinObjects;
+     * ribbonBinObjects : null if workbook is'nt Excel 2007 or not contain embedded objects (picture(s)) for Ribbon Elements
+     * ignored if $ribbonXMLData is null
+     */
+    private ?array $ribbonBinObjects = null;
 
     /**
     * The workbook has macros ?
@@ -300,7 +282,9 @@ class PHPExcel
                 if (is_array($this->ribbonBinObjects) &&
                     array_key_exists('data', $this->ribbonBinObjects) && is_array($this->ribbonBinObjects['data'])) {
                     $tmpTypes=array_keys($this->ribbonBinObjects['data']);
-                    $ReturnData = array_unique(array_map(array($this, 'getExtensionOnly'), $tmpTypes));
+                    $ReturnData = array_unique(array_map(function ($ThePath) {
+                        return $this->getExtensionOnly($ThePath);
+                    }, $tmpTypes));
                 } else {
                     $ReturnData=array(); // the caller want an array... not null if empty
                 }
@@ -627,7 +611,7 @@ class PHPExcel
     public function getIndex(PHPExcel_Worksheet $pSheet)
     {
         foreach ($this->workSheetCollection as $key => $value) {
-            if ($value->getHashCode() == $pSheet->getHashCode()) {
+            if ($value->getHashCode() === $pSheet->getHashCode()) {
                 return $key;
             }
         }
@@ -835,10 +819,8 @@ class PHPExcel
             if (isset($this->namedRanges[$namedRange])) {
                 unset($this->namedRanges[$namedRange]);
             }
-        } else {
-            if (isset($this->namedRanges[$pSheet->getTitle() . '!' . $namedRange])) {
-                unset($this->namedRanges[$pSheet->getTitle() . '!' . $namedRange]);
-            }
+        } elseif (isset($this->namedRanges[$pSheet->getTitle() . '!' . $namedRange])) {
+            unset($this->namedRanges[$pSheet->getTitle() . '!' . $namedRange]);
         }
         return $this;
     }
@@ -913,7 +895,7 @@ class PHPExcel
     public function getCellXfByHashCode($pValue = '')
     {
         foreach ($this->cellXfCollection as $cellXf) {
-            if ($cellXf->getHashCode() == $pValue) {
+            if ($cellXf->getHashCode() === $pValue) {
                 return $cellXf;
             }
         }
@@ -978,7 +960,7 @@ class PHPExcel
                     if ($xfIndex > $pIndex) {
                         // decrease xf index by 1
                         $cell->setXfIndex($xfIndex - 1);
-                    } elseif ($xfIndex == $pIndex) {
+                    } elseif ($xfIndex === $pIndex) {
                         // set to default xf index 0
                         $cell->setXfIndex(0);
                     }
@@ -1027,7 +1009,7 @@ class PHPExcel
     public function getCellStyleXfByHashCode($pValue = '')
     {
         foreach ($this->cellStyleXfCollection as $cellStyleXf) {
-            if ($cellStyleXf->getHashCode() == $pValue) {
+            if ($cellStyleXf->getHashCode() === $pValue) {
                 return $cellStyleXf;
             }
         }
@@ -1068,7 +1050,7 @@ class PHPExcel
     {
         // how many references are there to each cellXf ?
         $countReferencesCellXf = array();
-        foreach ($this->cellXfCollection as $index => $cellXf) {
+        foreach (array_keys($this->cellXfCollection) as $index) {
             $countReferencesCellXf[$index] = 0;
         }
 
@@ -1096,7 +1078,7 @@ class PHPExcel
         // for all cells and columns
         $countNeededCellXfs = 0;
         $map = array();
-        foreach ($this->cellXfCollection as $index => $cellXf) {
+        foreach (array_keys($this->cellXfCollection) as $index) {
             if ($countReferencesCellXf[$index] > 0 || $index == 0) { // we must never remove the first cellXf
                 ++$countNeededCellXfs;
             } else {

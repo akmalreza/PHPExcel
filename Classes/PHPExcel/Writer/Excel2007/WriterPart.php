@@ -29,10 +29,8 @@ abstract class PHPExcel_Writer_Excel2007_WriterPart
 {
     /**
      * Parent IWriter object
-     *
-     * @var PHPExcel_Writer_IWriter
      */
-    private $parentWriter;
+    private ?\PHPExcel_Writer_IWriter $parentWriter;
 
     /**
      * Set parent IWriter object

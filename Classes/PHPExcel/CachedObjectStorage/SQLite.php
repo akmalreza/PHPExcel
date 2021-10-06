@@ -29,17 +29,13 @@ class PHPExcel_CachedObjectStorage_SQLite extends PHPExcel_CachedObjectStorage_C
 {
     /**
      * Database table name
-     *
-     * @var string
      */
-    private $TableName = null;
+    private ?string $TableName = null;
 
     /**
      * Database handle
-     *
-     * @var resource
      */
-    private $DBHandle = null;
+    private ?\SQLiteDatabase $DBHandle = null;
 
     /**
      * Store cell data in cache for the current cell object if it's "dirty",
@@ -298,10 +294,6 @@ class PHPExcel_CachedObjectStorage_SQLite extends PHPExcel_CachedObjectStorage_C
      */
     public static function cacheMethodIsAvailable()
     {
-        if (!function_exists('sqlite_open')) {
-            return false;
-        }
-
-        return true;
+        return function_exists('sqlite_open');
     }
 }

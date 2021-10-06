@@ -80,24 +80,18 @@ class PHPExcel_Calculation_FormulaToken
 
     /**
      * Value
-     *
-     * @var string
      */
-    private $value;
+    private string $value;
 
     /**
      * Token Type (represented by TOKEN_TYPE_*)
-     *
-     * @var string
      */
-    private $tokenType;
+    private string $tokenType;
 
     /**
      * Token SubType (represented by TOKEN_SUBTYPE_*)
-     *
-     * @var string
      */
-    private $tokenSubType;
+    private string $tokenSubType;
 
     /**
      * Create a new PHPExcel_Calculation_FormulaToken

@@ -117,7 +117,7 @@ class PHPExcel_Calculation_LookupRef
         }
 
         if (is_array($cellAddress)) {
-            foreach ($cellAddress as $columnKey => $value) {
+            foreach (array_keys($cellAddress) as $columnKey) {
                 $columnKey = preg_replace('/[^a-z]/i', '', $columnKey);
                 return (integer) PHPExcel_Cell::columnIndexFromString($columnKey);
             }
@@ -428,7 +428,7 @@ class PHPExcel_Calculation_LookupRef
         $endCellColumn = PHPExcel_Cell::stringFromColumnIndex($endCellColumn);
 
         $cellAddress = $startCellColumn.$startCellRow;
-        if (($startCellColumn != $endCellColumn) || ($startCellRow != $endCellRow)) {
+        if (($startCellColumn !== $endCellColumn) || ($startCellRow !== $endCellRow)) {
             $cellAddress .= ':'.$endCellColumn.$endCellRow;
         }
 
@@ -460,9 +460,8 @@ class PHPExcel_Calculation_LookupRef
      *                                text.
      * @return    mixed            The selected value
      */
-    public static function CHOOSE()
+    public static function CHOOSE(...$chooseArgs)
     {
-        $chooseArgs = func_get_args();
         $chosenEntry = PHPExcel_Calculation_Functions::flattenArray(array_shift($chooseArgs));
         $entryCount = count($chooseArgs) - 1;
 
@@ -675,7 +674,7 @@ class PHPExcel_Calculation_LookupRef
     {
         reset($a);
         $firstColumn = key($a);
-        if (($aLower = strtolower($a[$firstColumn])) == ($bLower = strtolower($b[$firstColumn]))) {
+        if (($aLower = strtolower($a[$firstColumn])) === ($bLower = strtolower($b[$firstColumn]))) {
             return 0;
         }
         return ($aLower < $bLower) ? -1 : 1;

@@ -50,7 +50,7 @@ class trendClass
      *
      * @var string[]
      **/
-    private static $trendTypes = array(
+    private static array $trendTypes = array(
         self::TREND_LINEAR,
         self::TREND_LOGARITHMIC,
         self::TREND_EXPONENTIAL,
@@ -62,7 +62,7 @@ class trendClass
      *
      * @var string[]
      **/
-    private static $trendTypePolynomialOrders = array(
+    private static array $trendTypePolynomialOrders = array(
         self::TREND_POLYNOMIAL_2,
         self::TREND_POLYNOMIAL_3,
         self::TREND_POLYNOMIAL_4,
@@ -75,7 +75,7 @@ class trendClass
      *
      * @var PHPExcel_Best_Fit[]
      **/
-    private static $trendCache = array();
+    private static array $trendCache = array();
 
 
     public static function calculate($trendType = self::TREND_BEST_FIT, $yValues, $xValues = array(), $const = true)
@@ -88,7 +88,7 @@ class trendClass
         if ($nX == 0) {
             $xValues = range(1, $nY);
             $nX = $nY;
-        } elseif ($nY != $nX) {
+        } elseif ($nY !== $nX) {
             //    Ensure both arrays of points are the same size
             trigger_error("trend(): Number of elements in coordinate arrays do not match.", E_USER_ERROR);
         }

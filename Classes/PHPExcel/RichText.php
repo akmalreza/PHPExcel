@@ -32,7 +32,7 @@ class PHPExcel_RichText implements PHPExcel_IComparable
      *
      * @var PHPExcel_RichText_ITextElement[]
      */
-    private $richTextElements;
+    private array $richTextElements;
 
     /**
      * Create a new PHPExcel_RichText instance
@@ -181,11 +181,7 @@ class PHPExcel_RichText implements PHPExcel_IComparable
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 }

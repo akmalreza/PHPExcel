@@ -23,7 +23,7 @@ date_default_timezone_set('Europe/London');
 set_include_path(get_include_path() . PATH_SEPARATOR . '../../../Classes/');
 
 /** PHPExcel_IOFactory */
-include 'PHPExcel/IOFactory.php';
+include __DIR__ . '/PHPExcel/IOFactory.php';
 
 
 $inputFileType = 'Excel2007';
@@ -65,7 +65,7 @@ foreach($customPropertyList as $customPropertyName) {
 			$propertyType = 'date';
 			break;
 		case 'b' :	//	boolean
-			$propertyValue = ($propertyValue) ? 'TRUE' : 'FALSE';
+			$propertyValue = ($propertyValue !== '' && $propertyValue !== '0') ? 'TRUE' : 'FALSE';
 			$propertyType = 'boolean';
 			break;
 	}

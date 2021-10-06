@@ -51,6 +51,8 @@
 // */
 class PHPExcel_Writer_Excel5_Parser
 {
+    public array $ptg;
+    public array $functions;
     /**    Constants                */
     // Sheet title in unquoted form
     // Invalid sheet title characters cannot occur in the sheet title:
@@ -67,27 +69,23 @@ class PHPExcel_Writer_Excel5_Parser
 
     /**
      * The index of the character we are currently looking at
-     * @var integer
      */
-    public $currentCharacter;
+    public int $currentCharacter;
 
     /**
      * The token we are working on.
-     * @var string
      */
-    public $currentToken;
+    public string $currentToken;
 
     /**
      * The formula to parse
-     * @var string
      */
-    private $formula;
+    private string $formula;
 
     /**
      * The character ahead of the current char
-     * @var string
      */
-    public $lookAhead;
+    public string $lookAhead;
 
     /**
      * The parse tree to be generated
@@ -97,15 +95,13 @@ class PHPExcel_Writer_Excel5_Parser
 
     /**
      * Array of external sheets
-     * @var array
      */
-    private $externalSheets;
+    private array $externalSheets;
 
     /**
      * Array of sheet references in the form of REF structures
-     * @var array
      */
-    public $references;
+    public array $references;
 
     /**
      * The class constructor
@@ -541,7 +537,7 @@ class PHPExcel_Writer_Excel5_Parser
             return pack("C", $this->ptg[$token]);
 
         // match error codes
-        } elseif (preg_match("/^#[A-Z0\/]{3,5}[!?]{1}$/", $token) or $token == '#N/A') {
+        } elseif (preg_match("/^#[A-Z0\/]{3,5}[!?]{1}$/", $token) || $token == '#N/A') {
             return $this->convertError($token);
 
         // commented so argument number can be processed correctly. See toReversePolish().
@@ -568,10 +564,10 @@ class PHPExcel_Writer_Excel5_Parser
     private function convertNumber($num)
     {
         // Integer in the range 0..2**16-1
-        if ((preg_match("/^\d+$/", $num)) and ($num <= 65535)) {
+        if (preg_match("/^\d+$/", $num) && $num <= 65535) {
             return pack("Cv", $this->ptg['ptgInt'], $num);
         } else { // A float
-            if (PHPExcel_Writer_Excel5_BIFFwriter::getByteOrder()) { // if it's Big Endian
+            if (PHPExcel_Writer_Excel5_BIFFwriter::getByteOrder() !== 0) { // if it's Big Endian
                 $num = strrev($num);
             }
             return pack("Cd", $this->ptg['ptgNum'], $num);
@@ -981,7 +977,7 @@ class PHPExcel_Writer_Excel5_Parser
         $col2 = 65535; // FIXME: maximum possible value for Excel 5 (change this!!!)
 
         // FIXME: this changes for BIFF8
-        if (($row1 >= 65536) or ($row2 >= 65536)) {
+        if ($row1 >= 65536 || $row2 >= 65536) {
             throw new PHPExcel_Writer_Exception("Row in: $range greater than 65536 ");
         }
 
@@ -1020,7 +1016,7 @@ class PHPExcel_Writer_Excel5_Parser
         $col  = 0;
         $col_ref_length = strlen($col_ref);
         for ($i = 0; $i < $col_ref_length; ++$i) {
-            $col += (ord($col_ref{$i}) - 64) * pow(26, $expn);
+            $col += (ord($col_ref[$i]) - 64) * pow(26, $expn);
             --$expn;
         }
 
@@ -1042,24 +1038,20 @@ class PHPExcel_Writer_Excel5_Parser
         $formula_length = strlen($this->formula);
         // eat up white spaces
         if ($i < $formula_length) {
-            while ($this->formula{$i} == " ") {
+            while ($this->formula[$i] == " ") {
                 ++$i;
             }
 
             if ($i < ($formula_length - 1)) {
-                $this->lookAhead = $this->formula{$i+1};
+                $this->lookAhead = $this->formula[$i+1];
             }
             $token = '';
         }
 
         while ($i < $formula_length) {
-            $token .= $this->formula{$i};
+            $token .= $this->formula[$i];
 
-            if ($i < ($formula_length - 1)) {
-                $this->lookAhead = $this->formula{$i+1};
-            } else {
-                $this->lookAhead = '';
-            }
+            $this->lookAhead = $i < ($formula_length - 1) ? $this->formula[$i+1] : '';
 
             if ($this->match($token) != '') {
                 //if ($i < strlen($this->formula) - 1) {
@@ -1070,11 +1062,7 @@ class PHPExcel_Writer_Excel5_Parser
                 return 1;
             }
 
-            if ($i < ($formula_length - 2)) {
-                $this->lookAhead = $this->formula{$i+2};
-            } else { // if we run out of characters lookAhead becomes empty
-                $this->lookAhead = '';
-            }
+            $this->lookAhead = $i < ($formula_length - 2) ? $this->formula[$i+2] : '';
             ++$i;
         }
         //die("Lexical error ".$this->currentCharacter);
@@ -1115,40 +1103,40 @@ class PHPExcel_Writer_Excel5_Parser
                 break;
             case "<":
                 // it's a LE or a NE token
-                if (($this->lookAhead == '=') or ($this->lookAhead == '>')) {
+                if ($this->lookAhead == '=' || $this->lookAhead == '>') {
                     break;
                 }
                 return $token;
                 break;
             default:
                 // if it's a reference A1 or $A$1 or $A1 or A$1
-                if (preg_match('/^\$?[A-Ia-i]?[A-Za-z]\$?[0-9]+$/', $token) and !preg_match("/[0-9]/", $this->lookAhead) and ($this->lookAhead != ':') and ($this->lookAhead != '.') and ($this->lookAhead != '!')) {
+                if (preg_match('/^\$?[A-Ia-i]?[A-Za-z]\$?\d+$/', $token) && !preg_match("/\\d/", $this->lookAhead) && $this->lookAhead != ':' && $this->lookAhead != '.' && $this->lookAhead != '!') {
                     return $token;
-                } elseif (preg_match("/^" . self::REGEX_SHEET_TITLE_UNQUOTED . "(\:" . self::REGEX_SHEET_TITLE_UNQUOTED . ")?\!\\$?[A-Ia-i]?[A-Za-z]\\$?[0-9]+$/u", $token) and !preg_match("/[0-9]/", $this->lookAhead) and ($this->lookAhead != ':') and ($this->lookAhead != '.')) {
+                } elseif (preg_match("/^" . self::REGEX_SHEET_TITLE_UNQUOTED . "(\:" . self::REGEX_SHEET_TITLE_UNQUOTED . ")?\!\\$?[A-Ia-i]?[A-Za-z]\\$?[0-9]+$/u", $token) && !preg_match("/\\d/", $this->lookAhead) && $this->lookAhead != ':' && $this->lookAhead != '.') {
                     // If it's an external reference (Sheet1!A1 or Sheet1:Sheet2!A1 or Sheet1!$A$1 or Sheet1:Sheet2!$A$1)
                     return $token;
-                } elseif (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . "(\:" . self::REGEX_SHEET_TITLE_QUOTED . ")?'\!\\$?[A-Ia-i]?[A-Za-z]\\$?[0-9]+$/u", $token) and !preg_match("/[0-9]/", $this->lookAhead) and ($this->lookAhead != ':') and ($this->lookAhead != '.')) {
+                } elseif (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . "(\:" . self::REGEX_SHEET_TITLE_QUOTED . ")?'\!\\$?[A-Ia-i]?[A-Za-z]\\$?[0-9]+$/u", $token) && !preg_match("/\\d/", $this->lookAhead) && $this->lookAhead != ':' && $this->lookAhead != '.') {
                     // If it's an external reference ('Sheet1'!A1 or 'Sheet1:Sheet2'!A1 or 'Sheet1'!$A$1 or 'Sheet1:Sheet2'!$A$1)
                     return $token;
-                } elseif (preg_match('/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+:(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/', $token) && !preg_match("/[0-9]/", $this->lookAhead)) {
+                } elseif (preg_match('/^(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+:(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+$/', $token) && !preg_match("/\\d/", $this->lookAhead)) {
                     // if it's a range A1:A2 or $A$1:$A$2
                     return $token;
-                } elseif (preg_match("/^" . self::REGEX_SHEET_TITLE_UNQUOTED . "(\:" . self::REGEX_SHEET_TITLE_UNQUOTED . ")?\!\\$?([A-Ia-i]?[A-Za-z])?\\$?[0-9]+:\\$?([A-Ia-i]?[A-Za-z])?\\$?[0-9]+$/u", $token) and !preg_match("/[0-9]/", $this->lookAhead)) {
+                } elseif (preg_match("/^" . self::REGEX_SHEET_TITLE_UNQUOTED . "(\:" . self::REGEX_SHEET_TITLE_UNQUOTED . ")?\!\\$?([A-Ia-i]?[A-Za-z])?\\$?[0-9]+:\\$?([A-Ia-i]?[A-Za-z])?\\$?[0-9]+$/u", $token) && !preg_match("/\\d/", $this->lookAhead)) {
                     // If it's an external range like Sheet1!A1:B2 or Sheet1:Sheet2!A1:B2 or Sheet1!$A$1:$B$2 or Sheet1:Sheet2!$A$1:$B$2
                     return $token;
-                } elseif (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . "(\:" . self::REGEX_SHEET_TITLE_QUOTED . ")?'\!\\$?([A-Ia-i]?[A-Za-z])?\\$?[0-9]+:\\$?([A-Ia-i]?[A-Za-z])?\\$?[0-9]+$/u", $token) and !preg_match("/[0-9]/", $this->lookAhead)) {
+                } elseif (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . "(\:" . self::REGEX_SHEET_TITLE_QUOTED . ")?'\!\\$?([A-Ia-i]?[A-Za-z])?\\$?[0-9]+:\\$?([A-Ia-i]?[A-Za-z])?\\$?[0-9]+$/u", $token) && !preg_match("/\\d/", $this->lookAhead)) {
                     // If it's an external range like 'Sheet1'!A1:B2 or 'Sheet1:Sheet2'!A1:B2 or 'Sheet1'!$A$1:$B$2 or 'Sheet1:Sheet2'!$A$1:$B$2
                     return $token;
-                } elseif (is_numeric($token) and (!is_numeric($token.$this->lookAhead) or ($this->lookAhead == '')) and ($this->lookAhead != '!') and ($this->lookAhead != ':')) {
+                } elseif (is_numeric($token) && (!is_numeric($token.$this->lookAhead) || $this->lookAhead == '') && $this->lookAhead != '!' && $this->lookAhead != ':') {
                     // If it's a number (check that it's not a sheet name or range)
                     return $token;
-                } elseif (preg_match("/\"([^\"]|\"\"){0,255}\"/", $token) and $this->lookAhead != '"' and (substr_count($token, '"')%2 == 0)) {
+                } elseif (preg_match("/\"([^\"]|\"\"){0,255}\"/", $token) && $this->lookAhead != '"' && substr_count($token, '"')%2 == 0) {
                     // If it's a string (of maximum 255 characters)
                     return $token;
-                } elseif (preg_match("/^#[A-Z0\/]{3,5}[!?]{1}$/", $token) or $token == '#N/A') {
+                } elseif (preg_match("/^#[A-Z0\/]{3,5}[!?]{1}$/", $token) || $token == '#N/A') {
                     // If it's an error code
                     return $token;
-                } elseif (preg_match("/^[A-Z0-9\xc0-\xdc\.]+$/i", $token) and ($this->lookAhead == "(")) {
+                } elseif (preg_match("/^[A-Z0-9\xc0-\xdc\.]+$/i", $token) && $this->lookAhead == "(") {
                     // if it's a function call
                     return $token;
                 } elseif (substr($token, -1) == ')') {
@@ -1172,7 +1160,7 @@ class PHPExcel_Writer_Excel5_Parser
     {
         $this->currentCharacter = 0;
         $this->formula      = $formula;
-        $this->lookAhead    = isset($formula{1}) ? $formula{1} : '';
+        $this->lookAhead    = isset($formula[1]) ? $formula[1] : '';
         $this->advance();
         $this->parseTree   = $this->condition();
         return true;
@@ -1244,7 +1232,7 @@ class PHPExcel_Writer_Excel5_Parser
             $this->advance();
             return $result;
         // If it's an error code
-        } elseif (preg_match("/^#[A-Z0\/]{3,5}[!?]{1}$/", $this->currentToken) or $this->currentToken == '#N/A') {
+        } elseif (preg_match("/^#[A-Z0\/]{3,5}[!?]{1}$/", $this->currentToken) || $this->currentToken == '#N/A') {
             $result = $this->createTree($this->currentToken, 'ptgErr', '');
             $this->advance();
             return $result;
@@ -1253,20 +1241,16 @@ class PHPExcel_Writer_Excel5_Parser
             // catch "-" Term
             $this->advance();
             $result2 = $this->expression();
-            $result = $this->createTree('ptgUminus', $result2, '');
-            return $result;
+            return $this->createTree('ptgUminus', $result2, '');
         // If it's a positive value
         } elseif ($this->currentToken == "+") {
             // catch "+" Term
             $this->advance();
             $result2 = $this->expression();
-            $result = $this->createTree('ptgUplus', $result2, '');
-            return $result;
+            return $this->createTree('ptgUplus', $result2, '');
         }
         $result = $this->term();
-        while (($this->currentToken == "+") or
-               ($this->currentToken == "-") or
-               ($this->currentToken == "^")) {
+        while ($this->currentToken == "+" || $this->currentToken == "-" || $this->currentToken == "^") {
         /**/
             if ($this->currentToken == "+") {
                 $this->advance();
@@ -1295,8 +1279,7 @@ class PHPExcel_Writer_Excel5_Parser
      */
     private function parenthesizedExpression()
     {
-        $result = $this->createTree('ptgParen', $this->expression(), '');
-        return $result;
+        return $this->createTree('ptgParen', $this->expression(), '');
     }
 
     /**
@@ -1309,8 +1292,7 @@ class PHPExcel_Writer_Excel5_Parser
     private function term()
     {
         $result = $this->fact();
-        while (($this->currentToken == "*") or
-               ($this->currentToken == "/")) {
+        while ($this->currentToken == "*" || $this->currentToken == "/") {
         /**/
             if ($this->currentToken == "*") {
                 $this->advance();
@@ -1348,7 +1330,7 @@ class PHPExcel_Writer_Excel5_Parser
             return $result;
         }
         // if it's a reference
-        if (preg_match('/^\$?[A-Ia-i]?[A-Za-z]\$?[0-9]+$/', $this->currentToken)) {
+        if (preg_match('/^\$?[A-Ia-i]?[A-Za-z]\$?\d+$/', $this->currentToken)) {
             $result = $this->createTree($this->currentToken, '', '');
             $this->advance();
             return $result;
@@ -1362,8 +1344,7 @@ class PHPExcel_Writer_Excel5_Parser
             $result = $this->createTree($this->currentToken, '', '');
             $this->advance();
             return $result;
-        } elseif (preg_match('/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+:(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/', $this->currentToken) or
-                preg_match('/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+\.\.(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/', $this->currentToken)) {
+        } elseif (preg_match('/^(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+:(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+$/', $this->currentToken) || preg_match('/^(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+\.\.(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+$/', $this->currentToken)) {
             // if it's a range A1:B2 or $A$1:$B$2
             // must be an error?
             $result = $this->createTree($this->currentToken, '', '');
@@ -1436,7 +1417,7 @@ class PHPExcel_Writer_Excel5_Parser
         }
         $args = $this->functions[$function][1];
         // If fixed number of args eg. TIME($i, $j, $k). Check that the number of args is valid.
-        if (($args >= 0) and ($args != $num_args)) {
+        if ($args >= 0 && $args != $num_args) {
             throw new PHPExcel_Writer_Exception("Incorrect number of arguments in function $function() ");
         }
 
@@ -1509,23 +1490,14 @@ class PHPExcel_Writer_Excel5_Parser
             $polish .= $converted_tree;
         }
         // if it's a function convert it here (so we can set it's arguments)
-        if (preg_match("/^[A-Z0-9\xc0-\xdc\.]+$/", $tree['value']) and
-            !preg_match('/^([A-Ia-i]?[A-Za-z])(\d+)$/', $tree['value']) and
-            !preg_match("/^[A-Ia-i]?[A-Za-z](\d+)\.\.[A-Ia-i]?[A-Za-z](\d+)$/", $tree['value']) and
-            !is_numeric($tree['value']) and
-            !isset($this->ptg[$tree['value']])) {
+        if (preg_match("/^[A-Z0-9\xc0-\xdc\.]+$/", $tree['value']) && !preg_match('/^([A-Ia-i]?[A-Za-z])(\d+)$/', $tree['value']) && !preg_match("/^[A-Ia-i]?[A-Za-z](\d+)\.\.[A-Ia-i]?[A-Za-z](\d+)$/", $tree['value']) && !is_numeric($tree['value']) && !isset($this->ptg[$tree['value']])) {
             // left subtree for a function is always an array.
-            if ($tree['left'] != '') {
-                $left_tree = $this->toReversePolish($tree['left']);
-            } else {
-                $left_tree = '';
-            }
+            $left_tree = $tree['left'] != '' ? $this->toReversePolish($tree['left']) : '';
             // add it's left subtree and return.
             return $left_tree.$this->convertFunction($tree['value'], $tree['right']);
         } else {
             $converted_tree = $this->convert($tree['value']);
         }
-        $polish .= $converted_tree;
-        return $polish;
+        return $polish . $converted_tree;
     }
 }

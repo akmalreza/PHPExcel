@@ -37,45 +37,33 @@ class PHPExcel_Worksheet_PageMargins
 {
     /**
      * Left
-     *
-     * @var double
      */
-    private $left        = 0.7;
+    private float $left        = 0.7;
 
     /**
      * Right
-     *
-     * @var double
      */
-    private $right        = 0.7;
+    private float $right        = 0.7;
 
     /**
      * Top
-     *
-     * @var double
      */
-    private $top        = 0.75;
+    private float $top        = 0.75;
 
     /**
      * Bottom
-     *
-     * @var double
      */
-    private $bottom    = 0.75;
+    private float $bottom    = 0.75;
 
     /**
      * Header
-     *
-     * @var double
      */
-    private $header     = 0.3;
+    private float $header     = 0.3;
 
     /**
      * Footer
-     *
-     * @var double
      */
-    private $footer     = 0.3;
+    private float $footer     = 0.3;
 
     /**
      * Create a new PHPExcel_Worksheet_PageMargins
@@ -223,11 +211,7 @@ class PHPExcel_Worksheet_PageMargins
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 }

@@ -54,7 +54,7 @@ $objPHPExcel->getProperties()->setCreator("Maarten Balliauw")
 
 // Generate an image
 echo date('H:i:s') , " Generate an image" , EOL;
-$gdImage = @imagecreatetruecolor(120, 20) or die('Cannot Initialize new GD image stream');
+($gdImage = @imagecreatetruecolor(120, 20)) || die('Cannot Initialize new GD image stream');
 $textColor = imagecolorallocate($gdImage, 255, 255, 255);
 imagestring($gdImage, 1, 5, 5,  'Created with PHPExcel', $textColor);
 

@@ -23,7 +23,7 @@ date_default_timezone_set('Europe/London');
 set_include_path(get_include_path() . PATH_SEPARATOR . '../../../Classes/');
 
 /** PHPExcel_IOFactory */
-include 'PHPExcel/IOFactory.php';
+include __DIR__ . '/PHPExcel/IOFactory.php';
 
 
 $inputFileType = 'Excel5';

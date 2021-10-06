@@ -40,7 +40,7 @@ class PHPExcel_Writer_Excel2007_Theme extends PHPExcel_Writer_Excel2007_WriterPa
      * @static    array of string
      *
      */
-    private static $majorFonts = array(
+    private static array $majorFonts = array(
         'Jpan' => 'ＭＳ Ｐゴシック',
         'Hang' => '맑은 고딕',
         'Hans' => '宋体',
@@ -78,7 +78,7 @@ class PHPExcel_Writer_Excel2007_Theme extends PHPExcel_Writer_Excel2007_WriterPa
      * @static    array of string
      *
      */
-    private static $minorFonts = array(
+    private static array $minorFonts = array(
         'Jpan' => 'ＭＳ Ｐゴシック',
         'Hang' => '맑은 고딕',
         'Hans' => '宋体',
@@ -116,7 +116,7 @@ class PHPExcel_Writer_Excel2007_Theme extends PHPExcel_Writer_Excel2007_WriterPa
      * @static    array of string
      *
      */
-    private static $colourScheme = array(
+    private static array $colourScheme = array(
         'dk2'        => '1F497D',
         'lt2'        => 'EEECE1',
         'accent1'    => '4F81BD',

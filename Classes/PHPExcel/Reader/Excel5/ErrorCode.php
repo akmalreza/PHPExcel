@@ -2,7 +2,7 @@
 
 class PHPExcel_Reader_Excel5_ErrorCode
 {
-    protected static $map = array(
+    protected static array $map = array(
         0x00 => '#NULL!',
         0x07 => '#DIV/0!',
         0x0F => '#VALUE!',

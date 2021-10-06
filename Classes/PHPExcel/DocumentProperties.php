@@ -37,17 +37,13 @@ class PHPExcel_DocumentProperties
 
     /**
      * Creator
-     *
-     * @var string
      */
-    private $creator = 'Unknown Creator';
+    private string $creator = 'Unknown Creator';
 
     /**
      * LastModifiedBy
-     *
-     * @var string
      */
-    private $lastModifiedBy;
+    private string $lastModifiedBy;
 
     /**
      * Created
@@ -65,59 +61,43 @@ class PHPExcel_DocumentProperties
 
     /**
      * Title
-     *
-     * @var string
      */
-    private $title = 'Untitled Spreadsheet';
+    private string $title = 'Untitled Spreadsheet';
 
     /**
      * Description
-     *
-     * @var string
      */
-    private $description = '';
+    private string $description = '';
 
     /**
      * Subject
-     *
-     * @var string
      */
-    private $subject = '';
+    private string $subject = '';
 
     /**
      * Keywords
-     *
-     * @var string
      */
-    private $keywords = '';
+    private string $keywords = '';
 
     /**
      * Category
-     *
-     * @var string
      */
-    private $category = '';
+    private string $category = '';
 
     /**
      * Manager
-     *
-     * @var string
      */
-    private $manager = '';
+    private string $manager = '';
 
     /**
      * Company
-     *
-     * @var string
      */
-    private $company = 'Microsoft Corporation';
+    private string $company = 'Microsoft Corporation';
 
     /**
      * Custom Properties
-     *
-     * @var string
      */
-    private $customProperties = array();
+    private array $customProperties = array();
 
 
     /**
@@ -191,16 +171,12 @@ class PHPExcel_DocumentProperties
      * @param datetime $pValue
      * @return PHPExcel_DocumentProperties
      */
-    public function setCreated($pValue = null)
+    public function setCreated(\DateTimeInterface $pValue = null)
     {
         if ($pValue === null) {
             $pValue = time();
         } elseif (is_string($pValue)) {
-            if (is_numeric($pValue)) {
-                $pValue = intval($pValue);
-            } else {
-                $pValue = strtotime($pValue);
-            }
+            $pValue = is_numeric($pValue) ? (int) $pValue : strtotime($pValue);
         }
 
         $this->created = $pValue;
@@ -223,16 +199,12 @@ class PHPExcel_DocumentProperties
      * @param datetime $pValue
      * @return PHPExcel_DocumentProperties
      */
-    public function setModified($pValue = null)
+    public function setModified(\DateTimeInterface $pValue = null)
     {
         if ($pValue === null) {
             $pValue = time();
         } elseif (is_string($pValue)) {
-            if (is_numeric($pValue)) {
-                $pValue = intval($pValue);
-            } else {
-                $pValue = strtotime($pValue);
-            }
+            $pValue = is_numeric($pValue) ? (int) $pValue : strtotime($pValue);
         }
 
         $this->modified = $pValue;
@@ -489,11 +461,7 @@ class PHPExcel_DocumentProperties
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 
@@ -535,7 +503,7 @@ class PHPExcel_DocumentProperties
                 return strtotime($propertyValue);
                 break;
             case 'bool':     //    Boolean
-                return ($propertyValue == 'true') ? true : false;
+                return $propertyValue == 'true';
                 break;
             case 'cy':       //    Currency
             case 'error':    //    Error Status Code

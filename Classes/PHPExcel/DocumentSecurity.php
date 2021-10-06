@@ -29,38 +29,28 @@ class PHPExcel_DocumentSecurity
 {
     /**
      * LockRevision
-     *
-     * @var boolean
      */
-    private $lockRevision;
+    private bool $lockRevision;
 
     /**
      * LockStructure
-     *
-     * @var boolean
      */
-    private $lockStructure;
+    private bool $lockStructure;
 
     /**
      * LockWindows
-     *
-     * @var boolean
      */
-    private $lockWindows;
+    private bool $lockWindows;
 
     /**
      * RevisionsPassword
-     *
-     * @var string
      */
-    private $revisionsPassword;
+    private string $revisionsPassword;
 
     /**
      * WorkbookPassword
-     *
-     * @var string
      */
-    private $workbookPassword;
+    private string $workbookPassword;
 
     /**
      * Create a new PHPExcel_DocumentSecurity
@@ -212,11 +202,7 @@ class PHPExcel_DocumentSecurity
     {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
+            $this->$key = is_object($value) ? clone $value : $value;
         }
     }
 }

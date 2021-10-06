@@ -39,7 +39,7 @@ class PHPExcel_Shared_Font
     const AUTOSIZE_METHOD_APPROX    = 'approx';
     const AUTOSIZE_METHOD_EXACT     = 'exact';
 
-    private static $autoSizeMethods = array(
+    private static array $autoSizeMethods = array(
         self::AUTOSIZE_METHOD_APPROX,
         self::AUTOSIZE_METHOD_EXACT,
     );
@@ -129,26 +129,20 @@ class PHPExcel_Shared_Font
 
     /**
      * AutoSize method
-     *
-     * @var string
      */
-    private static $autoSizeMethod = self::AUTOSIZE_METHOD_APPROX;
+    private static string $autoSizeMethod = self::AUTOSIZE_METHOD_APPROX;
 
     /**
      * Path to folder containing TrueType font .ttf files
-     *
-     * @var string
      */
-    private static $trueTypeFontPath = null;
+    private static ?string $trueTypeFontPath = null;
 
     /**
      * How wide is a default column for a given default font and size?
      * Empirical data found by inspecting real Excel files and reading off the pixel width
      * in Microsoft Office Excel 2007.
-     *
-     * @var array
      */
-    public static $defaultColumnWidths = array(
+    public static array $defaultColumnWidths = array(
         'Arial' => array(
              1 => array('px' => 24, 'width' => 12.00000000),
              2 => array('px' => 24, 'width' => 12.00000000),

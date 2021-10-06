@@ -29,24 +29,18 @@ class PHPExcel_Worksheet_RowCellIterator extends PHPExcel_Worksheet_CellIterator
 {
     /**
      * Row index
-     *
-     * @var int
      */
-    protected $rowIndex;
+    protected int $rowIndex;
 
     /**
      * Start position
-     *
-     * @var int
      */
-    protected $startColumn = 0;
+    protected int $startColumn = 0;
 
     /**
      * End position
-     *
-     * @var int
      */
-    protected $endColumn = 0;
+    protected int $endColumn = 0;
 
     /**
      * Create a new column iterator

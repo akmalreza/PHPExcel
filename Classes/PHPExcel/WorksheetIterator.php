@@ -29,17 +29,13 @@ class PHPExcel_WorksheetIterator implements Iterator
 {
     /**
      * Spreadsheet to iterate
-     *
-     * @var PHPExcel
      */
-    private $subject;
+    private ?\PHPExcel $subject;
 
     /**
      * Current iterator position
-     *
-     * @var int
      */
-    private $position = 0;
+    private int $position = 0;
 
     /**
      * Create a new worksheet iterator

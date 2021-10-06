@@ -29,10 +29,8 @@ class PHPExcel_Chart_PlotArea
 {
     /**
      * PlotArea Layout
-     *
-     * @var PHPExcel_Chart_Layout
      */
-    private $layout = null;
+    private ?\PHPExcel_Chart_Layout $layout = null;
 
     /**
      * Plot Series

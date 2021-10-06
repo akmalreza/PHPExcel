@@ -89,8 +89,8 @@ $objConditional3->setConditionType(PHPExcel_Style_Conditional::CONDITION_CELLIS)
 $objConditional3->getStyle()->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_GREEN);
 
 $conditionalStyles = $objPHPExcel->getActiveSheet()->getStyle('A1')->getConditionalStyles();
-array_push($conditionalStyles, $objConditional1);
-array_push($conditionalStyles, $objConditional3);
+$conditionalStyles[] = $objConditional1;
+$conditionalStyles[] = $objConditional3;
 $objPHPExcel->getActiveSheet()->getStyle('A1')->setConditionalStyles($conditionalStyles);
 
 

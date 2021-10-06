@@ -29,10 +29,8 @@ class PHPExcel_Worksheet_RowDimension extends PHPExcel_Worksheet_Dimension
 {
     /**
      * Row index
-     *
-     * @var int
      */
-    private $rowIndex;
+    private int $rowIndex;
 
     /**
      * Row height (in pt)
@@ -45,10 +43,8 @@ class PHPExcel_Worksheet_RowDimension extends PHPExcel_Worksheet_Dimension
 
      /**
      * ZeroHeight for Row?
-     *
-     * @var bool
      */
-    private $zeroHeight = false;
+    private bool $zeroHeight = false;
 
     /**
      * Create a new PHPExcel_Worksheet_RowDimension

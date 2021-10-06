@@ -38,31 +38,23 @@ class PHPExcel_Reader_SYLK extends PHPExcel_Reader_Abstract implements PHPExcel_
 {
     /**
      * Input encoding
-     *
-     * @var string
      */
-    private $inputEncoding = 'ANSI';
+    private string $inputEncoding = 'ANSI';
 
     /**
      * Sheet index to read
-     *
-     * @var int
      */
-    private $sheetIndex = 0;
+    private int $sheetIndex = 0;
 
     /**
      * Formats
-     *
-     * @var array
      */
-    private $formats = array();
+    private array $formats = array();
 
     /**
      * Format Count
-     *
-     * @var int
      */
-    private $format = 0;
+    private int $format = 0;
 
     /**
      * Create a new PHPExcel_Reader_SYLK
@@ -161,7 +153,7 @@ class PHPExcel_Reader_SYLK extends PHPExcel_Reader_Abstract implements PHPExcel_
             if ($dataType == 'C') {
                 //  Read cell value data
                 foreach ($rowData as $rowDatum) {
-                    switch ($rowDatum{0}) {
+                    switch ($rowDatum[0]) {
                         case 'C':
                         case 'X':
                             $columnIndex = substr($rowDatum, 1) - 1;
@@ -249,7 +241,7 @@ class PHPExcel_Reader_SYLK extends PHPExcel_Reader_Abstract implements PHPExcel_
             if ($dataType == 'P') {
                 $formatArray = array();
                 foreach ($rowData as $rowDatum) {
-                    switch ($rowDatum{0}) {
+                    switch ($rowDatum[0]) {
                         case 'P':
                             $formatArray['numberformat']['code'] = str_replace($fromFormats, $toFormats, substr($rowDatum, 1));
                             break;
@@ -263,7 +255,7 @@ class PHPExcel_Reader_SYLK extends PHPExcel_Reader_Abstract implements PHPExcel_
                         case 'S':
                             $styleSettings = substr($rowDatum, 1);
                             for ($i=0; $i<strlen($styleSettings); ++$i) {
-                                switch ($styleSettings{$i}) {
+                                switch ($styleSettings[$i]) {
                                     case 'I':
                                         $formatArray['font']['italic'] = true;
                                         break;
@@ -293,7 +285,7 @@ class PHPExcel_Reader_SYLK extends PHPExcel_Reader_Abstract implements PHPExcel_
                 $hasCalculatedValue = false;
                 $cellData = $cellDataFormula = '';
                 foreach ($rowData as $rowDatum) {
-                    switch ($rowDatum{0}) {
+                    switch ($rowDatum[0]) {
                         case 'C':
                         case 'X':
                             $column = substr($rowDatum, 1);
@@ -327,7 +319,7 @@ class PHPExcel_Reader_SYLK extends PHPExcel_Reader_Abstract implements PHPExcel_
                                             $rowReference = $row;
                                         }
                                         //    Bracketed R references are relative to the current row
-                                        if ($rowReference{0} == '[') {
+                                        if ($rowReference[0] == '[') {
                                             $rowReference = $row + trim($rowReference, '[]');
                                         }
                                         $columnReference = $cellReference[4][0];
@@ -336,7 +328,7 @@ class PHPExcel_Reader_SYLK extends PHPExcel_Reader_Abstract implements PHPExcel_
                                             $columnReference = $column;
                                         }
                                         //    Bracketed C references are relative to the current column
-                                        if ($columnReference{0} == '[') {
+                                        if ($columnReference[0] == '[') {
                                             $columnReference = $column + trim($columnReference, '[]');
                                         }
                                         $A1CellReference = PHPExcel_Cell::stringFromColumnIndex($columnReference-1).$rowReference;
@@ -366,7 +358,7 @@ class PHPExcel_Reader_SYLK extends PHPExcel_Reader_Abstract implements PHPExcel_
                 $formatStyle = $columnWidth = $styleSettings = '';
                 $styleData = array();
                 foreach ($rowData as $rowDatum) {
-                    switch ($rowDatum{0}) {
+                    switch ($rowDatum[0]) {
                         case 'C':
                         case 'X':
                             $column = substr($rowDatum, 1);
@@ -384,7 +376,7 @@ class PHPExcel_Reader_SYLK extends PHPExcel_Reader_Abstract implements PHPExcel_
                         case 'S':
                             $styleSettings = substr($rowDatum, 1);
                             for ($i=0; $i<strlen($styleSettings); ++$i) {
-                                switch ($styleSettings{$i}) {
+                                switch ($styleSettings[$i]) {
                                     case 'I':
                                         $styleData['font']['italic'] = true;
                                         break;
@@ -419,7 +411,7 @@ class PHPExcel_Reader_SYLK extends PHPExcel_Reader_Abstract implements PHPExcel_
                     $objPHPExcel->getActiveSheet()->getStyle($columnLetter.$row)->applyFromArray($styleData);
                 }
                 if ($columnWidth > '') {
-                    if ($startCol == $endCol) {
+                    if ($startCol === $endCol) {
                         $startCol = PHPExcel_Cell::stringFromColumnIndex($startCol-1);
                         $objPHPExcel->getActiveSheet()->getColumnDimension($startCol)->setWidth($columnWidth);
                     } else {
@@ -428,12 +420,12 @@ class PHPExcel_Reader_SYLK extends PHPExcel_Reader_Abstract implements PHPExcel_
                         $objPHPExcel->getActiveSheet()->getColumnDimension($startCol)->setWidth($columnWidth);
                         do {
                             $objPHPExcel->getActiveSheet()->getColumnDimension(++$startCol)->setWidth($columnWidth);
-                        } while ($startCol != $endCol);
+                        } while ($startCol !== $endCol);
                     }
                 }
             } else {
                 foreach ($rowData as $rowDatum) {
-                    switch ($rowDatum{0}) {
+                    switch ($rowDatum[0]) {
                         case 'C':
                         case 'X':
                             $column = substr($rowDatum, 1);

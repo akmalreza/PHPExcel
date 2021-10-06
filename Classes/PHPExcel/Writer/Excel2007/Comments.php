@@ -65,7 +65,7 @@ class PHPExcel_Writer_Excel2007_Comments extends PHPExcel_Writer_Excel2007_Write
 
         // Loop through authors
         $objWriter->startElement('authors');
-        foreach ($authors as $author => $index) {
+        foreach (array_keys($authors) as $author) {
             $objWriter->writeElement('author', $author);
         }
         $objWriter->endElement();

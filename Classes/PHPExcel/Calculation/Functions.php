@@ -65,25 +65,22 @@ class PHPExcel_Calculation_Functions
      * Compatibility mode to use for error checking and responses
      *
      * @access    private
-     * @var string
      */
-    protected static $compatibilityMode = self::COMPATIBILITY_EXCEL;
+    protected static string $compatibilityMode = self::COMPATIBILITY_EXCEL;
 
     /**
      * Data Type to use when returning date values
      *
      * @access    private
-     * @var string
      */
-    protected static $returnDateType = self::RETURNDATE_EXCEL;
+    protected static string $returnDateType = self::RETURNDATE_EXCEL;
 
     /**
      * List of error codes
      *
      * @access    private
-     * @var array
      */
-    protected static $errorCodes = array(
+    protected static array $errorCodes = array(
         'null'           => '#NULL!',
         'divisionbyzero' => '#DIV/0!',
         'value'          => '#VALUE!',
@@ -318,10 +315,10 @@ class PHPExcel_Calculation_Functions
     public static function ifCondition($condition)
     {
         $condition    = PHPExcel_Calculation_Functions::flattenSingleValue($condition);
-        if (!isset($condition{0})) {
+        if (!isset($condition[0])) {
             $condition = '=""';
         }
-        if (!in_array($condition{0}, array('>', '<', '='))) {
+        if (!in_array($condition[0], array('>', '<', '='))) {
             if (!is_numeric($condition)) {
                 $condition = PHPExcel_Calculation::wrapResult(strtoupper($condition));
             }
@@ -403,7 +400,7 @@ class PHPExcel_Calculation_Functions
         if (!is_string($value)) {
             return false;
         }
-        return in_array($value, array_values(self::$errorCodes));
+        return in_array($value, self::$errorCodes);
     }
 
 
@@ -559,7 +556,7 @@ class PHPExcel_Calculation_Functions
                 return (integer) $value;
             case 'string':
                 //    Errors
-                if ((strlen($value) > 0) && ($value{0} == '#')) {
+                if ((strlen($value) > 0) && ($value[0] == '#')) {
                     return $value;
                 }
                 break;
@@ -609,7 +606,7 @@ class PHPExcel_Calculation_Functions
                 return 64;
         } elseif (is_string($value)) {
             //    Errors
-            if ((strlen($value) > 0) && ($value{0} == '#')) {
+            if ((strlen($value) > 0) && ($value[0] == '#')) {
                 return 16;
             }
             return 2;
@@ -748,7 +745,7 @@ if ((!function_exists('mb_str_replace')) &&
             if ($s == '' && $s !== 0) {
                 continue;
             }
-            $r = !is_array($replace) ? $replace : (array_key_exists($key, $replace) ? $replace[$key] : '');
+            $r = is_array($replace) ? (array_key_exists($key, $replace) ? $replace[$key] : '') : ($replace);
             $pos = mb_strpos($subject, $s, 0, 'UTF-8');
             while ($pos !== false) {
                 $subject = mb_substr($subject, 0, $pos, 'UTF-8') . $r . mb_substr($subject, $pos + mb_strlen($s, 'UTF-8'), 65535, 'UTF-8');

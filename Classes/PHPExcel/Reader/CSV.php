@@ -40,33 +40,29 @@ class PHPExcel_Reader_CSV extends PHPExcel_Reader_Abstract implements PHPExcel_R
      * Input encoding
      *
      * @access    private
-     * @var    string
      */
-    private $inputEncoding = 'UTF-8';
+    private string $inputEncoding = 'UTF-8';
 
     /**
      * Delimiter
      *
      * @access    private
-     * @var string
      */
-    private $delimiter = ',';
+    private string $delimiter = ',';
 
     /**
      * Enclosure
      *
      * @access    private
-     * @var    string
      */
-    private $enclosure = '"';
+    private string $enclosure = '"';
 
     /**
      * Sheet index to read
      *
      * @access    private
-     * @var    int
      */
-    private $sheetIndex = 0;
+    private int $sheetIndex = 0;
 
     /**
      * Load rows contiguously
@@ -78,10 +74,8 @@ class PHPExcel_Reader_CSV extends PHPExcel_Reader_Abstract implements PHPExcel_R
 
     /**
      * Row counter for loading rows contiguously
-     *
-     * @var    int
      */
-    private $contiguousRow = -1;
+    private int $contiguousRow = -1;
 
 
     /**
@@ -272,7 +266,7 @@ class PHPExcel_Reader_CSV extends PHPExcel_Reader_Abstract implements PHPExcel_R
 
         // Set our starting row based on whether we're in contiguous mode or not
         $currentRow = 1;
-        if ($this->contiguous) {
+        if ($this->contiguous !== 0) {
             $currentRow = ($this->contiguousRow == -1) ? $sheet->getHighestRow(): $this->contiguousRow;
         }
 
@@ -300,7 +294,7 @@ class PHPExcel_Reader_CSV extends PHPExcel_Reader_Abstract implements PHPExcel_R
         // Close file
         fclose($fileHandle);
 
-        if ($this->contiguous) {
+        if ($this->contiguous !== 0) {
             $this->contiguousRow = $currentRow;
         }
 

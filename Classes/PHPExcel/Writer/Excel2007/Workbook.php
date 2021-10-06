@@ -264,7 +264,7 @@ class PHPExcel_Writer_Excel2007_Workbook extends PHPExcel_Writer_Excel2007_Write
         $objWriter->startElement('definedNames');
 
         // Named ranges
-        if (count($pPHPExcel->getNamedRanges()) > 0) {
+        if ($pPHPExcel->getNamedRanges() !== []) {
             // Named ranges
             $this->writeNamedRanges($objWriter, $pPHPExcel);
         }
@@ -319,10 +319,10 @@ class PHPExcel_Writer_Excel2007_Workbook extends PHPExcel_Writer_Excel2007_Write
 
         // Create absolute coordinate and write as raw text
         $range = PHPExcel_Cell::splitRange($pNamedRange->getRange());
-        for ($i = 0; $i < count($range); $i++) {
-            $range[$i][0] = '\'' . str_replace("'", "''", $pNamedRange->getWorksheet()->getTitle()) . '\'!' . PHPExcel_Cell::absoluteReference($range[$i][0]);
-            if (isset($range[$i][1])) {
-                $range[$i][1] = PHPExcel_Cell::absoluteReference($range[$i][1]);
+        foreach ($range as $i => $singleRange) {
+            $range[$i][0] = '\'' . str_replace("'", "''", $pNamedRange->getWorksheet()->getTitle()) . '\'!' . PHPExcel_Cell::absoluteReference($singleRange[0]);
+            if (isset($singleRange[1])) {
+                $range[$i][1] = PHPExcel_Cell::absoluteReference($singleRange[1]);
             }
         }
         $range = PHPExcel_Cell::buildRange($range);

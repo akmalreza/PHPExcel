@@ -40,7 +40,7 @@ date_default_timezone_set('Europe/London');
 set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/../Classes/');
 
 /** PHPExcel_IOFactory */
-include 'PHPExcel/IOFactory.php';
+include __DIR__ . '/PHPExcel/IOFactory.php';
 
 
 //	Change these values to select the Rendering library that you wish to use
@@ -100,11 +100,7 @@ foreach($inputFileNames as $inputFileName) {
 			natsort($chartNames);
 			foreach($chartNames as $i => $chartName) {
 				$chart = $worksheet->getChartByName($chartName);
-				if (!is_null($chart->getTitle())) {
-					$caption = '"' . implode(' ',$chart->getTitle()->getCaption()) . '"';
-				} else {
-					$caption = 'Untitled';
-				}
+				$caption = is_null($chart->getTitle()) ? 'Untitled' : '"' . implode(' ',$chart->getTitle()->getCaption()) . '"';
 				echo '    ' , $chartName , ' - ' , $caption , EOL;
 				echo str_repeat(' ',strlen($chartName)+3);
 

@@ -41,7 +41,7 @@ class PHPExcel_Chart_Legend
     const POSITION_TOP      = 't';
     const POSITION_TOPRIGHT = 'tr';
 
-    private static $positionXLref = array(
+    private static array $positionXLref = array(
         self::xlLegendPositionBottom => self::POSITION_BOTTOM,
         self::xlLegendPositionCorner => self::POSITION_TOPRIGHT,
         self::xlLegendPositionCustom => '??',
@@ -59,17 +59,13 @@ class PHPExcel_Chart_Legend
 
     /**
      * Allow overlay of other elements?
-     *
-     * @var    boolean
      */
-    private $overlay = true;
+    private bool $overlay = true;
 
     /**
      * Legend Layout
-     *
-     * @var    PHPExcel_Chart_Layout
      */
-    private $layout = null;
+    private ?\PHPExcel_Chart_Layout $layout = null;
 
 
     /**

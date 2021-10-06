@@ -47,17 +47,13 @@ class PHPExcel_Writer_Excel5_Escher
 
     /**
      * Shape offsets. Positions in binary stream where a new shape record begins
-     *
-     * @var array
      */
-    private $spOffsets;
+    private ?array $spOffsets = null;
 
     /**
      * Shape types.
-     *
-     * @var array
      */
-    private $spTypes;
+    private ?array $spTypes = null;
     
     /**
      * Constructor
@@ -426,7 +422,7 @@ class PHPExcel_Writer_Excel5_Escher
                 }
 
                 // the client anchor
-                if ($this->object->getStartCoordinates()) {
+                if ($this->object->getStartCoordinates() !== '' && $this->object->getStartCoordinates() !== '0') {
                     $clientAnchorData = '';
 
                     $recVer            = 0x0;
